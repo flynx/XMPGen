@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905234301'''
+__sub_version__ = '''20110905234928'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -195,16 +195,6 @@ def getpath(root, name, cache=None):
 if __name__ == '__main__':
 	from optparse import OptionParser, OptionGroup
 
-	# options:
-	# 	ROOT | --root=ROOT
-	# 	INPUT | --input=INPUT
-	# 	OUTPUT | --output=OUTPUT
-	# 	--no-search
-	# 	--use-labels
-	# 	--labels=LABELS
-	# 	--xmp-template=TEMPLATE
-	# 	--xmp-no-update
-	#
 	parser = OptionParser(usage='Usage: %prog [options] [ROOT [INPUT [OUTPUT]]]')
 	parser.add_option('--root',
 						dest='root',
