@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905191534'''
+__sub_version__ = '''20110905192643'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -58,6 +58,7 @@ XMP_TEMPLATE = locate(XMP_TEMPLATE_NAME, (HOME_CFG, SYSTEM_CFG), default='''\
 
 def collect(root, next_dir='fav', ext=('.jpg', '.JPG')):
 	'''
+	collect all the files in the topology.
 	'''
 	for r, dirs, files in os.walk(root):
 		# filter files...
@@ -71,6 +72,11 @@ def collect(root, next_dir='fav', ext=('.jpg', '.JPG')):
 
 def index(collection):
 	'''
+	index the collection.
+
+	each level represents the difference between itself and the next level.
+	each level also contains the number of elements in it originally (before 
+	removal of elements also contained in the next level)
 	'''
 	prev = res = None
 	for level in collection:
@@ -103,6 +109,13 @@ RATINGS = [
 
 def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 	'''
+	rate the indexed elements.
+
+	this combines similar levels.
+
+	NOTE: if the count of non-intersecting elements relative to the total 
+	      number of elements is below the threshold, the level will be 
+		  merged with the next. such levels are called "similar".
 	'''
 	# XXX not too good to buffer the whole thing but we need to go from
 	#     the back...
@@ -121,8 +134,9 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 
 
 
-def generate(ratings, path, getpath=os.path.join, template=XMP_TEMPLATE):
+def generate(ratings, root, getpath=os.path.join, template=XMP_TEMPLATE):
 	'''
+	generate XMP files.
 	'''
 	for rating, data in ratings:
 		if type(rating) in (str, unicode):
@@ -134,12 +148,16 @@ def generate(ratings, path, getpath=os.path.join, template=XMP_TEMPLATE):
 		xmp_data = XMP_TEMPLATE % {'rating': rating, 'label': label}
 		for name in reduce(list.__add__, [ list(s['items']) for s in data ]):
 			##!!! check is file already exists...
-			file(getpath(path, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
+			file(getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
 
 
 
 def buildcache(root, ext='.NEF'):
 	'''
+	build a cache of all files in a tree with an extension ext.
+
+	the cache is indexed by file name without extension and contains full paths.
+
 	NOTE: if this finds more than one file with same name in the sub tree it will fail.
 	'''
 	res = {}
@@ -155,7 +173,7 @@ def buildcache(root, ext='.NEF'):
 
 def getpath(root, name, cache=None):
 	'''
-	find a file in a directory tree and return it's path.
+	find a file in a directory tree via cache and return it's path.
 
 	NOTE: name should be given without an extension.
 	NOTE: this ignores extensions.
