@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905171129'''
+__sub_version__ = '''20110905171651'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -16,6 +16,7 @@ from xmpgen import collect, index, rate, generate
 #-----------------------------------------------------------------------
 
 TEST_DIR = os.path.join('test', 'preview')
+TEST_DESTINATION = 'test'
 
 
 
@@ -42,17 +43,20 @@ logstr('''
 		-> [('blue', [6, 77]), (5, [303]), ('yellow', [101])]
 
 
-	generate(rate(index(collect(TEST_DIR)), threshold=1.0/10), 'test')
+	generate(rate(index(collect(TEST_DIR)), threshold=1.0/10), TEST_DESTINATION)
 
 ''')
 
-
+#-----------------------------------------------------------------------
 # cleanup...
-for _, _, files in os.walk('test'):
+
+# remove all generated XMP files...
+for _, _, files in os.walk(TEST_DESTINATION):
 	for f in files:
 		if f.endswith('.XMP'):
 			os.remove(os.path.join('test', f))
 	break
+
 
 
 #=======================================================================

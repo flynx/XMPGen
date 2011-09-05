@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905163730'''
+__sub_version__ = '''20110905165925'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -17,7 +17,7 @@ import shutil, os, os.path
 # 	- build index		- DONE
 # 	- normalize index	- DONE
 # 	- map ratings		- DONE
-# 	- generate
+# 	- generate			- DONE
 #
 #
 #-----------------------------------------------------------------------
@@ -69,12 +69,6 @@ def collect(root, next_dir='fav', ext=('.jpg', '.JPG')):
 			del dirs[:] 
 
 
-TEST_DIR = os.path.join('test', 'preview')
-
-##print [ l for l in collect(TEST_DIR) ]
-
-
-
 def index(collection):
 	'''
 	'''
@@ -94,8 +88,6 @@ def index(collection):
 			'items': cur, 
 		}
 	yield res
-
-##print [ (e['total count'], len(e['items'])) for e in index(collect(TEST_DIR)) ]
 
 
 
@@ -126,20 +118,6 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 			buf = ()
 			i += 1
 
-##print [ (rating, len(data)) 
-##			for rating, data 
-##			in dict(rate(index(collect(TEST_DIR)))).items() ]
-### will combine two levels...
-##print [ (rating, len(data)) 
-##			for rating, data 
-##			in dict(rate(index(collect(TEST_DIR)), threshold=1.0/10)).items() ]
-### output sums number of elements puer group...
-##print [ (rating, [len(i['items']) 
-##						for i 
-##						in data]) 
-##			for rating, data 
-##			in dict(rate(index(collect(TEST_DIR)), threshold=1.0/10)).items() ]
-
 
 def generate(ratings, path, template=XMP_TEMPLATE):
 	'''
@@ -157,7 +135,6 @@ def generate(ratings, path, template=XMP_TEMPLATE):
 			file(os.path.join(path, name.replace('.jpg', '.XMP')), 'w').write(xmp_data)
 
 
-generate(rate(index(collect(TEST_DIR)), threshold=1.0/10), 'test')
 
 
 
