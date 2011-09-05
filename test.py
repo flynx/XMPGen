@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905174326'''
+__sub_version__ = '''20110905175317'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -24,10 +24,10 @@ TEST_DESTINATION = 'test'
 # remove all generated XMP files...
 def cleanup(path=TEST_DESTINATION):
 	i = 0
-	for _, _, files in os.walk(TEST_DESTINATION):
+	for p, _, files in os.walk(TEST_DESTINATION):
 		for f in files:
 			if f.endswith('.XMP'):
-				os.remove(os.path.join('test', f))
+				os.remove(os.path.join(p, f))
 				i += 1
 		break
 	return 'found and removed %s XMP files.' % i

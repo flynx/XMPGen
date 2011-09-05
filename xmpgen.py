@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905174726'''
+__sub_version__ = '''20110905175748'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -120,17 +120,21 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 
 
 
-def getpath(root, name):
+##!!!
+def getpath(root, name, ext='NEF'):
 	'''
-	locate a propper place to write a file
+	find a file in a directory tree and return it's path.
 
-	NOTE: this is the default, it will just place the XMP file in the root.
+	NOTE: name should be given without an extension.
+	NOTE: this will find a file with an extension ext.
+	NOTE: if this finds more than one file with same name in the sub tree it will fail.
 	'''
+	##!!! locate a propper NEF file and use it's path...
 	return os.path.join(root, name)
 
 
 
-def generate(ratings, path, getpath=getpath, template=XMP_TEMPLATE):
+def generate(ratings, path, getpath=os.path.join, template=XMP_TEMPLATE):
 	'''
 	'''
 	for rating, data in ratings:
