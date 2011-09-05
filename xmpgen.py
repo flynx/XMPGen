@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905192643'''
+__sub_version__ = '''20110905193159'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -22,7 +22,7 @@ import shutil, os, os.path
 #
 #-----------------------------------------------------------------------
 # helpers...
-
+#--------------------------------------------------------------locate---
 def locate(name, locations=(), default=None):
 	'''
 	locate an entity in locations and if none are available use a default.
@@ -37,8 +37,14 @@ def locate(name, locations=(), default=None):
 	return default
 
 
+
+#-----------------------------------------------------------------------
+# config data and defaults...
+
 HOME_CFG='~'
+
 SYSTEM_CFG='.'
+
 XMP_TEMPLATE_NAME = 'TEMPLATE.XMP'
 
 XMP_TEMPLATE = locate(XMP_TEMPLATE_NAME, (HOME_CFG, SYSTEM_CFG), default='''\
@@ -53,9 +59,21 @@ XMP_TEMPLATE = locate(XMP_TEMPLATE_NAME, (HOME_CFG, SYSTEM_CFG), default='''\
 </x:xmpmeta>
 ''')
 
+THRESHOLD = 1.0/100
+
+RATINGS = [
+	##!!! the folowing need to be changed to the standard Adobe uses in Br and Lr...
+	# labels...
+	'yellow',
+	'blue',
+	# basic ratings...
+	5, 4, 3, 2, 1,
+]
+
+
 
 #-----------------------------------------------------------------------
-
+#-------------------------------------------------------------collect---
 def collect(root, next_dir='fav', ext=('.jpg', '.JPG')):
 	'''
 	collect all the files in the topology.
@@ -70,6 +88,7 @@ def collect(root, next_dir='fav', ext=('.jpg', '.JPG')):
 			del dirs[:] 
 
 
+#---------------------------------------------------------------index---
 def index(collection):
 	'''
 	index the collection.
@@ -96,17 +115,7 @@ def index(collection):
 	yield res
 
 
-
-THRESHOLD = 1.0/100
-RATINGS = [
-	##!!! the folowing need to be changed to the standard Adobe uses in Br and Lr...
-	# labels...
-	'yellow',
-	'blue',
-	# basic ratings...
-	5, 4, 3, 2, 1,
-]
-
+#----------------------------------------------------------------rate---
 def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 	'''
 	rate the indexed elements.
@@ -132,8 +141,7 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 			i += 1
 
 
-
-
+#------------------------------------------------------------generate---
 def generate(ratings, root, getpath=os.path.join, template=XMP_TEMPLATE):
 	'''
 	generate XMP files.
@@ -151,7 +159,7 @@ def generate(ratings, root, getpath=os.path.join, template=XMP_TEMPLATE):
 			file(getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
 
 
-
+#----------------------------------------------------------buildcache---
 def buildcache(root, ext='.NEF'):
 	'''
 	build a cache of all files in a tree with an extension ext.
@@ -170,7 +178,7 @@ def buildcache(root, ext='.NEF'):
 	return res
 
 
-
+#-------------------------------------------------------------getpath---
 def getpath(root, name, cache=None):
 	'''
 	find a file in a directory tree via cache and return it's path.
@@ -180,6 +188,11 @@ def getpath(root, name, cache=None):
 	'''
 	return '.'.join(cache[name].split('.')[:-1])
 
+
+
+#-----------------------------------------------------------------------
+if __name__ == '__main__':
+	pass
 
 
 
