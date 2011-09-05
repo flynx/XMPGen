@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905234928'''
+__sub_version__ = '''20110905235948'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -195,7 +195,9 @@ def getpath(root, name, cache=None):
 if __name__ == '__main__':
 	from optparse import OptionParser, OptionGroup
 
-	parser = OptionParser(usage='Usage: %prog [options] [ROOT [INPUT [OUTPUT]]]')
+	parser = OptionParser(
+					usage='Usage: %prog [options] [ROOT [INPUT [OUTPUT]]]',
+					version='%prog ' + __version__)
 	parser.add_option('--root',
 						dest='root',
 						default='.',
@@ -208,7 +210,6 @@ if __name__ == '__main__':
 						metavar='INPUT')
 	parser.add_option('--output',
 						dest='output',
-						default='.',
 						help='name of directory to store .XMP files. if --no-search '
 						'is not set this is where we search for relevant files.', 
 						metavar='OUTPUT')
@@ -257,7 +258,7 @@ if __name__ == '__main__':
 
 	ROOT = options.root
 	INPUT = options.input
-	OUTPUT = options.output
+	OUTPUT = options.output if options.output else ROOT
 
 	THRESHOLD = float(options.threshold)/100
 	RAW_EXTENSION = options.raw_ext
