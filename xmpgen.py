@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905175748'''
+__sub_version__ = '''20110905191534'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -120,19 +120,6 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 
 
 
-##!!!
-def getpath(root, name, ext='NEF'):
-	'''
-	find a file in a directory tree and return it's path.
-
-	NOTE: name should be given without an extension.
-	NOTE: this will find a file with an extension ext.
-	NOTE: if this finds more than one file with same name in the sub tree it will fail.
-	'''
-	##!!! locate a propper NEF file and use it's path...
-	return os.path.join(root, name)
-
-
 
 def generate(ratings, path, getpath=os.path.join, template=XMP_TEMPLATE):
 	'''
@@ -148,6 +135,32 @@ def generate(ratings, path, getpath=os.path.join, template=XMP_TEMPLATE):
 		for name in reduce(list.__add__, [ list(s['items']) for s in data ]):
 			##!!! check is file already exists...
 			file(getpath(path, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
+
+
+
+def buildcache(root, ext='.NEF'):
+	'''
+	NOTE: if this finds more than one file with same name in the sub tree it will fail.
+	'''
+	res = {}
+	for path, _, files in os.walk(root): 
+		for f in files:
+			if f.endswith(ext):
+				if f in res:
+					raise TypeError, 'file %s.NEF exists in two locations!'
+				res['.'.join(f.split('.')[:-1])] = os.path.join(path, f)
+	return res
+
+
+
+def getpath(root, name, cache=None):
+	'''
+	find a file in a directory tree and return it's path.
+
+	NOTE: name should be given without an extension.
+	NOTE: this ignores extensions.
+	'''
+	return '.'.join(cache[name].split('.')[:-1])
 
 
 
