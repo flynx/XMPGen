@@ -1,0 +1,14 @@
+*.sw[op]
+*.py[co]
+*.bak
+*.old
+.gitignore
+./mirrors
+tmp
+dist
+test
+build
+old
+_new
+VERSION*
+version.py
