@@ -1,0 +1,9 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/">
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+		<rdf:Description rdf:about="" xmlns:xap="http://ns.adobe.com/xap/1.0/">
+			<xap:CreatorTool>XMPGen</xap:CreatorTool>
+			<xap:Rating>%(rating)s</xap:Rating>
+			<xap:Label>%(label)s</xap:Label>
+		</rdf:Description>
+	</rdf:RDF>
+</x:xmpmeta>
