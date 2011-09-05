@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905171651'''
+__sub_version__ = '''20110905174326'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -21,6 +21,19 @@ TEST_DESTINATION = 'test'
 
 
 #-----------------------------------------------------------------------
+# remove all generated XMP files...
+def cleanup(path=TEST_DESTINATION):
+	i = 0
+	for _, _, files in os.walk(TEST_DESTINATION):
+		for f in files:
+			if f.endswith('.XMP'):
+				os.remove(os.path.join('test', f))
+				i += 1
+		break
+	return 'found and removed %s XMP files.' % i
+
+
+#-----------------------------------------------------------------------
 
 logstr('''
 	![ l for l in collect(TEST_DIR) ]
@@ -37,25 +50,22 @@ logstr('''
 	[ (rating, len(data)) for rating, data in dict(rate(index(collect(TEST_DIR)), threshold=1.0/10)).items() ]
 		-> [('blue', 2), (5, 1), ('yellow', 1)]
 
-
 	# output sums number of elements puer group...
 	[ (rating, [len(i['items']) for i in data]) for rating, data in dict(rate(index(collect(TEST_DIR)), threshold=1.0/10)).items() ]
 		-> [('blue', [6, 77]), (5, [303]), ('yellow', [101])]
 
-
+	# generate the XMP files...
 	generate(rate(index(collect(TEST_DIR)), threshold=1.0/10), TEST_DESTINATION)
+
+	---
+	
+	# cleanup...
+	cleanup()
+		-> 'found and removed 487 XMP files.'
 
 ''')
 
-#-----------------------------------------------------------------------
-# cleanup...
 
-# remove all generated XMP files...
-for _, _, files in os.walk(TEST_DESTINATION):
-	for f in files:
-		if f.endswith('.XMP'):
-			os.remove(os.path.join('test', f))
-	break
 
 
 

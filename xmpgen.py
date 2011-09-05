@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905165925'''
+__sub_version__ = '''20110905174726'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -119,7 +119,18 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 			i += 1
 
 
-def generate(ratings, path, template=XMP_TEMPLATE):
+
+def getpath(root, name):
+	'''
+	locate a propper place to write a file
+
+	NOTE: this is the default, it will just place the XMP file in the root.
+	'''
+	return os.path.join(root, name)
+
+
+
+def generate(ratings, path, getpath=getpath, template=XMP_TEMPLATE):
 	'''
 	'''
 	for rating, data in ratings:
@@ -131,8 +142,8 @@ def generate(ratings, path, template=XMP_TEMPLATE):
 			rating = rating
 		xmp_data = XMP_TEMPLATE % {'rating': rating, 'label': label}
 		for name in reduce(list.__add__, [ list(s['items']) for s in data ]):
-			##!!! remove hardcoded extension replacement...
-			file(os.path.join(path, name.replace('.jpg', '.XMP')), 'w').write(xmp_data)
+			##!!! check is file already exists...
+			file(getpath(path, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
 
 
 
