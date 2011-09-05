@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905193159'''
+__sub_version__ = '''20110905194511'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -193,6 +193,20 @@ def getpath(root, name, cache=None):
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
 	pass
+
+##	##!!! parse args...
+##
+##	cwd = os.getcwd()
+##	threshold=THRESHOLD
+##
+##	generate(
+##			rate(
+##				index(
+##					##!!! locate correct preview dirs...
+##					collect(cwd)), 
+##				threshold=threshold), 
+##			cwd, 
+##			curry(getpath, cache=buildcache(cwd)))
 
 
 
