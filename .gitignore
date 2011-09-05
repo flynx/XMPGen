@@ -6,7 +6,6 @@
 ./mirrors
 tmp
 dist
-test
 build
 old
 _new
