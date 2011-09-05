@@ -1,13 +1,14 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905194511'''
+__sub_version__ = '''20110905234301'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
 #-----------------------------------------------------------------------
 
 import shutil, os, os.path
+from pli.functional import curry
 
 
 #-----------------------------------------------------------------------
@@ -173,7 +174,7 @@ def buildcache(root, ext='.NEF'):
 		for f in files:
 			if f.endswith(ext):
 				if f in res:
-					raise TypeError, 'file %s.NEF exists in two locations!'
+					raise TypeError, 'file %s%s exists in two locations!' % (f, ext)
 				res['.'.join(f.split('.')[:-1])] = os.path.join(path, f)
 	return res
 
@@ -192,22 +193,99 @@ def getpath(root, name, cache=None):
 
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
-	pass
+	from optparse import OptionParser, OptionGroup
 
-##	##!!! parse args...
-##
-##	cwd = os.getcwd()
-##	threshold=THRESHOLD
-##
-##	generate(
-##			rate(
-##				index(
-##					##!!! locate correct preview dirs...
-##					collect(cwd)), 
-##				threshold=threshold), 
-##			cwd, 
-##			curry(getpath, cache=buildcache(cwd)))
+	# options:
+	# 	ROOT | --root=ROOT
+	# 	INPUT | --input=INPUT
+	# 	OUTPUT | --output=OUTPUT
+	# 	--no-search
+	# 	--use-labels
+	# 	--labels=LABELS
+	# 	--xmp-template=TEMPLATE
+	# 	--xmp-no-update
+	#
+	parser = OptionParser(usage='Usage: %prog [options] [ROOT [INPUT [OUTPUT]]]')
+	parser.add_option('--root',
+						dest='root',
+						default='.',
+						help='root of the directory tree we will be working at.', 
+						metavar='ROOT')
+	parser.add_option('--input',
+						dest='input',
+						default='preview',
+						help='name of directory containing previews.', 
+						metavar='INPUT')
+	parser.add_option('--output',
+						dest='output',
+						default='.',
+						help='name of directory to store .XMP files. if --no-search '
+						'is not set this is where we search for relevant files.', 
+						metavar='OUTPUT')
 
+	advanced = OptionGroup(parser, 'Advanced options')
+	##!!!
+	advanced.add_option('--no-search', 
+						dest='search',
+						action='store_false',
+						default=True,
+						help='if set, this will disable searching for RAW files, '
+						'and XMPs will be stored directly in the OUTPUT directory.') 
+	advanced.add_option('--use-labels', 
+						dest='use_labels',
+						action='store_true',
+						default=False,
+						help='if set, use both labels and ratings.') 
+	advanced.add_option('--group-threshold', 
+						dest='threshold',
+						default=5,
+						help='precentage of elements unique to a level below which '
+						'the level will be merged with the next one.',
+						metavar='THRESHOLD') 
+##	advanced.add_option('--xmp-no-update', 
+##						dest='xmp_update',
+##						action='store_false',
+##						default=True,
+##						help='Not Implemented') 
+	advanced.add_option('--raw-extension',
+						dest='raw_ext',
+						default='.NEF',
+						help='use as the extension for RAW files.', 
+						metavar='RAW_EXTENSION')
+##	advanced.add_option('--labels',
+##						dest='labels',
+##						help='...', 
+##						metavar='LABELS')
+##	advanced.add_option('--xmp-template',
+##						dest='xmp_template',
+##						help='...', 
+##						metavar='XMP_TEMPLATE')
+	parser.add_option_group(advanced)
+
+	(options, args) = parser.parse_args()
+
+
+	ROOT = options.root
+	INPUT = options.input
+	OUTPUT = options.output
+
+	THRESHOLD = float(options.threshold)/100
+	RAW_EXTENSION = options.raw_ext
+
+	if not options.use_labels:
+		RATINGS = range(5, 0, -1)
+	
+	generate(
+			rate(
+				index(
+					##!!! locate correct preview dirs...
+					collect(os.path.join(ROOT, INPUT))), 
+				ratings=RATINGS,
+				threshold=THRESHOLD), 
+			OUTPUT, 
+			getpath=(curry(getpath, cache=buildcache(OUTPUT, RAW_EXTENSION)) 
+						if options.search 
+						else os.path.join))
 
 
 

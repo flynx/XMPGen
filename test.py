@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905185119'''
+__sub_version__ = '''20110905233102'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -75,6 +75,16 @@ logstr('''
 	# generate the XMP files and put them in the same place as a
 	# coresponding raw file...
 	generate(rate(index(collect(TEST_DIR)), threshold=1.0/10), TEST_DESTINATION, curry(getpath, cache=buildcache(TEST_DESTINATION)))
+
+	# cleanup...
+	cleanup()
+		-> 'found and removed 487 XMP files in 2 directories.'
+
+	---
+
+	# running the command-line version...
+	os.system('python xmpgen.py --root=test')
+		-> 0
 
 	# cleanup...
 	cleanup()
