@@ -119,7 +119,7 @@ logstr('''
 	cleanup()
 		-> 'found and removed 487 XMP files in 2 directories.'
 
-''', only_errors=True)
+''', only_errors=False)
 
 
 
