@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110906162758'''
+__sub_version__ = '''20110906203303'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -204,11 +204,6 @@ def getfilepath(root, name, cache=None):
 #-------------------------------------------------------builddircache---
 def builddircache(root, name):
 	'''
-	build a cache of all files in a tree with an extension ext.
-
-	the cache is indexed by file name without extension and contains full paths.
-
-	NOTE: if this finds more than one file with same name in the sub tree it will fail.
 	'''
 	res = {}
 	for path, dirs, _ in os.walk(root): 

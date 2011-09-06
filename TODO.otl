@@ -1,0 +1,22 @@
+[_] 0% ToDo
+	[_] propper install script
+	[_] add config file to enable the user to change the defaults wothout touching the code.
+	[_] add ability to either update or skip existing .XMPs
+	[_] BUG: make this handle several input dirs correctly (need izip_longest(*iterables[, fillvalue]))
+	| Reference implementation:
+	|
+	|	def izip_longest(*args, **kwds):
+	|	   # izip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
+	|	   fillvalue = kwds.get('fillvalue')
+	|	   def sentinel(counter = ([fillvalue]*(len(args)-1)).pop):
+	|	       yield counter()         # yields the fillvalue, or raises IndexError
+	|	   fillers = repeat(fillvalue)
+	|	   iters = [chain(it, sentinel(), fillers) for it in args]
+	|	   try:
+	|	       for tup in izip(*iters):
+	|	           yield tup
+	|	   except IndexError:
+	|	       pass
+	| 	
+	[_] licence statement (BSD)
+	[_] a propper README and basic instruction text
