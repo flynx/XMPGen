@@ -1,13 +1,14 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110905235948'''
+__sub_version__ = '''20110906162758'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
 #-----------------------------------------------------------------------
 
 import shutil, os, os.path
+from itertools import chain
 from pli.functional import curry
 
 
@@ -42,9 +43,18 @@ def locate(name, locations=(), default=None):
 #-----------------------------------------------------------------------
 # config data and defaults...
 
-HOME_CFG='~'
+HOME_CFG = '~'
 
-SYSTEM_CFG='.'
+SYSTEM_CFG = '.'
+
+ROOT_DIR = '.'
+INPUT_DIR = 'preview (RAW)'
+### NOTE: we do not need a default aoutput dir as it will default to
+### 		ROOT_DIR...
+##OUTPUT_DIR = ROOT_DIR
+TRAVERSE_DIR = 'fav'
+
+RAW_EXTENSION = '.NEF'
 
 XMP_TEMPLATE_NAME = 'TEMPLATE.XMP'
 
@@ -60,13 +70,11 @@ XMP_TEMPLATE = locate(XMP_TEMPLATE_NAME, (HOME_CFG, SYSTEM_CFG), default='''\
 </x:xmpmeta>
 ''')
 
-THRESHOLD = 1.0/100
+THRESHOLD = 5
 
 RATINGS = [
-	##!!! the folowing need to be changed to the standard Adobe uses in Br and Lr...
 	# labels...
-	'yellow',
-	'blue',
+	##!!! add default labels...
 	# basic ratings...
 	5, 4, 3, 2, 1,
 ]
@@ -75,7 +83,7 @@ RATINGS = [
 
 #-----------------------------------------------------------------------
 #-------------------------------------------------------------collect---
-def collect(root, next_dir='fav', ext=('.jpg', '.JPG')):
+def collect(root, next_dir=TRAVERSE_DIR, ext=('.jpg', '.JPG')):
 	'''
 	collect all the files in the topology.
 	'''
@@ -113,6 +121,8 @@ def index(collection):
 			'total count': len(level),
 			'items': cur, 
 		}
+	if res is None:
+		return
 	yield res
 
 
@@ -131,6 +141,7 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 	#     the back...
 	index = list(index)
 	index.reverse()
+	threshold = float(threshold)/100
 
 	i = 0
 	buf = ()
@@ -160,8 +171,8 @@ def generate(ratings, root, getpath=os.path.join, template=XMP_TEMPLATE):
 			file(getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
 
 
-#----------------------------------------------------------buildcache---
-def buildcache(root, ext='.NEF'):
+#------------------------------------------------------buildfilecache---
+def buildfilecache(root, ext=RAW_EXTENSION):
 	'''
 	build a cache of all files in a tree with an extension ext.
 
@@ -179,8 +190,8 @@ def buildcache(root, ext='.NEF'):
 	return res
 
 
-#-------------------------------------------------------------getpath---
-def getpath(root, name, cache=None):
+#---------------------------------------------------------getfilepath---
+def getfilepath(root, name, cache=None):
 	'''
 	find a file in a directory tree via cache and return it's path.
 
@@ -190,93 +201,142 @@ def getpath(root, name, cache=None):
 	return '.'.join(cache[name].split('.')[:-1])
 
 
+#-------------------------------------------------------builddircache---
+def builddircache(root, name):
+	'''
+	build a cache of all files in a tree with an extension ext.
+
+	the cache is indexed by file name without extension and contains full paths.
+
+	NOTE: if this finds more than one file with same name in the sub tree it will fail.
+	'''
+	res = {}
+	for path, dirs, _ in os.walk(root): 
+		for d in dirs:
+			if d == name:
+				if d in res:
+					res[d] += [os.path.join(path, d)]
+				else:
+					res[d] = [os.path.join(path, d)]
+	return res
+
+
+#----------------------------------------------------------getdirpath---
+def getdirpaths(root, name, cache=None):
+	'''
+	'''
+	if name not in cache:
+		raise TypeError, 'directory "%s" does not exist in tree %s.' % (name, root)
+	for d in cache[name]:
+		yield d
+
 
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
 	from optparse import OptionParser, OptionGroup
 
+	##!!! move all the defaults from here to the constants section...
 	parser = OptionParser(
-					usage='Usage: %prog [options] [ROOT [INPUT [OUTPUT]]]',
-					version='%prog ' + __version__)
+##						usage='Usage: %prog [options] [ROOT [INPUT [OUTPUT]]]',
+						usage='Usage: %prog [options]',
+						version='%prog ' + __version__)
 	parser.add_option('--root',
 						dest='root',
-						default='.',
-						help='root of the directory tree we will be working at.', 
+						default=ROOT_DIR,
+						help='root of the directory tree we will be working at (default: "%default").', 
 						metavar='ROOT')
 	parser.add_option('--input',
 						dest='input',
-						default='preview',
-						help='name of directory containing previews.', 
+						default=INPUT_DIR,
+						help='name of directory containing previews (default: "%default").', 
 						metavar='INPUT')
 	parser.add_option('--output',
 						dest='output',
 						help='name of directory to store .XMP files. if --no-search '
-						'is not set this is where we search for relevant files.', 
+						'is not set this is where we search for relevant files (default: ROOT).', 
 						metavar='OUTPUT')
 
 	advanced = OptionGroup(parser, 'Advanced options')
-	##!!!
-	advanced.add_option('--no-search', 
-						dest='search',
+	advanced.add_option('--search-input', 
+						dest='search_input',
+						action='store_true',
+						default=False,
+						help='if set, this will enable searching for input directories, '
+						'otherwise ROOT/INPUT will be used directly.') 
+	advanced.add_option('--no-search-output', 
+						dest='search_output',
 						action='store_false',
 						default=True,
 						help='if set, this will disable searching for RAW files, '
 						'and XMPs will be stored directly in the OUTPUT directory.') 
-	advanced.add_option('--use-labels', 
-						dest='use_labels',
-						action='store_true',
-						default=False,
-						help='if set, use both labels and ratings.') 
 	advanced.add_option('--group-threshold', 
 						dest='threshold',
-						default=5,
+						default=THRESHOLD,
 						help='precentage of elements unique to a level below which '
-						'the level will be merged with the next one.',
+						'the level will be merged with the next one (default: "%default").',
 						metavar='THRESHOLD') 
+	##!!! we need to be able to update or ignore existing xmp files, curently they will be overwritten...
 ##	advanced.add_option('--xmp-no-update', 
 ##						dest='xmp_update',
 ##						action='store_false',
 ##						default=True,
 ##						help='Not Implemented') 
+	advanced.add_option('--traverse-dir-name',
+						dest='traverse_dir',
+						default=TRAVERSE_DIR,
+						help='directory used to traverse to next level (default: "%default").', 
+						metavar='TRAVERSE_DIR')
 	advanced.add_option('--raw-extension',
 						dest='raw_ext',
-						default='.NEF',
-						help='use as the extension for RAW files.', 
+						default=RAW_EXTENSION,
+						help='use as the extension for RAW files (default: "%default").', 
 						metavar='RAW_EXTENSION')
 ##	advanced.add_option('--labels',
 ##						dest='labels',
 ##						help='...', 
 ##						metavar='LABELS')
-##	advanced.add_option('--xmp-template',
-##						dest='xmp_template',
-##						help='...', 
-##						metavar='XMP_TEMPLATE')
+	advanced.add_option('--xmp-template',
+						dest='xmp_template',
+						help='use XMP_TEMPLATE instead of the internal template.', 
+						metavar='XMP_TEMPLATE')
+	advanced.add_option('--use-labels', 
+						dest='use_labels',
+						action='store_true',
+						default=False,
+						help='if set, use both labels and ratings.') 
 	parser.add_option_group(advanced)
 
-	(options, args) = parser.parse_args()
+	options, args = parser.parse_args()
 
+	output = options.output if options.output else options.root
 
-	ROOT = options.root
-	INPUT = options.input
-	OUTPUT = options.output if options.output else ROOT
-
-	THRESHOLD = float(options.threshold)/100
-	RAW_EXTENSION = options.raw_ext
+	XMP_TEMPLATE = file(options.xmp_template, 'r').read() if options.xmp_template else XMP_TEMPLATE
 
 	if not options.use_labels:
 		RATINGS = range(5, 0, -1)
-	
+
+	# do the actaual dance...
 	generate(
 			rate(
 				index(
-					##!!! locate correct preview dirs...
-					collect(os.path.join(ROOT, INPUT))), 
+					# use ROOT/INPUT...
+					collect(os.path.join(options.root, options.input), options.traverse_dir) 
+						if not options.search_input 
+						# locate correct preview dirs...
+						##!!! chaining is wrong here. we need to zip and then  merge each level...
+						##!!! $*#%$^#%, why is there no option to padd the shorter elements of zip?!!!
+						else chain(*(collect(d, options.traverse_dir) 
+										for d 
+										in getdirpaths(options.root, options.input, builddircache(options.root, options.input))))), 
 				ratings=RATINGS,
-				threshold=THRESHOLD), 
-			OUTPUT, 
-			getpath=(curry(getpath, cache=buildcache(OUTPUT, RAW_EXTENSION)) 
-						if options.search 
-						else os.path.join))
+				threshold=options.threshold), 
+			output, 
+			# find a location for each output file...
+			getpath=(curry(getfilepath, cache=buildfilecache(output, options.raw_ext)) 
+						if options.search_output 
+						# just write to ROOT...
+						else os.path.join),
+			template=XMP_TEMPLATE)
 
 
 
