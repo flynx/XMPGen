@@ -1,4 +1,4 @@
-[_] 0% ToDo
+[_] 14% ToDo
 	[_] propper install script
 	[_] add config file to enable the user to change the defaults wothout touching the code.
 	[_] add ability to either update or skip existing .XMPs
@@ -18,5 +18,6 @@
 	|	   except IndexError:
 	|	       pass
 	| 	
-	[_] licence statement (BSD)
+	[X] license
+	[_] add licence statement to the code (BSD)
 	[_] a propper README and basic instruction text
