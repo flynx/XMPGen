@@ -146,7 +146,7 @@ Here is the current command-line reference::
                          (default: ROOT).
 
    Advanced options:
-     --rate-top-level    if set, do not rate top level previews.
+     --rate-top-level    if set, also rate top level previews.
      --search-input      if set, this will enable searching for input
                          directories, otherwise ROOT/INPUT will be used
                          directly. NOTE: this will find all matching INPUT

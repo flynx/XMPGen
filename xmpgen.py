@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908011855'''
+__sub_version__ = '''20110908012426'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -278,7 +278,7 @@ if __name__ == '__main__':
 						dest='rate_top_level',
 						action='store_true',
 						default=False,
-						help='if set, do not rate top level previews.')
+						help='if set, also rate top level previews.')
 	advanced.add_option('--search-input', 
 						dest='search_input',
 						action='store_true',
