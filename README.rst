@@ -132,7 +132,7 @@ The data the script uses and its behavior is fully configurable.
 
 Here is the current command-line reference::
 
-Usage: xmpgen.py [options]
+  Usage: xmpgen.py [options]
 
   Options:
     --version             show program's version number and exit
