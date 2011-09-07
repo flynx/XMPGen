@@ -146,6 +146,7 @@ Here is the current command-line reference::
                          (default: ROOT).
 
    Advanced options:
+     --rate-top-level    if set, do not rate top level previews.
      --search-input      if set, this will enable searching for input
                          directories, otherwise ROOT/INPUT will be used
                          directly. NOTE: this will find all matching INPUT
@@ -155,7 +156,7 @@ Here is the current command-line reference::
      --group-threshold=THRESHOLD
                          precentage of elements unique to a level below which
                          the level will be merged with the next one (default:
-                         "5"). 
+                         "5").
      --traverse-dir-name=TRAVERSE_DIR
                          directory used to traverse to next level (default:
                          "fav").
@@ -164,6 +165,7 @@ Here is the current command-line reference::
      --xmp-template=XMP_TEMPLATE
                          use XMP_TEMPLATE instead of the internal template.
      --use-labels        if set, use both labels and ratings.
+
 
 
 NOTE: this may get out of date, so use ``--help`` to get the actual info.

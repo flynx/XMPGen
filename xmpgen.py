@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908003158'''
+__sub_version__ = '''20110908011855'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -39,6 +39,19 @@ def locate(name, locations=(), default=None):
 	return default
 
 
+#------------------------------------------------------------skiplast---
+def skiplast(iterable):
+	'''
+	skip last element of iterable
+	'''
+	prev = None
+	for e in iterable:
+		if prev is not None:
+			yield e
+		prev = e
+	if prev is not None:
+		yield e
+	
 
 #-----------------------------------------------------------------------
 # config data and defaults...
@@ -242,7 +255,6 @@ if __name__ == '__main__':
 
 	##!!! move all the defaults from here to the constants section...
 	parser = OptionParser(
-##						usage='Usage: %prog [options] [ROOT [INPUT [OUTPUT]]]',
 						usage='Usage: %prog [options]',
 						version='%prog ' + __version__)
 	parser.add_option('--root',
@@ -262,6 +274,11 @@ if __name__ == '__main__':
 						metavar='OUTPUT')
 
 	advanced = OptionGroup(parser, 'Advanced options')
+	advanced.add_option('--rate-top-level', 
+						dest='rate_top_level',
+						action='store_true',
+						default=False,
+						help='if set, do not rate top level previews.')
 	advanced.add_option('--search-input', 
 						dest='search_input',
 						action='store_true',
@@ -333,19 +350,21 @@ if __name__ == '__main__':
 	# do the actaual dance...
 	generate(
 			rate(
-				index(
-					# use ROOT/INPUT...
-					collect(os.path.join(options.root, options.input), options.traverse_dir) 
-						if not options.search_input 
-						# locate correct preview dirs...
-						##!!! chaining is wrong here. we need to zip and then  merge each level...
-						##!!! $*#%$^#%, why is there no option to padd the shorter elements of zip?!!!
-						else chain(*(collect(d, options.traverse_dir) 
-										for d 
-										in getdirpaths(
-												options.root, 
-												options.input, 
-												builddircache(options.root, options.input))))), 
+				# chose weather we need to skip the last element...
+				(iter if options.rate_top_level else skiplast)(
+					index(
+						# use ROOT/INPUT...
+						collect(os.path.join(options.root, options.input), options.traverse_dir) 
+							if not options.search_input 
+							# locate correct preview dirs...
+							##!!! chaining is wrong here. we need to zip and then  merge each level...
+							##!!! $*#%$^#%, why is there no option to padd the shorter elements of zip?!!!
+							else chain(*(collect(d, options.traverse_dir) 
+											for d 
+											in getdirpaths(
+													options.root, 
+													options.input, 
+													builddircache(options.root, options.input)))))), 
 				ratings=RATINGS,
 				threshold=options.threshold), 
 			output, 
