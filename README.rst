@@ -120,9 +120,54 @@ This will generate the needed data as follows::
 
 
 
----
 
-NOTE: the naming is configurable, just see xmpgen --help.
+---------
+
+The naming is configurable, just see xmpgen --help.
+
+Here is the current command-line reference::
+
+ Usage: xmpgen.py [options]
+
+ Options:
+   --version             show program's version number and exit
+   -h, --help            show this help message and exit
+   --root=ROOT           root of the directory tree we will be working at
+                         (default: ".").
+   --input=INPUT         name of directory containing previews (default:
+                         "preview (RAW)").
+   --output=OUTPUT       name of directory to store .XMP files. if --no-search
+                         is not set this is where we search for relevant files
+                         (default: ROOT).
+
+   Advanced options:
+     --search-input      if set, this will enable searching for input
+                         directories, otherwise ROOT/INPUT will be used
+                         directly. NOTE: this will find all matching INPUT
+                         directories, including nested ones.
+     --no-search-output  if set, this will disable searching for RAW files, and
+                         XMPs will be stored directly in the OUTPUT directory.
+     --group-threshold=THRESHOLD
+                         precentage of elements unique to a level below which
+                         the level will be merged with the next one (default:
+                         "5"). 
+     --traverse-dir-name=TRAVERSE_DIR
+                         directory used to traverse to next level (default:
+                         "fav").
+     --raw-extension=RAW_EXTENSION
+                         use as the extension for RAW files (default: ".NEF").
+     --xmp-template=XMP_TEMPLATE
+                         use XMP_TEMPLATE instead of the internal template.
+     --use-labels        if set, use both labels and ratings.
+
+
+NOTE: this may be out of date, so use::
+
+  $ xmpgen --help
+
+to get the actual info.
+
+---------
 
 NOTE: the --search-input potion is not on by default because of a 
 current bug (see TODO.otl), as soon as that gets resolved this 
