@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110907150903'''
+__sub_version__ = '''20110908003158'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -311,6 +311,15 @@ if __name__ == '__main__':
 						action='store_true',
 						default=False,
 						help='if set, use both labels and ratings.') 
+
+##	advanced.add_option('--save-configuration', 
+##						dest='save_config',
+##						action='store_true',
+##						default=False,
+##						help='if set, write current command-line options to ~/.xmpgen '
+##						'file to be used as default.\n'
+##						'NOTE: the only option that will not be written is --save-configuration, obviously.') 
+
 	parser.add_option_group(advanced)
 
 	options, args = parser.parse_args()
