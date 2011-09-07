@@ -9,6 +9,7 @@ apply to any other make:
 We start with a simple directory tree, as it comes from the flash card:
 
 ::
+
   DCIM/
   |  232ND700/
   |  |  DSC_0001.NEF
@@ -22,7 +23,6 @@ We start with a simple directory tree, as it comes from the flash card:
 
 Then we create a set of previews:
 
-::
   DCIM/
   |  232ND700/
   |  |  *preview (RAW)/*
@@ -46,7 +46,6 @@ Next we select the best images on each level...
 This can be done trivially with any image viewer or file manager that 
 supports copying files:
 
-::
   DCIM/
   |  232ND700/
   |  |  preview (RAW)/
@@ -69,7 +68,6 @@ supports copying files:
 It would be convert this topology into ratings, the deepest files 
 having the top rating: 
 
-::
   DCIM/
   |  232ND700/
   |  |  preview (RAW)/
@@ -96,14 +94,12 @@ corresponding RAW files (.NEFs in this case).
 
 So here is the simplest way to do this:
 
-::
   $ cd DCIM
   $ xmpgen --search-input
 
 
 This will generate the needed data as follows:
 
-::
   DCIM/
   |  232ND700/
   |  |  preview (RAW)/
