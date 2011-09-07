@@ -1,9 +1,10 @@
-This script uses the directory tree topology to rate files and 
+This script uses the directory tree topology to rate images and 
 stores the resulting ratings in .XMP sidecar files.
 
 
 
-Here is a simple example given for a Nikon camera, same will apply to any other make:
+Here is a simple example given for a Nikon camera, same will apply to 
+any other make:
 
 We start with a simple directory tree, as it comes from the flash card::
 
