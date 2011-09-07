@@ -132,39 +132,40 @@ The data the script uses and its behaviur is fully configurable.
 
 Here is the current command-line reference::
 
- Usage: xmpgen.py [options]
+Usage: xmpgen.py [options]
 
- Options:
-   --version             show program's version number and exit
-   -h, --help            show this help message and exit
-   --root=ROOT           root of the directory tree we will be working at
-                         (default: ".").
-   --input=INPUT         name of directory containing previews (default:
-                         "preview (RAW)").
-   --output=OUTPUT       name of directory to store .XMP files. if --no-search
-                         is not set this is where we search for relevant files
-                         (default: ROOT).
+  Options:
+    --version             show program's version number and exit
+    -h, --help            show this help message and exit
+    --root=ROOT           root of the directory tree we will be working at
+                          (default: ".").
+    --input=INPUT         name of directory containing previews (default:
+                          "preview (RAW)"). NOTE: this directroy tree can not be
+                          used for OUTPUT.
+    --output=OUTPUT       name of directory to store .XMP files. if --no-search
+                          is not set this is where we search for relevant files
+                          (default: ROOT).
 
-   Advanced options:
-     --rate-top-level    if set, also rate top level previews.
-     --search-input      if set, this will enable searching for input
-                         directories, otherwise ROOT/INPUT will be used
-                         directly. NOTE: this will find all matching INPUT
-                         directories, including nested ones.
-     --no-search-output  if set, this will disable searching for RAW files, and
-                         XMPs will be stored directly in the OUTPUT directory.
-     --group-threshold=THRESHOLD
-                         precentage of elements unique to a level below which
-                         the level will be merged with the next one (default:
-                         "5").
-     --traverse-dir-name=TRAVERSE_DIR
-                         directory used to traverse to next level (default:
-                         "fav").
-     --raw-extension=RAW_EXTENSION
-                         use as the extension for RAW files (default: ".NEF").
-     --xmp-template=XMP_TEMPLATE
-                         use XMP_TEMPLATE instead of the internal template.
-     --use-labels        if set, use both labels and ratings.
+    Advanced options:
+      --rate-top-level    if set, also rate top level previews.
+      --search-input      if set, this will enable searching for input
+                          directories, otherwise ROOT/INPUT will be used
+                          directly. NOTE: this will find all matching INPUT
+                          directories, including nested ones.
+      --no-search-output  if set, this will disable searching for RAW files, and
+                          XMPs will be stored directly in the OUTPUT directory.
+      --group-threshold=THRESHOLD
+                          precentage of elements unique to a level below which
+                          the level will be merged with the next one (default:
+                          "5").
+      --traverse-dir-name=TRAVERSE_DIR
+                          directory used to traverse to next level (default:
+                          "fav").
+      --raw-extension=RAW_EXTENSION
+                          use as the extension for RAW files (default: ".NEF").
+      --xmp-template=XMP_TEMPLATE
+                          use XMP_TEMPLATE instead of the internal template.
+      --use-labels        if set, use both labels and ratings.
 
 
 
