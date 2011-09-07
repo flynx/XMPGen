@@ -1,10 +1,9 @@
-This script uses the directory tree topology data to rate files and 
-stores the resulting data in .XMP sidecar files.
+This script uses the directory tree topology to rate files and 
+stores the resulting ratings in .XMP sidecar files.
 
 
 
-Here is an example a simple example given for a Nikon camera, same will
-apply to any other make:
+Here is a simple example given for a Nikon camera, same will apply to any other make:
 
 We start with a simple directory tree, as it comes from the flash card::
 
@@ -63,8 +62,8 @@ supports copying files::
   |  |  ...
 
 
-It would be convert this topology into ratings, the deepest files 
-having the top rating::
+It would be logical to convert this topology into ratings, the deepest 
+files having the top rating::
 
   DCIM/
   |  232ND700/
@@ -96,7 +95,7 @@ So here is the simplest way to do this::
   $ xmpgen --search-input
 
 
-This will generate the needed data as follows::
+The above will generate the needed data as follows::
 
   DCIM/
   |  232ND700/
@@ -118,6 +117,11 @@ This will generate the needed data as follows::
   |  |  *DSC_0002.XMP*
   |  |  ...
 
+
+For more control one can specify all the data on the command line for 
+the same effect as the above::
+
+  $ xmpgen --root=DCIM --input="preview (RAW)" --output=232ND700 --raw-extension=.NEF --traverse-dir-name=fav --no-search-output
 
 
 
