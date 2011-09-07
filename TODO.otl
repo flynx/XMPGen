@@ -21,3 +21,5 @@
 	[X] license
 	[_] add licence statement to the code (BSD)
 	[_] a propper README and basic instruction text
+	[_] make this work (test if it does not already) for --raw-extension=.jpg
+	| need to skip INPUT directories...
