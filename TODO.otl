@@ -1,4 +1,4 @@
-[_] 14% ToDo
+[_] 25% ToDo
 	[_] propper install script
 	[_] add config file to enable the user to change the defaults wothout touching the code.
 	[_] add ability to either update or skip existing .XMPs
@@ -21,5 +21,9 @@
 	[X] license
 	[_] add licence statement to the code (BSD)
 	[_] a propper README and basic instruction text
-	[_] make this work (test if it does not already) for --raw-extension=.jpg
+	[X] make this work (test if it does not already) for --raw-extension=.jpg
 	| need to skip INPUT directories...
+	|
+	| fixed by excluding INPUT from search for target files.
+	|
+	| NOTE: now OUTPUT can not be within the INPUT tree...

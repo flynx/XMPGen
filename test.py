@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908011436'''
+__sub_version__ = '''20110908021001'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -83,7 +83,7 @@ logstr('''
 
 	# generate the XMP files and put them in the same place as a
 	# coresponding raw file...
-	generate(rate(index(collect(TEST_DIR)), threshold=10), TEST_DESTINATION, curry(getfilepath, cache=buildfilecache(TEST_DESTINATION)))
+	generate(rate(index(collect(TEST_DIR)), threshold=10), TEST_DESTINATION, curry(getfilepath, cache=buildfilecache(TEST_DESTINATION, )))
 
 	# cleanup...
 	cleanup()

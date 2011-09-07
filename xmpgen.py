@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908012426'''
+__sub_version__ = '''20110908021643'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -187,8 +187,10 @@ def generate(ratings, root, getpath=os.path.join, template=XMP_TEMPLATE):
 			file(getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
 
 
+
+#-----------------------------------------------------------------------
 #------------------------------------------------------buildfilecache---
-def buildfilecache(root, ext=RAW_EXTENSION):
+def buildfilecache(root, ext=RAW_EXTENSION, skip_dirs=(INPUT_DIR,)):
 	'''
 	build a cache of all files in a tree with an extension ext.
 
@@ -197,12 +199,15 @@ def buildfilecache(root, ext=RAW_EXTENSION):
 	NOTE: if this finds more than one file with same name in the sub tree it will fail.
 	'''
 	res = {}
-	for path, _, files in os.walk(root): 
+	for path, dirs, files in os.walk(root): 
+		if len(skip_dirs) > 0:
+			dirs[:] = list(set(dirs).difference(skip_dirs))	
 		for f in files:
 			if f.endswith(ext):
-				if f in res:
+				base = '.'.join(f.split('.')[:-1])
+				if base in res:
 					raise TypeError, 'file %s%s exists in two locations!' % (f, ext)
-				res['.'.join(f.split('.')[:-1])] = os.path.join(path, f)
+				res[base] = os.path.join(path, f)
 	return res
 
 
@@ -265,7 +270,8 @@ if __name__ == '__main__':
 	parser.add_option('--input',
 						dest='input',
 						default=INPUT_DIR,
-						help='name of directory containing previews (default: "%default").', 
+						help='name of directory containing previews (default: "%default").\n'
+						'NOTE: this directroy tree can not be used for OUTPUT.', 
 						metavar='INPUT')
 	parser.add_option('--output',
 						dest='output',
@@ -369,7 +375,7 @@ if __name__ == '__main__':
 				threshold=options.threshold), 
 			output, 
 			# find a location for each output file...
-			getpath=(curry(getfilepath, cache=buildfilecache(output, options.raw_ext)) 
+			getpath=(curry(getfilepath, cache=buildfilecache(output, options.raw_ext, (options.input,))) 
 						if options.search_output 
 						# just write to ROOT...
 						else os.path.join),
