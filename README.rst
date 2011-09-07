@@ -6,9 +6,7 @@ stores the resulting data in .XMP sidecar files.
 Here is an example a simple example given for a Nikon camera, same will
 apply to any other make:
 
-We start with a simple directory tree, as it comes from the flash card:
-
-::
+We start with a simple directory tree, as it comes from the flash card::
 
   DCIM/
   |  232ND700/
@@ -21,9 +19,7 @@ We start with a simple directory tree, as it comes from the flash card:
   |  |  ...
      
 
-Then we create a set of previews:
-
-::
+Then we create a set of previews::
 
   DCIM/
   |  232ND700/
@@ -46,9 +42,7 @@ Then we create a set of previews:
 
 Next we select the best images on each level...
 This can be done trivially with any image viewer or file manager that 
-supports copying files:
-
-::
+supports copying files::
 
   DCIM/
   |  232ND700/
@@ -70,9 +64,7 @@ supports copying files:
 
 
 It would be convert this topology into ratings, the deepest files 
-having the top rating: 
-
-::
+having the top rating::
 
   DCIM/
   |  232ND700/
@@ -98,17 +90,13 @@ used by other software in a non-destructive manner. the best way to do
 this is .XMP sidecar files stored in the same location as the 
 corresponding RAW files (.NEFs in this case).
 
-So here is the simplest way to do this:
-
-::
+So here is the simplest way to do this::
 
   $ cd DCIM
   $ xmpgen --search-input
 
 
-This will generate the needed data as follows:
-
-::
+This will generate the needed data as follows::
 
   DCIM/
   |  232ND700/
