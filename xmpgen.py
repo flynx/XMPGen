@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110906203303'''
+__sub_version__ = '''20110907150903'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -85,7 +85,7 @@ RATINGS = [
 #-------------------------------------------------------------collect---
 def collect(root, next_dir=TRAVERSE_DIR, ext=('.jpg', '.JPG')):
 	'''
-	collect all the files in the topology.
+	generator to collect all the files in the topology.
 	'''
 	for r, dirs, files in os.walk(root):
 		# filter files...
@@ -100,11 +100,13 @@ def collect(root, next_dir=TRAVERSE_DIR, ext=('.jpg', '.JPG')):
 #---------------------------------------------------------------index---
 def index(collection):
 	'''
-	index the collection.
+	generator to index the collection.
 
 	each level represents the difference between itself and the next level.
 	each level also contains the number of elements in it originally (before 
 	removal of elements also contained in the next level)
+
+	NOTE: duplicate file names will be merged.
 	'''
 	prev = res = None
 	for level in collection:
@@ -122,6 +124,7 @@ def index(collection):
 			'items': cur, 
 		}
 	if res is None:
+		# the collection is empty, thus we need to return nuthing.
 		return
 	yield res
 
@@ -129,7 +132,7 @@ def index(collection):
 #----------------------------------------------------------------rate---
 def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 	'''
-	rate the indexed elements.
+	generator to rate the indexed elements.
 
 	this combines similar levels.
 
@@ -204,6 +207,9 @@ def getfilepath(root, name, cache=None):
 #-------------------------------------------------------builddircache---
 def builddircache(root, name):
 	'''
+	build directory cache.
+
+	NOTE: for simple name patterns this will return a single item.
 	'''
 	res = {}
 	for path, dirs, _ in os.walk(root): 
@@ -219,9 +225,13 @@ def builddircache(root, name):
 #----------------------------------------------------------getdirpath---
 def getdirpaths(root, name, cache=None):
 	'''
+	generator to yield directory cache elements by name.
 	'''
 	if name not in cache:
 		raise TypeError, 'directory "%s" does not exist in tree %s.' % (name, root)
+##	# make this compatible with name patterns...
+##	##!!! this seams to yield odd results -- fails with --search-input...
+##	for d in chain(cache[n] for n in (k for k in cache.keys() if k == name)):
 	for d in cache[name]:
 		yield d
 
@@ -257,7 +267,9 @@ if __name__ == '__main__':
 						action='store_true',
 						default=False,
 						help='if set, this will enable searching for input directories, '
-						'otherwise ROOT/INPUT will be used directly.') 
+						'otherwise ROOT/INPUT will be used directly.\n'
+						'NOTE: this will find all matching INPUT directories, '
+						'including nested ones.') 
 	advanced.add_option('--no-search-output', 
 						dest='search_output',
 						action='store_false',
@@ -303,10 +315,9 @@ if __name__ == '__main__':
 
 	options, args = parser.parse_args()
 
+	# prune some data...
 	output = options.output if options.output else options.root
-
 	XMP_TEMPLATE = file(options.xmp_template, 'r').read() if options.xmp_template else XMP_TEMPLATE
-
 	if not options.use_labels:
 		RATINGS = range(5, 0, -1)
 
@@ -322,7 +333,10 @@ if __name__ == '__main__':
 						##!!! $*#%$^#%, why is there no option to padd the shorter elements of zip?!!!
 						else chain(*(collect(d, options.traverse_dir) 
 										for d 
-										in getdirpaths(options.root, options.input, builddircache(options.root, options.input))))), 
+										in getdirpaths(
+												options.root, 
+												options.input, 
+												builddircache(options.root, options.input))))), 
 				ratings=RATINGS,
 				threshold=options.threshold), 
 			output, 
