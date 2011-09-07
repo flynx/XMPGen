@@ -123,6 +123,7 @@ This will generate the needed data as follows::
 ---
 
 NOTE: the naming is configurable, just see xmpgen --help.
+
 NOTE: the --search-input potion is not on by default because of a 
-      current bug (see TODO.otl), as soon as that gets resolved this 
-      option will be set by default.
+current bug (see TODO.otl), as soon as that gets resolved this 
+option will be set by default.
