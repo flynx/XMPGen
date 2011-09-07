@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908021643'''
+__sub_version__ = '''20110908022636'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -271,7 +271,7 @@ if __name__ == '__main__':
 						dest='input',
 						default=INPUT_DIR,
 						help='name of directory containing previews (default: "%default").\n'
-						'NOTE: this directroy tree can not be used for OUTPUT.', 
+						'NOTE: this directory tree can not be used for OUTPUT.', 
 						metavar='INPUT')
 	parser.add_option('--output',
 						dest='output',
@@ -302,7 +302,7 @@ if __name__ == '__main__':
 	advanced.add_option('--group-threshold', 
 						dest='threshold',
 						default=THRESHOLD,
-						help='precentage of elements unique to a level below which '
+						help='percentage of elements unique to a level below which '
 						'the level will be merged with the next one (default: "%default").',
 						metavar='THRESHOLD') 
 	##!!! we need to be able to update or ignore existing xmp files, curently they will be overwritten...

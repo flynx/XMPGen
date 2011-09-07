@@ -128,7 +128,7 @@ the same effect as the above::
 
 ---------
 
-The data the script uses and its behaviur is fully configurable.
+The data the script uses and its behavior is fully configurable.
 
 Here is the current command-line reference::
 
@@ -140,7 +140,7 @@ Usage: xmpgen.py [options]
     --root=ROOT           root of the directory tree we will be working at
                           (default: ".").
     --input=INPUT         name of directory containing previews (default:
-                          "preview (RAW)"). NOTE: this directroy tree can not be
+                          "preview (RAW)"). NOTE: this directory tree can not be
                           used for OUTPUT.
     --output=OUTPUT       name of directory to store .XMP files. if --no-search
                           is not set this is where we search for relevant files
@@ -155,7 +155,7 @@ Usage: xmpgen.py [options]
       --no-search-output  if set, this will disable searching for RAW files, and
                           XMPs will be stored directly in the OUTPUT directory.
       --group-threshold=THRESHOLD
-                          precentage of elements unique to a level below which
+                          percentage of elements unique to a level below which
                           the level will be merged with the next one (default:
                           "5").
       --traverse-dir-name=TRAVERSE_DIR
@@ -173,6 +173,6 @@ NOTE: this may get out of date, so use ``--help`` to get the actual info.
 
 ---------
 
-NOTE: the ``--search-input`` potion is not on by default because of a 
+NOTE: the ``--search-input`` option is not on by default because of a 
 current bug (see TODO.otl), as soon as that gets resolved this 
 option will be set by default.
