@@ -165,14 +165,10 @@ Here is the current command-line reference::
      --use-labels        if set, use both labels and ratings.
 
 
-NOTE: this may be out of date, so use::
-
-  $ xmpgen --help
-
-to get the actual info.
+NOTE: this may get out of date, so use ``--help`` to get the actual info.
 
 ---------
 
-NOTE: the --search-input potion is not on by default because of a 
+NOTE: the ``--search-input`` potion is not on by default because of a 
 current bug (see TODO.otl), as soon as that gets resolved this 
 option will be set by default.
