@@ -123,7 +123,7 @@ This will generate the needed data as follows::
 
 ---------
 
-The naming is configurable, just see xmpgen --help.
+The data the script uses and its behaviur is fully configurable.
 
 Here is the current command-line reference::
 
