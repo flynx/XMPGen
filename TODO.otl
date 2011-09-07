@@ -1,4 +1,4 @@
-[_] 25% ToDo
+[_] 42% ToDo
 	[_] propper install script
 	[_] add config file to enable the user to change the defaults wothout touching the code.
 	[_] add ability to either update or skip existing .XMPs
@@ -19,8 +19,7 @@
 	|	       pass
 	| 	
 	[X] license
-	[_] add licence statement to the code (BSD)
-	[_] a propper README and basic instruction text
+	[X] a propper README and basic instruction text
 	[X] make this work (test if it does not already) for --raw-extension=.jpg
 	| need to skip INPUT directories...
 	|
