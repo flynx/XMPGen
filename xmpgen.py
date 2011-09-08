@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.02'''
-__sub_version__ = '''20110908235022'''
+__sub_version__ = '''20110909000107'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -178,6 +178,7 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 		i += 1
 
 
+
 #-----------------------------------------------------------------------
 #--------------------------------------------------------action_dummy---
 def action_dummy(path, rating, label, data):
@@ -203,12 +204,6 @@ def action_logger(path, rating, label, data, verbosity=1):
 		print '.',
 	elif verbosity == 2:
 		print '%s (%s, %s)' % (path, rating, label)
-	return True
-
-
-def action_dummy(path, rating, label, data):
-	'''
-	'''
 	return True
 
 
