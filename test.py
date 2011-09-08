@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908021001'''
+__sub_version__ = '''20110908134401'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -12,7 +12,7 @@ from pli.testlog import logstr
 from pli.functional import curry
 
 import xmpgen
-from xmpgen import collect, index, rate, generate, getfilepath, buildfilecache
+from xmpgen import collect, rcollect, index, rate, generate, getfilepath, buildfilecache
 
 
 #-----------------------------------------------------------------------
@@ -52,12 +52,14 @@ def cleanup(path=TEST_DESTINATION):
 #-----------------------------------------------------------------------
 
 logstr('''
-	![ l for l in collect(TEST_DIR) ]
+	!list(collect(TEST_DIR))
+	!list(rcollect(TEST_DIR))
+
+	list(collect(TEST_DIR)) == list(rcollect(TEST_DIR))[::-1]
 
 
 	[ (e['total count'], len(e['items'])) for e in index(collect(TEST_DIR)) ]
-		-> [(487, 303), (184, 77), (107, 6), (101, 101)]
-
+		-> [(101, 101), (107, 6), (184, 77), (487, 303)]
 
 	[ (rating, len(data)) for rating, data in dict(rate(index(collect(TEST_DIR)))).items() ]
 		-> [('blue', 1), (4, 1), (5, 1), ('yellow', 1)]
@@ -92,7 +94,7 @@ logstr('''
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py --root=test --no-search')
+	os.system('python xmpgen.py --root=test --no-search-output --no-search-input')
 		-> 0
 
 	# cleanup...
@@ -102,7 +104,7 @@ logstr('''
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py --root=test')
+	os.system('python xmpgen.py --root=test --no-search-input')
 		-> 0
 
 	# cleanup...
@@ -112,22 +114,22 @@ logstr('''
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py --search-input')
+	os.system('python xmpgen.py')
 		-> 0
 
 	# cleanup...
 	cleanup()
-		-> 'found and removed 184 XMP files in 2 directories.'
+		-> 'found and removed 199 XMP files in 3 directories.'
 
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py --search-input --rate-top-level')
+	os.system('python xmpgen.py --rate-top-level')
 		-> 0
 
 	# cleanup...
 	cleanup()
-		-> 'found and removed 487 XMP files in 2 directories.'
+		-> 'found and removed 517 XMP files in 3 directories.'
 
 ''', only_errors=False)
 

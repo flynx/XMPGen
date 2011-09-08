@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20110908100052'''
+__sub_version__ = '''20110908101319'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -25,6 +25,7 @@ Environment :: Console
 #-----------------------------------------------------------------------
 from setuptools import setup
 import os.path as os_path
+import sys
 
 import xmpgen
 __pkg_version__ = xmpgen.__version__
@@ -52,7 +53,8 @@ setup(
 	include_package_data = True,
 
 	packages = [],
-	py_modules = ['xmpgen'],
+	# NOTE: xmpgen_legacy is for python version < 2.6
+	py_modules = ['xmpgen', 'xmpgen_legacy'],
 
 	entry_points = {
 		'console_scripts': [

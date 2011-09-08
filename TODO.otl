@@ -1,8 +1,8 @@
-[_] 42% ToDo
-	[_] propper install script
+[_] 71% ToDo
+	[X] propper install script
 	[_] add config file to enable the user to change the defaults wothout touching the code.
 	[_] add ability to either update or skip existing .XMPs
-	[_] BUG: make this handle several input dirs correctly (need izip_longest(*iterables[, fillvalue]))
+	[X] BUG: make this handle several input dirs correctly (need izip_longest(*iterables[, fillvalue]))
 	| Reference implementation:
 	|
 	|	def izip_longest(*args, **kwds):

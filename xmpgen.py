@@ -1,16 +1,22 @@
 #!/bin/env python
 #=======================================================================
 
-__version__ = '''0.0.01'''
-__sub_version__ = '''20110908091019'''
+__version__ = '''0.1.00'''
+__sub_version__ = '''20110908134659'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
 #-----------------------------------------------------------------------
 
-import shutil, os, os.path
-from itertools import chain
-from pli.functional import curry
+import shutil, sys, os, os.path
+from itertools import chain, imap, islice
+from pli.functional import curry, rcurry
+
+if sys.version_info < (2, 6):
+	from xmpgen_legacy import izip_longest
+else:
+	from itertools import izip_longest
+
 
 
 #-----------------------------------------------------------------------
@@ -87,23 +93,27 @@ XMP_TEMPLATE = locate(XMP_TEMPLATE_NAME, (HOME_CFG, SYSTEM_CFG), default='''\
 THRESHOLD = 5
 
 RATINGS = [
+	# basic ratings...
+##	1, 2, 3, 4, 5,
+	5, 4, 3, 2, 1,
 	# labels...
 	##!!! add default labels...
-	# basic ratings...
-	5, 4, 3, 2, 1,
 ]
 
 
 
 #-----------------------------------------------------------------------
-#-------------------------------------------------------------collect---
-def collect(root, next_dir=TRAVERSE_DIR, ext=('.jpg', '.JPG')):
+#------------------------------------------------------------rcollect---
+def rcollect(root, next_dir=TRAVERSE_DIR, collect_base=True, ext=('.jpg', '.JPG')):
 	'''
 	generator to collect all the files in the topology.
 	'''
 	for r, dirs, files in os.walk(root):
-		# filter files...
-		yield [ f for f in files if True in [ f.endswith(e) for e in ext ]]
+		if collect_base:
+			# filter files...
+			yield [ f for f in files if True in [ f.endswith(e) for e in ext ]]
+		else:
+			collect_base = True
 		# filter dirs...
 		if next_dir in dirs:
 			dirs[:] = [next_dir]
@@ -111,36 +121,38 @@ def collect(root, next_dir=TRAVERSE_DIR, ext=('.jpg', '.JPG')):
 			del dirs[:] 
 
 
+#-------------------------------------------------------------collect---
+def collect(root, next_dir=TRAVERSE_DIR, collect_base=True, ext=('.jpg', '.JPG')):
+	'''
+	same as collect, but does its work bottom-down.
+	'''
+	##!!! STUB
+	data = list(rcollect(root, next_dir, collect_base, ext))
+	for e in data[::-1]:
+		yield e
+
+
 #---------------------------------------------------------------index---
 def index(collection):
 	'''
 	generator to index the collection.
 
-	each level represents the difference between itself and the next level.
-	each level also contains the number of elements in it originally (before 
-	removal of elements also contained in the next level)
+	each level represents the difference between itself and the previous level.
+	each level also contains the original number of elements.
 
 	NOTE: duplicate file names will be merged.
 	'''
-	prev = res = None
+	prev = None
 	for level in collection:
 		cur = set(level)
 		if prev is not None:
-			prev.difference_update(cur)
-		prev = cur
-		if res is not None:
-			# return the previous res...
-			# NOTE: this is done so as to avoid modifying the data that
-			#		the user already has.
-			yield res
-		res = {
+			cur.difference_update(set(prev))
+		prev = level
+		yield {
 			'total count': len(level),
 			'items': cur, 
 		}
-	if res is None:
-		# the collection is empty, thus we need to return nuthing.
-		return
-	yield res
+
 
 
 #----------------------------------------------------------------rate---
@@ -154,20 +166,17 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 	      number of elements is below the threshold, the level will be 
 		  merged with the next. such levels are called "similar".
 	'''
-	# XXX not too good to buffer the whole thing but we need to go from
-	#     the back...
-	index = list(index)
-	index.reverse()
 	threshold = float(threshold)/100
 
 	i = 0
 	buf = ()
 	for level in index:
 		buf += (level,)
-		if float(len(level['items']))/level['total count'] > threshold:
-			yield ratings[i], buf
-			buf = ()
-			i += 1
+		if float(len(level['items']))/level['total count'] <= threshold:
+			continue
+		yield ratings[i], buf
+		buf = ()
+		i += 1
 
 
 #------------------------------------------------------------generate---
@@ -286,11 +295,11 @@ def run():
 						action='store_true',
 						default=False,
 						help='if set, also rate top level previews.')
-	advanced.add_option('--search-input', 
+	advanced.add_option('--no-search-input', 
 						dest='search_input',
-						action='store_true',
-						default=False,
-						help='if set, this will enable searching for input directories, '
+						action='store_false',
+						default=True,
+						help='if set, this will disable searching for input directories, '
 						'otherwise ROOT/INPUT will be used directly.\n'
 						'NOTE: this will find all matching INPUT directories, '
 						'including nested ones.') 
@@ -358,16 +367,15 @@ def run():
 	# do the actaual dance...
 	return generate(
 		rate(
-			# chose weather we need to skip the last element...
-			(iter if options.rate_top_level else skiplast)(
-				index(
-					# use ROOT/INPUT...
-					collect(os.path.join(options.root, options.input), options.traverse_dir) 
+			index(
+				# chose weather we need to skip the last element...
+					collect(os.path.join(options.root, options.input), options.traverse_dir, options.rate_top_level) 
 						if not options.search_input 
 						# locate correct preview dirs...
-						##!!! chaining is wrong here. we need to zip and then  merge each level...
-						##!!! $*#%$^#%, why is there no option to padd the shorter elements of zip?!!!
-						else chain(*(collect(d, options.traverse_dir) 
+						##!!! this padds the data from the wrong side...
+						else (reduce(list.__add__, l) 
+									for l 
+									in izip_longest(fillvalue=[], *(collect(d, options.traverse_dir, options.rate_top_level) 
 										for d 
 										in getdirpaths(
 												options.root, 

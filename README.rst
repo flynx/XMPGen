@@ -148,7 +148,7 @@ Here is the current command-line reference::
 
     Advanced options:
       --rate-top-level    if set, also rate top level previews.
-      --search-input      if set, this will enable searching for input
+      --no-search-input   if set, this will disable searching for input
                           directories, otherwise ROOT/INPUT will be used
                           directly. NOTE: this will find all matching INPUT
                           directories, including nested ones.
