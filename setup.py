@@ -1,11 +1,60 @@
+#!/usr/bin/env python
 #=======================================================================
 
-__version__ = '''0.0.01'''
-__sub_version__ = '''20110905135439'''
-__copyright__ = '''(c) Alex A. Naanou 2011'''
+__version__ = '''0.1.12'''
+__sub_version__ = '''20110908090740'''
+__copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
 #-----------------------------------------------------------------------
+__long_doc__ = file('README.rst').read()
+__doc__ = __long_doc__.split('\n\n', 1)[0]
+
+print __doc__
+
+#-----------------------------------------------------------------------
+__classifiers__ = '''\
+Development Status :: 3 - Alpha
+Topic :: Utilities
+License :: OSI Approved :: BSD License
+Natural Language :: English
+Programming Language :: Python
+Environment :: Console
+'''
+
+#-----------------------------------------------------------------------
+from setuptools import setup
+import os.path as os_path
+
+import xmpgen
+__pkg_version__ = xmpgen.__version__
+
+license = 'BSD Licence.'
+
+
+#-----------------------------------------------------------------------
+setup(
+	name = 'xmpgen',
+	version = __pkg_version__,
+	description = __doc__,
+	long_description = __long_doc__,
+	author = 'Alex A. Naanou',
+	author_email = 'alex.nanou@gmail.com',
+	url = 'https://github.com/flynx/XMPGen',
+	license = license,
+	platforms = ['any'],
+	classifiers = filter(None, __classifiers__.split("\n")),
+
+	packages = [],
+	py_modules = ['xmpgen'],
+
+	entry_points = {
+		'console_scripts': [
+			'xmpgen = xmpgen:run'
+		],
+	})
+
+
 
 #=======================================================================
 #                                            vim:set ts=4 sw=4 nowrap :

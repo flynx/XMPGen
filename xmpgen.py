@@ -1,7 +1,8 @@
+#!/bin/env python
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908022636'''
+__sub_version__ = '''20110908091019'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -255,7 +256,7 @@ def getdirpaths(root, name, cache=None):
 
 
 #-----------------------------------------------------------------------
-if __name__ == '__main__':
+def run():
 	from optparse import OptionParser, OptionGroup
 
 	##!!! move all the defaults from here to the constants section...
@@ -349,38 +350,42 @@ if __name__ == '__main__':
 
 	# prune some data...
 	output = options.output if options.output else options.root
+	global XMP_TEMPLATE
 	XMP_TEMPLATE = file(options.xmp_template, 'r').read() if options.xmp_template else XMP_TEMPLATE
 	if not options.use_labels:
 		RATINGS = range(5, 0, -1)
 
 	# do the actaual dance...
-	generate(
-			rate(
-				# chose weather we need to skip the last element...
-				(iter if options.rate_top_level else skiplast)(
-					index(
-						# use ROOT/INPUT...
-						collect(os.path.join(options.root, options.input), options.traverse_dir) 
-							if not options.search_input 
-							# locate correct preview dirs...
-							##!!! chaining is wrong here. we need to zip and then  merge each level...
-							##!!! $*#%$^#%, why is there no option to padd the shorter elements of zip?!!!
-							else chain(*(collect(d, options.traverse_dir) 
-											for d 
-											in getdirpaths(
-													options.root, 
-													options.input, 
-													builddircache(options.root, options.input)))))), 
-				ratings=RATINGS,
-				threshold=options.threshold), 
-			output, 
-			# find a location for each output file...
-			getpath=(curry(getfilepath, cache=buildfilecache(output, options.raw_ext, (options.input,))) 
-						if options.search_output 
-						# just write to ROOT...
-						else os.path.join),
-			template=XMP_TEMPLATE)
+	return generate(
+		rate(
+			# chose weather we need to skip the last element...
+			(iter if options.rate_top_level else skiplast)(
+				index(
+					# use ROOT/INPUT...
+					collect(os.path.join(options.root, options.input), options.traverse_dir) 
+						if not options.search_input 
+						# locate correct preview dirs...
+						##!!! chaining is wrong here. we need to zip and then  merge each level...
+						##!!! $*#%$^#%, why is there no option to padd the shorter elements of zip?!!!
+						else chain(*(collect(d, options.traverse_dir) 
+										for d 
+										in getdirpaths(
+												options.root, 
+												options.input, 
+												builddircache(options.root, options.input)))))), 
+			ratings=RATINGS,
+			threshold=options.threshold), 
+		output, 
+		# find a location for each output file...
+		getpath=(curry(getfilepath, cache=buildfilecache(output, options.raw_ext, (options.input,))) 
+					if options.search_output 
+					# just write to ROOT...
+					else os.path.join),
+		template=XMP_TEMPLATE)
 
+
+if __name__ == '__main__':
+	run()
 
 
 #=======================================================================
