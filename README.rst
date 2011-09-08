@@ -145,6 +145,9 @@ Here is the current command-line reference::
     --output=OUTPUT       name of directory to store .XMP files. if --no-search
                           is not set this is where we search for relevant files
                           (default: ROOT).
+    -v, --verbose         increase output verbosity.
+    -q, --quiet           decrease output verbosity.
+    -m, --mute            mute output.
 
     Advanced options:
       --rate-top-level    if set, also rate top level previews.
@@ -166,6 +169,7 @@ Here is the current command-line reference::
       --xmp-template=XMP_TEMPLATE
                           use XMP_TEMPLATE instead of the internal template.
       --use-labels        if set, use both labels and ratings.
+      --dry-run           run but do not create ane files.
 
 
 

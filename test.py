@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908134401'''
+__sub_version__ = '''20110908233627'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -94,7 +94,7 @@ logstr('''
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py --root=test --no-search-output --no-search-input')
+	os.system('python xmpgen.py --root=test --no-search-output --no-search-input -m')
 		-> 0
 
 	# cleanup...
@@ -104,7 +104,7 @@ logstr('''
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py --root=test --no-search-input')
+	os.system('python xmpgen.py --root=test --no-search-input -m')
 		-> 0
 
 	# cleanup...
@@ -114,7 +114,7 @@ logstr('''
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py')
+	os.system('python xmpgen.py -m')
 		-> 0
 
 	# cleanup...
@@ -124,7 +124,7 @@ logstr('''
 	---
 
 	# running the command-line version...
-	os.system('python xmpgen.py --rate-top-level')
+	os.system('python xmpgen.py --rate-top-level -m')
 		-> 0
 
 	# cleanup...

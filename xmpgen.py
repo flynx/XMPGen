@@ -1,8 +1,8 @@
 #!/bin/env python
 #=======================================================================
 
-__version__ = '''0.1.00'''
-__sub_version__ = '''20110908134659'''
+__version__ = '''0.1.02'''
+__sub_version__ = '''20110908235022'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -94,7 +94,6 @@ THRESHOLD = 5
 
 RATINGS = [
 	# basic ratings...
-##	1, 2, 3, 4, 5,
 	5, 4, 3, 2, 1,
 	# labels...
 	##!!! add default labels...
@@ -179,8 +178,49 @@ def rate(index, ratings=RATINGS, threshold=THRESHOLD):
 		i += 1
 
 
+#-----------------------------------------------------------------------
+#--------------------------------------------------------action_dummy---
+def action_dummy(path, rating, label, data):
+	'''
+	'''
+	return True
+
+
+#----------------------------------------------------------filewriter---
+def action_filewriter(path, rating, label, data):
+	'''
+	'''
+	##!!! check is file already exists...
+	file(path, 'w').write(data)
+	return True
+
+
+#-------------------------------------------------------action_logger---
+def action_logger(path, rating, label, data, verbosity=1):
+	'''
+	'''
+	if verbosity == 1:
+		print '.',
+	elif verbosity == 2:
+		print '%s (%s, %s)' % (path, rating, label)
+	return True
+
+
+def action_dummy(path, rating, label, data):
+	'''
+	'''
+	return True
+
+
+#--------------------------------------------------------action_break---
+def action_break(path, rating, label, data):
+	'''
+	'''
+	return False
+
+
 #------------------------------------------------------------generate---
-def generate(ratings, root, getpath=os.path.join, template=XMP_TEMPLATE):
+def generate(ratings, root, getpath=os.path.join, actions=(action_filewriter,), template=XMP_TEMPLATE):
 	'''
 	generate XMP files.
 	'''
@@ -193,8 +233,11 @@ def generate(ratings, root, getpath=os.path.join, template=XMP_TEMPLATE):
 			rating = rating
 		xmp_data = XMP_TEMPLATE % {'rating': rating, 'label': label}
 		for name in reduce(list.__add__, [ list(s['items']) for s in data ]):
-			##!!! check is file already exists...
-			file(getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP', 'w').write(xmp_data)
+			for action in actions:
+				if action is action_dummy:
+					continue
+				if not action(getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP', rating, label, xmp_data):
+					break
 
 
 
@@ -268,10 +311,10 @@ def getdirpaths(root, name, cache=None):
 def run():
 	from optparse import OptionParser, OptionGroup
 
-	##!!! move all the defaults from here to the constants section...
 	parser = OptionParser(
 						usage='Usage: %prog [options]',
-						version='%prog ' + __version__)
+						version='%prog ' + __version__,
+						epilog=None)
 	parser.add_option('--root',
 						dest='root',
 						default=ROOT_DIR,
@@ -288,6 +331,31 @@ def run():
 						help='name of directory to store .XMP files. if --no-search '
 						'is not set this is where we search for relevant files (default: ROOT).', 
 						metavar='OUTPUT')
+	# verbosity level...
+	parser.add_option('-v', '--verbose',
+						dest='verbosity',
+						action='store_const',
+						const=2,
+						default=1,
+						help='increase output verbosity.')
+	parser.add_option('-q', '--quiet',
+						dest='verbosity',
+						action='store_const',
+						const=0,
+						default=1,
+						help='decrease output verbosity.')
+	parser.add_option('-m', '--mute',
+						dest='verbosity',
+						action='store_const',
+						const=-1,
+						default=1,
+						help='mute output.')
+
+##	parser.add_option('--print-json',
+##						dest='print_json',
+##						action='store_true',
+##						default=False,
+##						help='generate JSON format data.')
 
 	advanced = OptionGroup(parser, 'Advanced options')
 	advanced.add_option('--rate-top-level', 
@@ -353,6 +421,13 @@ def run():
 ##						'file to be used as default.\n'
 ##						'NOTE: the only option that will not be written is --save-configuration, obviously.') 
 
+	advanced.add_option('--dry-run',
+						dest='dry_run',
+						action='store_true',
+						default=False,
+						help='run but do not create any files.')
+
+
 	parser.add_option_group(advanced)
 
 	options, args = parser.parse_args()
@@ -364,8 +439,13 @@ def run():
 	if not options.use_labels:
 		RATINGS = range(5, 0, -1)
 
+	files_written = [0]
+	def action_count(*p, **n):
+		files_written[0] += 1
+		return True
+
 	# do the actaual dance...
-	return generate(
+	res = generate(
 		rate(
 			index(
 				# chose weather we need to skip the last element...
@@ -389,7 +469,20 @@ def run():
 					if options.search_output 
 					# just write to ROOT...
 					else os.path.join),
+		actions=(
+			curry(action_logger, verbosity=options.verbosity),
+			action_break if options.dry_run else action_dummy,
+			action_filewriter,
+			action_count,
+		),
 		template=XMP_TEMPLATE)
+
+	if options.verbosity >= 0:
+		print '\nWritten %s files.' % files_written[0]
+
+	return res
+
+	
 
 
 if __name__ == '__main__':
