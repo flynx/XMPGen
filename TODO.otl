@@ -26,3 +26,5 @@
 	| fixed by excluding INPUT from search for target files.
 	|
 	| NOTE: now OUTPUT can not be within the INPUT tree...
+	[_] add sensible output, to be able to see what the script is doing
+	[_] add output control (-v/-q flags)
