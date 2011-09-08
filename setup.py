@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20110908090740'''
+__sub_version__ = '''20110908100052'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -44,6 +44,12 @@ setup(
 	license = license,
 	platforms = ['any'],
 	classifiers = filter(None, __classifiers__.split("\n")),
+
+	install_requires = ['pli'],
+	##!!! this needs to be done...
+##	dependency_links = [],
+
+	include_package_data = True,
 
 	packages = [],
 	py_modules = ['xmpgen'],
