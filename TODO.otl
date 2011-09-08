@@ -1,7 +1,12 @@
-[_] 71% ToDo
-	[X] propper install script
+[_] 41% ToDo
 	[_] add config file to enable the user to change the defaults wothout touching the code.
 	[_] add ability to either update or skip existing .XMPs
+	[_] add sensible output, to be able to see what the script is doing
+	[_] add output control (-v/-q flags)
+	[_] make input/output and root arguments take multiple values.
+	[_] add ability to save data
+	[_] add posibility of a dry run
+	[X] propper install script
 	[X] BUG: make this handle several input dirs correctly (need izip_longest(*iterables[, fillvalue]))
 	| Reference implementation:
 	|
@@ -26,5 +31,3 @@
 	| fixed by excluding INPUT from search for target files.
 	|
 	| NOTE: now OUTPUT can not be within the INPUT tree...
-	[_] add sensible output, to be able to see what the script is doing
-	[_] add output control (-v/-q flags)
