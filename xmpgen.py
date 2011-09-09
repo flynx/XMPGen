@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110909172345'''
+__sub_version__ = '''20110909180931'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -427,14 +427,16 @@ def load_options(config, default_cfg=DEFAULT_CFG):
 						action='store_true',
 						default=config['USE_LABELS'],
 						help='if set, use both labels and ratings.') 
+	parser.add_option_group(advanced)
 
-	advanced.add_option('--dry-run',
+	runtime = OptionGroup(parser, 'Runtime options')
+	runtime.add_option('--dry-run',
 						dest='dry_run',
 						action='store_true',
 						default=False,
 						help='run but do not create any files.')
+	parser.add_option_group(runtime)
 
-	parser.add_option_group(advanced)
 
 	configuration = OptionGroup(parser, 'Configuration options')
 	configuration.add_option('--config-print', 
@@ -446,8 +448,7 @@ def load_options(config, default_cfg=DEFAULT_CFG):
 						dest='config_defaults_print',
 						action='store_true',
 						default=False,
-						help='print current configuration and exit.')
-
+						help='print default configuration and exit.')
 	parser.add_option_group(configuration)
 
 	options, args = parser.parse_args()
