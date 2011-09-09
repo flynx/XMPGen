@@ -1,8 +1,8 @@
 #!/bin/env python
 #=======================================================================
 
-__version__ = '''0.1.02'''
-__sub_version__ = '''20110909000107'''
+__version__ = '''0.1.04'''
+__sub_version__ = '''20110909172345'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -10,6 +10,8 @@ __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 import shutil, sys, os, os.path
 from itertools import chain, imap, islice
+import simplejson
+
 from pli.functional import curry, rcurry
 
 if sys.version_info < (2, 6):
@@ -62,23 +64,30 @@ def skiplast(iterable):
 
 #-----------------------------------------------------------------------
 # config data and defaults...
-
 HOME_CFG = '~'
-
 SYSTEM_CFG = '.'
 
-ROOT_DIR = '.'
-INPUT_DIR = 'preview (RAW)'
-### NOTE: we do not need a default aoutput dir as it will default to
-### 		ROOT_DIR...
-##OUTPUT_DIR = ROOT_DIR
-TRAVERSE_DIR = 'fav'
-
-RAW_EXTENSION = '.NEF'
-
 XMP_TEMPLATE_NAME = 'TEMPLATE.XMP'
+CONFIG_NAME = '.xmpgen'
 
-XMP_TEMPLATE = locate(XMP_TEMPLATE_NAME, (HOME_CFG, SYSTEM_CFG), default='''\
+DEFAULT_CFG = {
+	'ROOT_DIR': '.',
+	'INPUT_DIR': 'preview (RAW)',
+	# NOTE: we do not need a default aoutput dir as it will default to
+	# 		ROOT_DIR...
+	#'OUTPUT_DIR': None,
+	'TRAVERSE_DIR': 'fav',
+
+	'RAW_EXTENSION': '.NEF',
+	'THRESHOLD': 5,
+	'RATINGS': [
+		# basic ratings...
+		5, 4, 3, 2, 1,
+		# labels...
+		# XXX add default labels...
+	],
+
+	'XMP_TEMPLATE': '''\
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
 	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 		<rdf:Description rdf:about="" xmlns:xap="http://ns.adobe.com/xap/1.0/">
@@ -87,23 +96,19 @@ XMP_TEMPLATE = locate(XMP_TEMPLATE_NAME, (HOME_CFG, SYSTEM_CFG), default='''\
 			<xap:Label>%(label)s</xap:Label>
 		</rdf:Description>
 	</rdf:RDF>
-</x:xmpmeta>
-''')
+</x:xmpmeta>''',
 
-THRESHOLD = 5
-
-RATINGS = [
-	# basic ratings...
-	5, 4, 3, 2, 1,
-	# labels...
-	##!!! add default labels...
-]
-
+	'RATE_TOP_LEVEL': False,
+	'SEARCH_INPUT': True,
+	'SEARCH_OUTPUT': True,
+	'VERBOSITY': 1,
+	'USE_LABELS': False,
+}
 
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------------rcollect---
-def rcollect(root, next_dir=TRAVERSE_DIR, collect_base=True, ext=('.jpg', '.JPG')):
+def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], collect_base=True, ext=('.jpg', '.JPG')):
 	'''
 	generator to collect all the files in the topology.
 	'''
@@ -121,7 +126,7 @@ def rcollect(root, next_dir=TRAVERSE_DIR, collect_base=True, ext=('.jpg', '.JPG'
 
 
 #-------------------------------------------------------------collect---
-def collect(root, next_dir=TRAVERSE_DIR, collect_base=True, ext=('.jpg', '.JPG')):
+def collect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], collect_base=True, ext=('.jpg', '.JPG')):
 	'''
 	same as collect, but does its work bottom-down.
 	'''
@@ -155,7 +160,7 @@ def index(collection):
 
 
 #----------------------------------------------------------------rate---
-def rate(index, ratings=RATINGS, threshold=THRESHOLD):
+def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD']):
 	'''
 	generator to rate the indexed elements.
 
@@ -215,7 +220,7 @@ def action_break(path, rating, label, data):
 
 
 #------------------------------------------------------------generate---
-def generate(ratings, root, getpath=os.path.join, actions=(action_filewriter,), template=XMP_TEMPLATE):
+def generate(ratings, root, getpath=os.path.join, actions=(action_filewriter,), template=DEFAULT_CFG['XMP_TEMPLATE']):
 	'''
 	generate XMP files.
 	'''
@@ -226,7 +231,7 @@ def generate(ratings, root, getpath=os.path.join, actions=(action_filewriter,), 
 		else:
 			label = ''
 			rating = rating
-		xmp_data = XMP_TEMPLATE % {'rating': rating, 'label': label}
+		xmp_data = template % {'rating': rating, 'label': label}
 		for name in reduce(list.__add__, [ list(s['items']) for s in data ]):
 			for action in actions:
 				if action is action_dummy:
@@ -238,7 +243,7 @@ def generate(ratings, root, getpath=os.path.join, actions=(action_filewriter,), 
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------buildfilecache---
-def buildfilecache(root, ext=RAW_EXTENSION, skip_dirs=(INPUT_DIR,)):
+def buildfilecache(root, ext=DEFAULT_CFG['RAW_EXTENSION'], skip_dirs=(DEFAULT_CFG['INPUT_DIR'],)):
 	'''
 	build a cache of all files in a tree with an extension ext.
 
@@ -302,8 +307,29 @@ def getdirpaths(root, name, cache=None):
 		yield d
 
 
+
 #-----------------------------------------------------------------------
-def run():
+#---------------------------------------------------------load_config---
+def load_config(config, default_cfg=DEFAULT_CFG):
+	'''
+	'''
+	# NOTE: this does not like empty configurations files...
+	user_config = simplejson.loads(locate(CONFIG_NAME, (HOME_CFG, SYSTEM_CFG), default='{}'))
+
+	config = default_cfg.copy()
+	config.update(user_config)
+
+	config['XMP_TEMPLATE'] = locate(
+			XMP_TEMPLATE_NAME, 
+			(HOME_CFG, SYSTEM_CFG), 
+			default=config['XMP_TEMPLATE'])
+	return config
+
+
+#--------------------------------------------------------load_options---
+def load_options(config, default_cfg=DEFAULT_CFG):
+	'''
+	'''
 	from optparse import OptionParser, OptionGroup
 
 	parser = OptionParser(
@@ -312,12 +338,12 @@ def run():
 						epilog=None)
 	parser.add_option('--root',
 						dest='root',
-						default=ROOT_DIR,
+						default=config['ROOT_DIR'],
 						help='root of the directory tree we will be working at (default: "%default").', 
 						metavar='ROOT')
 	parser.add_option('--input',
 						dest='input',
-						default=INPUT_DIR,
+						default=config['INPUT_DIR'],
 						help='name of directory containing previews (default: "%default").\n'
 						'NOTE: this directory tree can not be used for OUTPUT.', 
 						metavar='INPUT')
@@ -331,37 +357,31 @@ def run():
 						dest='verbosity',
 						action='store_const',
 						const=2,
-						default=1,
+						default=config['VERBOSITY'],
 						help='increase output verbosity.')
 	parser.add_option('-q', '--quiet',
 						dest='verbosity',
 						action='store_const',
 						const=0,
-						default=1,
+						default=config['VERBOSITY'],
 						help='decrease output verbosity.')
 	parser.add_option('-m', '--mute',
 						dest='verbosity',
 						action='store_const',
 						const=-1,
-						default=1,
+						default=config['VERBOSITY'],
 						help='mute output.')
-
-##	parser.add_option('--print-json',
-##						dest='print_json',
-##						action='store_true',
-##						default=False,
-##						help='generate JSON format data.')
 
 	advanced = OptionGroup(parser, 'Advanced options')
 	advanced.add_option('--rate-top-level', 
 						dest='rate_top_level',
 						action='store_true',
-						default=False,
+						default=config['RATE_TOP_LEVEL'],
 						help='if set, also rate top level previews.')
 	advanced.add_option('--no-search-input', 
 						dest='search_input',
 						action='store_false',
-						default=True,
+						default=config['SEARCH_INPUT'],
 						help='if set, this will disable searching for input directories, '
 						'otherwise ROOT/INPUT will be used directly.\n'
 						'NOTE: this will find all matching INPUT directories, '
@@ -369,12 +389,12 @@ def run():
 	advanced.add_option('--no-search-output', 
 						dest='search_output',
 						action='store_false',
-						default=True,
+						default=config['SEARCH_OUTPUT'],
 						help='if set, this will disable searching for RAW files, '
 						'and XMPs will be stored directly in the OUTPUT directory.') 
 	advanced.add_option('--group-threshold', 
 						dest='threshold',
-						default=THRESHOLD,
+						default=config['THRESHOLD'],
 						help='percentage of elements unique to a level below which '
 						'the level will be merged with the next one (default: "%default").',
 						metavar='THRESHOLD') 
@@ -386,12 +406,12 @@ def run():
 ##						help='Not Implemented') 
 	advanced.add_option('--traverse-dir-name',
 						dest='traverse_dir',
-						default=TRAVERSE_DIR,
+						default=config['TRAVERSE_DIR'],
 						help='directory used to traverse to next level (default: "%default").', 
 						metavar='TRAVERSE_DIR')
 	advanced.add_option('--raw-extension',
 						dest='raw_ext',
-						default=RAW_EXTENSION,
+						default=config['RAW_EXTENSION'],
 						help='use as the extension for RAW files (default: "%default").', 
 						metavar='RAW_EXTENSION')
 ##	advanced.add_option('--labels',
@@ -405,16 +425,8 @@ def run():
 	advanced.add_option('--use-labels', 
 						dest='use_labels',
 						action='store_true',
-						default=False,
+						default=config['USE_LABELS'],
 						help='if set, use both labels and ratings.') 
-
-##	advanced.add_option('--save-configuration', 
-##						dest='save_config',
-##						action='store_true',
-##						default=False,
-##						help='if set, write current command-line options to ~/.xmpgen '
-##						'file to be used as default.\n'
-##						'NOTE: the only option that will not be written is --save-configuration, obviously.') 
 
 	advanced.add_option('--dry-run',
 						dest='dry_run',
@@ -422,18 +434,91 @@ def run():
 						default=False,
 						help='run but do not create any files.')
 
-
 	parser.add_option_group(advanced)
+
+	configuration = OptionGroup(parser, 'Configuration options')
+	configuration.add_option('--config-print', 
+						dest='config_print',
+						action='store_true',
+						default=False,
+						help='print current configuration and exit.')
+	configuration.add_option('--config-defaults-print', 
+						dest='config_defaults_print',
+						action='store_true',
+						default=False,
+						help='print current configuration and exit.')
+
+	parser.add_option_group(configuration)
 
 	options, args = parser.parse_args()
 
-	# prune some data...
-	output = options.output if options.output else options.root
-	global XMP_TEMPLATE
-	XMP_TEMPLATE = file(options.xmp_template, 'r').read() if options.xmp_template else XMP_TEMPLATE
-	if not options.use_labels:
-		RATINGS = range(5, 0, -1)
+	# be polite and save the originla config data...
+	config = config.copy()
 
+	# prune and write the data...
+	config.update({
+			'ROOT_DIR': options.root,
+			'INPUT_DIR': options.input,
+			'OUTPUT_DIR': options.output if options.output else options.root,
+			'TRAVERSE_DIR': options.traverse_dir,
+			'RAW_EXTENSION': options.raw_ext,
+			'THRESHOLD': options.threshold,
+			'XMP_TEMPLATE': file(options.xmp_template, 'r').read() 
+								if options.xmp_template 
+								else config['XMP_TEMPLATE'],
+			'RATE_TOP_LEVEL': options.rate_top_level,
+			'SEARCH_INPUT': options.search_input,
+			'SEARCH_OUTPUT': options.search_output,
+			'VERBOSITY': options.verbosity,
+			'USE_LABELS': options.use_labels,
+			})
+	if not options.use_labels:
+		config['RATINGS'] = range(5, 0, -1)
+	
+	# configuration stuff...
+	# sanity check...
+	if True in (options.config_defaults_print, options.config_print):
+		print_prefix = False
+		if len([ s for  s in  (options.config_defaults_print, options.config_print) if s]) > 1:
+			print_prefix = True
+		if options.config_print:
+			if print_prefix:
+				print 'Current Configuration:'
+			print simplejson.dumps(config, sort_keys=True, indent=4)
+			print
+		if options.config_defaults_print:
+			if print_prefix:
+				print 'Default Configuration:'
+			print simplejson.dumps(default_cfg, sort_keys=True, indent=4)
+			print
+		raise SystemExit
+
+	return config, options
+
+
+
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------run---
+def run():
+	# setup config data...
+	config, runtime_options = load_options(load_config(DEFAULT_CFG))
+
+	# cache some names...
+	output = config['OUTPUT_DIR']
+	root = config['ROOT_DIR']
+	input = config['INPUT_DIR']
+	traverse_dir = config['TRAVERSE_DIR']
+	threshold = config['THRESHOLD']
+	raw_ext = config['RAW_EXTENSION']
+	rate_top_level = config['RATE_TOP_LEVEL']
+	search_input = config['SEARCH_INPUT']
+	search_output = config['SEARCH_OUTPUT']
+	verbosity = config['VERBOSITY']
+
+	# runtime options...
+	dry_run = runtime_options.dry_run
+
+	# prepare to count created files...
 	files_written = [0]
 	def action_count(*p, **n):
 		files_written[0] += 1
@@ -444,44 +529,46 @@ def run():
 		rate(
 			index(
 				# chose weather we need to skip the last element...
-					collect(os.path.join(options.root, options.input), options.traverse_dir, options.rate_top_level) 
-						if not options.search_input 
+					collect(os.path.join(root, input), traverse_dir, rate_top_level) 
+						if not search_input 
 						# locate correct preview dirs...
-						##!!! this padds the data from the wrong side...
 						else (reduce(list.__add__, l) 
 									for l 
-									in izip_longest(fillvalue=[], *(collect(d, options.traverse_dir, options.rate_top_level) 
+									in izip_longest(fillvalue=[], *(collect(d, traverse_dir, rate_top_level) 
 										for d 
 										in getdirpaths(
-												options.root, 
-												options.input, 
-												builddircache(options.root, options.input)))))), 
-			ratings=RATINGS,
-			threshold=options.threshold), 
+												root, 
+												input, 
+												builddircache(root, input)))))), 
+			ratings=config['RATINGS'],
+			threshold=threshold), 
 		output, 
 		# find a location for each output file...
-		getpath=(curry(getfilepath, cache=buildfilecache(output, options.raw_ext, (options.input,))) 
-					if options.search_output 
+		getpath=(curry(getfilepath, cache=buildfilecache(output, raw_ext, (input,))) 
+					if search_output 
 					# just write to ROOT...
 					else os.path.join),
 		actions=(
-			curry(action_logger, verbosity=options.verbosity),
-			action_break if options.dry_run else action_dummy,
+			curry(action_logger, verbosity=verbosity),
+			action_break if dry_run else action_dummy,
 			action_filewriter,
 			action_count,
 		),
-		template=XMP_TEMPLATE)
+		template=config['XMP_TEMPLATE'])
 
-	if options.verbosity >= 0:
-		print '\nWritten %s files.' % files_written[0]
+	if verbosity >= 0:
+		if verbosity == 1:
+			print
+		print 'Written %s files.' % files_written[0]
 
 	return res
 
 	
 
-
+#-----------------------------------------------------------------------
 if __name__ == '__main__':
 	run()
+
 
 
 #=======================================================================

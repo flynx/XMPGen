@@ -1,11 +1,13 @@
-[_] 66% ToDo
-	[_] add config file to enable the user to change the defaults wothout touching the code.
+[_] 78% ToDo
 	[_] add ability to either update or skip existing .XMPs
+	[_] make input/output and root arguments take multiple values.
+	[_] JSON data import/export
+	[X] print configuration in JSON format...
+	[X] unify configurations and options...
+	[X] add config file to enable the user to change the defaults wothout touching the code.
 	[X] add sensible output, to be able to see what the script is doing
 	[X] add output control (-v/-q flags)
-	[_] make input/output and root arguments take multiple values.
 	[X] add posibility of a dry run
-	[_] JSON data import/export
 	[X] propper install script
 	[X] BUG: make this handle several input dirs correctly (need izip_longest(*iterables[, fillvalue]))
 	| Reference implementation:

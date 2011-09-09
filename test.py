@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110908233627'''
+__sub_version__ = '''20110909172455'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -21,7 +21,7 @@ TEST_DIR = os.path.join('test', 'preview (RAW)')
 TEST_DESTINATION = 'test'
 
 
-xmpgen.RATINGS[0:0] = [
+xmpgen.DEFAULT_CFG['RATINGS'][0:0] = [
 	##!!! the folowing need to be changed to the standard Adobe uses in Br and Lr...
 	# labels...
 	'yellow',
@@ -52,6 +52,8 @@ def cleanup(path=TEST_DESTINATION):
 #-----------------------------------------------------------------------
 
 logstr('''
+	!cleanup()
+
 	!list(collect(TEST_DIR))
 	!list(rcollect(TEST_DIR))
 

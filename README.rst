@@ -169,7 +169,12 @@ Here is the current command-line reference::
       --xmp-template=XMP_TEMPLATE
                           use XMP_TEMPLATE instead of the internal template.
       --use-labels        if set, use both labels and ratings.
-      --dry-run           run but do not create ane files.
+      --dry-run           run but do not create any files.
+
+    Configuration options:
+      --config-print      print current configuration and exit.
+      --config-defaults-print
+                          print current configuration and exit.
 
 
 
