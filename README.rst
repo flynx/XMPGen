@@ -186,6 +186,13 @@ NOTE: to generate a config file just do this::
 
   xmpgen --config-print > ~/.xmpgen
 
+this can also be combined with options, these will be saved to generated config file::
+
+  xmpgen --raw-extension=.CRW --traverse-dir-name=select --input="RAW previews" --config-print > ~/.xmpgen
+
+
+NOTE: order of flags does not matter.
+
 
 NOTE: the ``--search-input`` option is not on by default because of a 
 current bug (see TODO.otl), as soon as that gets resolved this 
