@@ -182,6 +182,12 @@ NOTE: this may get out of date, so use ``--help`` to get the actual info.
 
 ---------
 
+NOTE: to generate a config file just do this::
+
+  xmpgen --config-print > ~/.xmpgen
+
+
 NOTE: the ``--search-input`` option is not on by default because of a 
 current bug (see TODO.otl), as soon as that gets resolved this 
 option will be set by default.
+
