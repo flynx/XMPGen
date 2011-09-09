@@ -100,8 +100,7 @@ proviews are located -- and output -- where to write the .XMPs --
 directories. Both input and output locations can be spread into 
 multiple locations.
 
-NOTE:
-  it is not *yet* possible to make this do it's job over a large 
+.. NOTE:: it is not *yet* possible to make this do it's job over a large 
   archive containing files with duplicate names in different locations.
 
 The above will generate the needed data as follows::
@@ -188,20 +187,23 @@ Here is the current command-line reference::
 
 
 
-NOTE: this may get out of date, so use ``--help`` to get the actual info.
+.. NOTE:: this may get out of date, so use ``--help`` to get the actual info.
 
 ---------
 
-.. NOTE: to generate a config file just do this::
+.. NOTE:: to generate a config file just do this::
+
           xmpgen --config-print > ~/.xmpgen
+
    this can also be combined with options, these will be saved to generated config file::
+
           xmpgen --raw-extension=.CRW --traverse-dir-name=select --input="RAW previews" --config-print > ~/.xmpgen
 
 
-.. NOTE: order of flags does not matter.
+.. NOTE:: order of flags does not matter.
 
 
-.. NOTE: the ``--search-input`` option is not on by default because of a 
+.. NOTE:: the ``--search-input`` option is not on by default because of a 
    current bug (see TODO.otl), as soon as that gets resolved this 
    option will be set by default.
 
