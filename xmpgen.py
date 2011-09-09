@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110910004638'''
+__sub_version__ = '''20110910010002'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -87,7 +87,8 @@ DEFAULT_CFG = {
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------------rcollect---
-def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], collect_base=True, ext=('.jpg', '.JPG')):
+def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
+		collect_base=True, ext=('.jpg', '.JPG')):
 	'''
 	generator to collect all the files in the topology.
 	'''
@@ -105,7 +106,8 @@ def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], collect_base=True, ext=
 
 
 #-------------------------------------------------------------collect---
-def collect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], collect_base=True, ext=('.jpg', '.JPG')):
+def collect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], 
+		collect_base=True, ext=('.jpg', '.JPG')):
 	'''
 	same as collect, but does its work bottom-down.
 	'''
@@ -203,7 +205,8 @@ def action_break(path, rating, label, data):
 
 
 #------------------------------------------------------------generate---
-def generate(ratings, root, getpath=os.path.join, actions=(action_filewriter,), template=DEFAULT_CFG['XMP_TEMPLATE']):
+def generate(ratings, root, getpath=os.path.join, 
+		actions=(action_filewriter,), template=DEFAULT_CFG['XMP_TEMPLATE']):
 	'''
 	generate XMP files.
 	'''
@@ -219,14 +222,20 @@ def generate(ratings, root, getpath=os.path.join, actions=(action_filewriter,), 
 			for action in actions:
 				if action is action_dummy:
 					continue
-				if not action(getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP', rating, label, xmp_data):
+				if not action(getpath(
+						root, 
+						'.'.join(name.split('.')[:-1])) + '.XMP',
+						rating, 
+						label, 
+						xmp_data):
 					break
 
 
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------buildfilecache---
-def buildfilecache(root, ext=DEFAULT_CFG['RAW_EXTENSION'], skip_dirs=(DEFAULT_CFG['INPUT_DIR'],)):
+def buildfilecache(root, ext=DEFAULT_CFG['RAW_EXTENSION'], 
+		skip_dirs=(DEFAULT_CFG['INPUT_DIR'],)):
 	'''
 	build a cache of all files in a tree with an extension ext.
 
@@ -320,20 +329,21 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 	parser = OptionParser(
 						usage='Usage: %prog [options]',
 						version='%prog ' + __version__,
-						epilog=None)
+						epilog='NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). '
+						'xmpgen will get confused when processing a large archive '
+						'containing sets of different but identically named files (will be fixed soon). '
+						'xmpgen will search for both INPUT and OUTPUT so explicit declaration is needed '
+						'onlu in non-standard cases and for fine control.')
 	parser.add_option('--root',
-						dest='root',
 						default=config['ROOT_DIR'],
 						help='root of the directory tree we will be working at (default: "%default").', 
 						metavar='ROOT')
 	parser.add_option('--input',
-						dest='input',
 						default=config['INPUT_DIR'],
 						help='name of directory containing previews (default: "%default").\n'
 						'NOTE: this directory tree can not be used for OUTPUT.', 
 						metavar='INPUT')
 	parser.add_option('--output',
-						dest='output',
 						help='name of directory to store .XMP files. if --no-search '
 						'is not set this is where we search for relevant files (default: ROOT).', 
 						metavar='OUTPUT')
@@ -359,7 +369,6 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 
 	advanced = OptionGroup(parser, 'Advanced options')
 	advanced.add_option('--rate-top-level', 
-						dest='rate_top_level',
 						action='store_true',
 						default=config['RATE_TOP_LEVEL'],
 						help='if set, also rate top level previews.')
@@ -378,7 +387,6 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						help='if set, this will disable searching for RAW files, '
 						'and XMPs will be stored directly in the OUTPUT directory.') 
 	advanced.add_option('--group-threshold', 
-						dest='threshold',
 						default=config['THRESHOLD'],
 						help='percentage of elements unique to a level below which '
 						'the level will be merged with the next one (default: "%default").',
@@ -390,25 +398,20 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 ##						default=True,
 ##						help='Not Implemented') 
 	advanced.add_option('--traverse-dir-name',
-						dest='traverse_dir',
 						default=config['TRAVERSE_DIR'],
 						help='directory used to traverse to next level (default: "%default").', 
 						metavar='TRAVERSE_DIR')
 	advanced.add_option('--raw-extension',
-						dest='raw_ext',
 						default=config['RAW_EXTENSION'],
 						help='use as the extension for RAW files (default: "%default").', 
 						metavar='RAW_EXTENSION')
 ##	advanced.add_option('--labels',
-##						dest='labels',
 ##						help='...', 
 ##						metavar='LABELS')
 	advanced.add_option('--xmp-template',
-						dest='xmp_template',
 						help='use XMP_TEMPLATE instead of the internal template.', 
 						metavar='XMP_TEMPLATE')
 	advanced.add_option('--use-labels', 
-						dest='use_labels',
 						action='store_true',
 						default=config['USE_LABELS'],
 						help='if set, use both labels and ratings.') 
@@ -416,7 +419,6 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 
 	runtime = OptionGroup(parser, 'Runtime options')
 	runtime.add_option('--dry-run',
-						dest='dry_run',
 						action='store_true',
 						default=False,
 						help='run but do not create any files.')
@@ -425,12 +427,10 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 
 	configuration = OptionGroup(parser, 'Configuration options')
 	configuration.add_option('--config-print', 
-						dest='config_print',
 						action='store_true',
 						default=False,
 						help='print current configuration and exit.')
 	configuration.add_option('--config-defaults-print', 
-						dest='config_defaults_print',
 						action='store_true',
 						default=False,
 						help='print default configuration and exit.')
@@ -446,9 +446,9 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'ROOT_DIR': options.root,
 			'INPUT_DIR': options.input,
 			'OUTPUT_DIR': options.output if options.output else options.root,
-			'TRAVERSE_DIR': options.traverse_dir,
-			'RAW_EXTENSION': options.raw_ext,
-			'THRESHOLD': options.threshold,
+			'TRAVERSE_DIR': options.traverse_dir_name,
+			'RAW_EXTENSION': options.raw_extension,
+			'THRESHOLD': options.group_threshold,
 			'XMP_TEMPLATE': file(options.xmp_template, 'r').read() 
 								if options.xmp_template 
 								else config['XMP_TEMPLATE'],

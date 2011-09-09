@@ -139,51 +139,57 @@ The data the script uses and its behavior is fully configurable.
 
 Here is the current command-line reference::
 
-  Usage: xmpgen.py [options]
+        Usage: xmpgen.py [options]
 
-  Options:
-    --version             show program's version number and exit
-    -h, --help            show this help message and exit
-    --root=ROOT           root of the directory tree we will be working at
-                          (default: ".").
-    --input=INPUT         name of directory containing previews (default:
-                          "preview (RAW)"). NOTE: this directory tree can not be
-                          used for OUTPUT.
-    --output=OUTPUT       name of directory to store .XMP files. if --no-search
-                          is not set this is where we search for relevant files
-                          (default: ROOT).
-    -v, --verbose         increase output verbosity.
-    -q, --quiet           decrease output verbosity.
-    -m, --mute            mute output.
+        Options:
+          --version             show program's version number and exit
+          -h, --help            show this help message and exit
+          --root=ROOT           root of the directory tree we will be working at
+                                (default: ".").
+          --input=INPUT         name of directory containing previews (default:
+                                "preview (RAW)"). NOTE: this directory tree can not be
+                                used for OUTPUT.
+          --output=OUTPUT       name of directory to store .XMP files. if --no-search
+                                is not set this is where we search for relevant files
+                                (default: ROOT).
+          -v, --verbose         increase output verbosity.
+          -q, --quiet           decrease output verbosity.
+          -m, --mute            mute output.
 
-    Advanced options:
-      --rate-top-level    if set, also rate top level previews.
-      --no-search-input   if set, this will disable searching for input
-                          directories, otherwise ROOT/INPUT will be used
-                          directly. NOTE: this will find all matching INPUT
-                          directories, including nested ones.
-      --no-search-output  if set, this will disable searching for RAW files, and
-                          XMPs will be stored directly in the OUTPUT directory.
-      --group-threshold=THRESHOLD
-                          percentage of elements unique to a level below which
-                          the level will be merged with the next one (default:
-                          "5").
-      --traverse-dir-name=TRAVERSE_DIR
-                          directory used to traverse to next level (default:
-                          "fav").
-      --raw-extension=RAW_EXTENSION
-                          use as the extension for RAW files (default: ".NEF").
-      --xmp-template=XMP_TEMPLATE
-                          use XMP_TEMPLATE instead of the internal template.
-      --use-labels        if set, use both labels and ratings.
+          Advanced options:
+            --rate-top-level    if set, also rate top level previews.
+            --no-search-input   if set, this will disable searching for input
+                                directories, otherwise ROOT/INPUT will be used
+                                directly. NOTE: this will find all matching INPUT
+                                directories, including nested ones.
+            --no-search-output  if set, this will disable searching for RAW files, and
+                                XMPs will be stored directly in the OUTPUT directory.
+            --group-threshold=THRESHOLD
+                                percentage of elements unique to a level below which
+                                the level will be merged with the next one (default:
+                                "5").
+            --traverse-dir-name=TRAVERSE_DIR
+                                directory used to traverse to next level (default:
+                                "fav").
+            --raw-extension=RAW_EXTENSION
+                                use as the extension for RAW files (default: ".NEF").
+            --xmp-template=XMP_TEMPLATE
+                                use XMP_TEMPLATE instead of the internal template.
+            --use-labels        if set, use both labels and ratings.
 
-    Runtime options:
-      --dry-run           run but do not create any files.
+          Runtime options:
+            --dry-run           run but do not create any files.
 
-    Configuration options:
-      --config-print      print current configuration and exit.
-      --config-defaults-print
-                          print default configuration and exit.
+          Configuration options:
+            --config-print      print current configuration and exit.
+            --config-defaults-print
+                                print default configuration and exit.
+
+        NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). xmpgen
+        will get confused when processing a large archive containing sets of different
+        but identically named files (will be fixed soon). xmpgen will search for both
+        INPUT and OUTPUT so explicit declaration is needed onlu in non-standard cases
+        and for fine control.
 
 
 
