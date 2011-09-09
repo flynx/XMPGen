@@ -2,6 +2,7 @@
 	[_] add ability to either update or skip existing .XMPs
 	[_] make input/output and root arguments take multiple values.
 	[_] JSON data import/export
+	[_] make this handle sub-trees containing different sets of raw/preview files with identical names.
 	[X] print configuration in JSON format...
 	[X] unify configurations and options...
 	[X] add config file to enable the user to change the defaults wothout touching the code.

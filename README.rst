@@ -93,8 +93,16 @@ corresponding RAW files (.NEFs in this case).
 So here is the simplest way to do this::
 
   $ cd DCIM
-  $ xmpgen --search-input
+  $ xmpgen
 
+``xmpgen`` will automatically find both input -- where the rated 
+proviews are located -- and output -- where to write the .XMPs -- 
+directories. Both input and output locations can be spread into 
+multiple locations.
+
+NOTE:
+  it is not *yet* possible to make this do it's job over a large 
+  archive containing files with duplicate names in different locations.
 
 The above will generate the needed data as follows::
 
@@ -169,12 +177,14 @@ Here is the current command-line reference::
       --xmp-template=XMP_TEMPLATE
                           use XMP_TEMPLATE instead of the internal template.
       --use-labels        if set, use both labels and ratings.
+
+    Runtime options:
       --dry-run           run but do not create any files.
 
     Configuration options:
       --config-print      print current configuration and exit.
       --config-defaults-print
-                          print current configuration and exit.
+                          print default configuration and exit.
 
 
 
