@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110909180931'''
+__sub_version__ = '''20110910004638'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -23,13 +23,6 @@ else:
 
 #-----------------------------------------------------------------------
 #
-# actions:
-# 	- collect data		- DONE
-# 	- build index		- DONE
-# 	- normalize index	- DONE
-# 	- map ratings		- DONE
-# 	- generate			- DONE
-#
 #
 #-----------------------------------------------------------------------
 # helpers...
@@ -47,20 +40,6 @@ def locate(name, locations=(), default=None):
 			continue
 	return default
 
-
-#------------------------------------------------------------skiplast---
-def skiplast(iterable):
-	'''
-	skip last element of iterable
-	'''
-	prev = None
-	for e in iterable:
-		if prev is not None:
-			yield e
-		prev = e
-	if prev is not None:
-		yield e
-	
 
 #-----------------------------------------------------------------------
 # config data and defaults...
@@ -188,6 +167,7 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD
 #--------------------------------------------------------action_dummy---
 def action_dummy(path, rating, label, data):
 	'''
+	dummy action, does nothing.
 	'''
 	return True
 
@@ -195,6 +175,7 @@ def action_dummy(path, rating, label, data):
 #----------------------------------------------------------filewriter---
 def action_filewriter(path, rating, label, data):
 	'''
+	action to write a file.
 	'''
 	##!!! check is file already exists...
 	file(path, 'w').write(data)
@@ -204,6 +185,7 @@ def action_filewriter(path, rating, label, data):
 #-------------------------------------------------------action_logger---
 def action_logger(path, rating, label, data, verbosity=1):
 	'''
+	action to log the current processed file.
 	'''
 	if verbosity == 1:
 		print '.',
@@ -215,6 +197,7 @@ def action_logger(path, rating, label, data, verbosity=1):
 #--------------------------------------------------------action_break---
 def action_break(path, rating, label, data):
 	'''
+	action that prevents executions of subsequent actions.
 	'''
 	return False
 
@@ -309,9 +292,10 @@ def getdirpaths(root, name, cache=None):
 
 
 #-----------------------------------------------------------------------
-#---------------------------------------------------------load_config---
-def load_config(config, default_cfg=DEFAULT_CFG):
+#----------------------------------------------------load_config_file---
+def load_config_file(config, default_cfg=DEFAULT_CFG):
 	'''
+	load configuration data from config file
 	'''
 	# NOTE: this does not like empty configurations files...
 	user_config = simplejson.loads(locate(CONFIG_NAME, (HOME_CFG, SYSTEM_CFG), default='{}'))
@@ -326,9 +310,10 @@ def load_config(config, default_cfg=DEFAULT_CFG):
 	return config
 
 
-#--------------------------------------------------------load_options---
-def load_options(config, default_cfg=DEFAULT_CFG):
+#----------------------------------------------------load_commandline---
+def load_commandline(config, default_cfg=DEFAULT_CFG):
 	'''
+	load configuration data from command-line arguments.
 	'''
 	from optparse import OptionParser, OptionGroup
 
@@ -501,8 +486,11 @@ def load_options(config, default_cfg=DEFAULT_CFG):
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------run---
 def run():
+	'''
+	prepare configuration data and run.
+	'''
 	# setup config data...
-	config, runtime_options = load_options(load_config(DEFAULT_CFG))
+	config, runtime_options = load_commandline(load_config_file(DEFAULT_CFG))
 
 	# cache some names...
 	output = config['OUTPUT_DIR']
@@ -524,7 +512,7 @@ def run():
 	def action_count(*p, **n):
 		files_written[0] += 1
 		return True
-
+	
 	# do the actaual dance...
 	res = generate(
 		rate(
@@ -535,7 +523,9 @@ def run():
 						# locate correct preview dirs...
 						else (reduce(list.__add__, l) 
 									for l 
-									in izip_longest(fillvalue=[], *(collect(d, traverse_dir, rate_top_level) 
+									in izip_longest(
+											fillvalue=[], 
+											*(collect(d, traverse_dir, rate_top_level) 
 										for d 
 										in getdirpaths(
 												root, 

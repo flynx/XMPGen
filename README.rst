@@ -101,7 +101,7 @@ directories. Both input and output locations can be spread into
 multiple locations.
 
 .. NOTE:: it is not *yet* possible to make this do it's job over a large 
-  archive containing files with duplicate names in different locations.
+   archive containing files with duplicate names in different locations.
 
 The above will generate the needed data as follows::
 
@@ -129,7 +129,7 @@ The above will generate the needed data as follows::
 For more control one can specify all the data on the command line for 
 the same effect as the above::
 
-  $ xmpgen --root=DCIM --input="preview (RAW)" --output=232ND700 --raw-extension=.NEF --traverse-dir-name=fav --no-search-output
+  $ xmpgen --root=DCIM --input="preview (RAW)" --output=232ND700 --raw-extension=.NEF --traverse-dir-name=fav --no-search-output --no-search-input
 
 
 
