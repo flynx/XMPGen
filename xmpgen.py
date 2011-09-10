@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110910130443'''
+__sub_version__ = '''20110910222719'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -87,6 +87,7 @@ DEFAULT_CFG = {
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------------rcollect---
+##!!! we need to encode path data to enable multiple identical names...
 def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 		collect_base=True, ext=('.jpg', '.JPG')):
 	'''
@@ -139,7 +140,6 @@ def index(collection):
 		}
 
 
-
 #----------------------------------------------------------------rate---
 def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD']):
 	'''
@@ -157,7 +157,7 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD
 	buf = ()
 	for level in index:
 		buf += (level,)
-		if float(len(level['items']))/level['total count'] <= threshold:
+		if level['total count'] <= 0 or float(len(level['items']))/level['total count'] <= threshold:
 			continue
 		yield ratings[i], buf
 		buf = ()
@@ -219,15 +219,11 @@ def generate(ratings, root, getpath=os.path.join,
 			rating = rating
 		xmp_data = template % {'rating': rating, 'label': label}
 		for name in reduce(list.__add__, [ list(s['items']) for s in data ]):
+			path = getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP'
 			for action in actions:
 				if action is action_dummy:
 					continue
-				if not action(getpath(
-						root, 
-						'.'.join(name.split('.')[:-1])) + '.XMP',
-						rating, 
-						label, 
-						xmp_data):
+				if not action(path, rating, label, xmp_data):
 					break
 
 
@@ -251,12 +247,14 @@ def buildfilecache(root, ext=DEFAULT_CFG['RAW_EXTENSION'],
 			if f.endswith(ext):
 				base = '.'.join(f.split('.')[:-1])
 				if base in res:
-					raise TypeError, 'file %s%s exists in two locations!' % (f, ext)
-				res[base] = os.path.join(path, f)
+					raise NotImplementedError, 'same file name in several locations is not yet supported.'
+					res[base] += [os.path.join(path, f)]
+				res[base] = [os.path.join(path, f)]
 	return res
 
 
 #---------------------------------------------------------getfilepath---
+##!!! this needs path data to determine which object to select from multiple matches...
 def getfilepath(root, name, cache=None):
 	'''
 	find a file in a directory tree via cache and return it's path.
@@ -264,7 +262,15 @@ def getfilepath(root, name, cache=None):
 	NOTE: name should be given without an extension.
 	NOTE: this ignores extensions.
 	'''
-	return '.'.join(cache[name].split('.')[:-1])
+	n = cache.get(name, [])
+	if len(n) == 0:
+		raise KeyError, 'file %s not found.' % name
+	elif len(n) == 1:
+		return '.'.join(n[0].split('.')[:-1])
+	elif len(n) > 1:
+		##!!! XXX select a name based on closeness in topology...
+		raise NotImplementedError, 'same file name in several locations is not yet supported.'
+		return n
 
 
 #-------------------------------------------------------builddircache---
@@ -291,7 +297,7 @@ def getdirpaths(root, name, cache=None):
 	generator to yield directory cache elements by name.
 	'''
 	if name not in cache:
-		raise TypeError, 'directory "%s" does not exist in tree %s.' % (name, root)
+		return
 ##	# make this compatible with name patterns...
 ##	##!!! this seams to yield odd results -- fails with --search-input...
 ##	for d in chain(cache[n] for n in (k for k in cache.keys() if k == name)):
@@ -536,10 +542,12 @@ def run():
 			threshold=threshold), 
 		output, 
 		# find a location for each output file...
+		##!!! we do not need to do this if collect returned no results...
 		getpath=(curry(getfilepath, cache=buildfilecache(output, raw_ext, (input,))) 
 					if search_output 
 					# just write to ROOT...
 					else os.path.join),
+		# actions to perform per XMP file...
 		actions=(
 			curry(action_logger, verbosity=verbosity),
 			action_break if dry_run else action_dummy,

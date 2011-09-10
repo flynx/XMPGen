@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110910130345'''
+__sub_version__ = '''20110910223638'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -12,7 +12,7 @@ from pli.testlog import logstr
 from pli.functional import curry
 
 import xmpgen
-from xmpgen import collect, rcollect, index, rate, generate, getfilepath, buildfilecache
+from xmpgen import *
 
 
 #-----------------------------------------------------------------------
@@ -58,7 +58,48 @@ logstr('''
 	!list(rcollect(TEST_DIR))
 
 	list(collect(TEST_DIR)) == list(rcollect(TEST_DIR))[::-1]
+		-> True
 
+
+	---
+
+	# corner cases...
+	list(collect('mooo'))
+		-> []
+	# here the result is [[]] because we indeed have one empty level...
+	list(collect(os.path.join('test', 'empty'))) 
+		-> [[]]
+
+	list(index([]))
+		-> []
+	# again, as before, a single level with no items...
+	list(index([[]]))
+		-> [{'items': set([]), 'total count': 0}]
+
+	list(rate([]))
+		-> []
+	list(rate(index([])))
+		-> []
+	list(rate(index([[]])))
+		-> []
+
+	generate([], 'fooo', actions=())
+		-> None
+
+	buildfilecache('fooo') 
+		-> {}
+##	# this will fail with a KeyError, because 'mooo' does indeed not
+##	# exist in an empty cache...
+##	getfilepath('fooo', 'mooo', buildfilecache('fooo'))
+##		
+
+	builddircache('fooo', 'mooo')
+		-> {}
+	list(getdirpaths('fooo', 'mooo', buildfilecache('fooo', 'mooo')))
+		-> []
+
+
+	---
 
 	[ (e['total count'], len(e['items'])) for e in index(collect(TEST_DIR)) ]
 		-> [(101, 101), (107, 6), (184, 77), (487, 303)]
@@ -127,7 +168,53 @@ logstr('''
 
 	---
 
+	# XXX the reason this failes is because we build a cache and find
+	#     duplicate file names and not because there is something
+	#     wrong.
+	#     this will be fixed as soon as I restructure the run(...)
+	#     function.
 	os.system('python xmpgen.py --input=fooo -m')
+		-> 0
+
+	cleanup()
+		-> 'found and removed 0 XMP files in 0 directories.'
+
+	---
+
+	os.system('python xmpgen.py --input=%s -m' % os.path.join('test', 'empty'))
+		-> 0
+
+	cleanup()
+		-> 'found and removed 0 XMP files in 0 directories.'
+
+	---
+
+	os.system('python xmpgen.py --root=%s -m' % os.path.join('test', 'empty'))
+		-> 0
+
+	cleanup()
+		-> 'found and removed 0 XMP files in 0 directories.'
+
+	---
+
+	# XXX same as above...
+	os.system('python xmpgen.py --input=fooo --no-search-input -m')
+		-> 0
+
+	cleanup()
+		-> 'found and removed 0 XMP files in 0 directories.'
+
+	---
+
+	os.system('python xmpgen.py --input=fooo --no-search-output -m')
+		-> 0
+
+	cleanup()
+		-> 'found and removed 0 XMP files in 0 directories.'
+
+	---
+
+	os.system('python xmpgen.py --input=fooo --no-search-output --no-search-input -m')
 		-> 0
 
 	cleanup()
