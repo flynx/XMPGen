@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110909172455'''
+__sub_version__ = '''20110910130345'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -95,43 +95,43 @@ logstr('''
 
 	---
 
-	# running the command-line version...
 	os.system('python xmpgen.py --root=test --no-search-output --no-search-input -m')
 		-> 0
 
-	# cleanup...
 	cleanup()
 		-> 'found and removed 184 XMP files in 1 directories.'
 
 	---
 
-	# running the command-line version...
 	os.system('python xmpgen.py --root=test --no-search-input -m')
 		-> 0
 
-	# cleanup...
 	cleanup()
 		-> 'found and removed 184 XMP files in 2 directories.'
 
 	---
 
-	# running the command-line version...
 	os.system('python xmpgen.py -m')
 		-> 0
 
-	# cleanup...
 	cleanup()
 		-> 'found and removed 199 XMP files in 3 directories.'
 
 	---
 
-	# running the command-line version...
 	os.system('python xmpgen.py --rate-top-level -m')
 		-> 0
 
-	# cleanup...
 	cleanup()
 		-> 'found and removed 517 XMP files in 3 directories.'
+
+	---
+
+	os.system('python xmpgen.py --input=fooo -m')
+		-> 0
+
+	cleanup()
+		-> 'found and removed 0 XMP files in 0 directories.'
 
 ''', only_errors=False)
 

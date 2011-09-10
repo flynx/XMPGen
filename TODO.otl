@@ -1,4 +1,6 @@
 [_] 78% ToDo
+	[_] BUG: when we do not find an input dir with search enabled we fail in a bad way...
+	[_] BUG: when we do not find an input dir with search disabled we fail in a very odd way...
 	[_] add ability to either update or skip existing .XMPs
 	[_] make input/output and root arguments take multiple values.
 	[_] JSON data import/export

@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110910010002'''
+__sub_version__ = '''20110910130443'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -523,6 +523,7 @@ def run():
 						# locate correct preview dirs...
 						else (reduce(list.__add__, l) 
 									for l 
+									##!!! BUG: when collect finds nothing this fails...
 									in izip_longest(
 											fillvalue=[], 
 											*(collect(d, traverse_dir, rate_top_level) 
