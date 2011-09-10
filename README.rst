@@ -96,7 +96,7 @@ So here is the simplest way to do this::
   $ xmpgen
 
 ``xmpgen`` will automatically find both input -- where the rated 
-proviews are located -- and output -- where to write the .XMPs -- 
+previews are located -- and output -- where to write the .XMPs -- 
 directories. Both input and output locations can be spread into 
 multiple locations.
 
