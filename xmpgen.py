@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110910222719'''
+__sub_version__ = '''20110911040444'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -13,6 +13,7 @@ from itertools import chain, imap, islice
 import simplejson
 
 from pli.functional import curry, rcurry
+from pli.logictypes import ANY
 
 if sys.version_info < (2, 6):
 	from xmpgen_legacy import izip_longest
@@ -26,6 +27,14 @@ else:
 #
 #-----------------------------------------------------------------------
 # helpers...
+#----------------------------------------------------------------join---
+def join(*p, **n):
+	'''
+	'''
+	n.pop('path', None)
+	return os.path.join(*p, **n)
+	
+
 #--------------------------------------------------------------locate---
 def locate(name, locations=(), default=None):
 	'''
@@ -82,21 +91,33 @@ DEFAULT_CFG = {
 	'SEARCH_OUTPUT': True,
 	'VERBOSITY': 1,
 	'USE_LABELS': False,
+	'SKIP': ['preview (RAW)',],
 }
 
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------------rcollect---
-##!!! we need to encode path data to enable multiple identical names...
 def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 		collect_base=True, ext=('.jpg', '.JPG')):
 	'''
 	generator to collect all the files in the topology.
+
+	yield:
+		# lists of file names on each level, starting from the top and
+		# going down.
+		(
+			[...],
+			root
+		)
 	'''
 	for r, dirs, files in os.walk(root):
 		if collect_base:
 			# filter files...
-			yield [ f for f in files if True in [ f.endswith(e) for e in ext ]]
+			res = [ (root, f) for f in files if True in [ f.endswith(e) for e in ext ]]
+			# skip empty levels...
+			if len(res) == 0:
+				continue
+			yield res
 		else:
 			collect_base = True
 		# filter dirs...
@@ -111,6 +132,9 @@ def collect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 		collect_base=True, ext=('.jpg', '.JPG')):
 	'''
 	same as collect, but does its work bottom-down.
+
+	yield:
+		same as rcollect(...) but in reverse order...
 	'''
 	##!!! STUB
 	data = list(rcollect(root, next_dir, collect_base, ext))
@@ -127,10 +151,24 @@ def index(collection):
 	each level also contains the original number of elements.
 
 	NOTE: duplicate file names will be merged.
+
+	yeild:
+		{
+			# same as collect(...) but diffed with the previous
+			# level...
+			'items': [...],
+			# original number of elements...
+			'total count': N,
+			# root path for the current sub tree...
+			'path': S,
+		}
 	'''
 	prev = None
 	for level in collection:
 		cur = set(level)
+		# skip empty levels...
+		if len(level) == 0:
+			continue
 		if prev is not None:
 			cur.difference_update(set(prev))
 		prev = level
@@ -150,6 +188,14 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD
 	NOTE: if the count of non-intersecting elements relative to the total 
 	      number of elements is below the threshold, the level will be 
 		  merged with the next. such levels are called "similar".
+
+	yield:
+		(
+			# rating...
+			N,
+			# list of levels, each same as returned by index(...)...
+			(...)
+		)
 	'''
 	threshold = float(threshold)/100
 
@@ -175,11 +221,12 @@ def action_dummy(path, rating, label, data):
 
 
 #----------------------------------------------------------filewriter---
+##!!! check if file already exists...
 def action_filewriter(path, rating, label, data):
 	'''
 	action to write a file.
 	'''
-	##!!! check is file already exists...
+	##!!! check if file already exists...
 	file(path, 'w').write(data)
 	return True
 
@@ -205,7 +252,7 @@ def action_break(path, rating, label, data):
 
 
 #------------------------------------------------------------generate---
-def generate(ratings, root, getpath=os.path.join, 
+def generate(ratings, root, getpath=join, 
 		actions=(action_filewriter,), template=DEFAULT_CFG['XMP_TEMPLATE']):
 	'''
 	generate XMP files.
@@ -218,8 +265,8 @@ def generate(ratings, root, getpath=os.path.join,
 			label = ''
 			rating = rating
 		xmp_data = template % {'rating': rating, 'label': label}
-		for name in reduce(list.__add__, [ list(s['items']) for s in data ]):
-			path = getpath(root, '.'.join(name.split('.')[:-1])) + '.XMP'
+		for p, name in reduce(list.__add__, [ list(s['items']) for s in data ]):
+			path = getpath(root, '.'.join(name.split('.')[:-1]), path=p) + '.XMP'
 			for action in actions:
 				if action is action_dummy:
 					continue
@@ -241,35 +288,38 @@ def buildfilecache(root, ext=DEFAULT_CFG['RAW_EXTENSION'],
 	'''
 	res = {}
 	for path, dirs, files in os.walk(root): 
+		if path in skip_dirs:
+			continue
 		if len(skip_dirs) > 0:
 			dirs[:] = list(set(dirs).difference(skip_dirs))	
 		for f in files:
 			if f.endswith(ext):
 				base = '.'.join(f.split('.')[:-1])
 				if base in res:
-					raise NotImplementedError, 'same file name in several locations is not yet supported.'
-					res[base] += [os.path.join(path, f)]
-				res[base] = [os.path.join(path, f)]
+					res[base] += [(path, f)]
+				res[base] = [(path, f)]
 	return res
 
 
 #---------------------------------------------------------getfilepath---
-##!!! this needs path data to determine which object to select from multiple matches...
-def getfilepath(root, name, cache=None):
+##!!! handle multiple matches...
+def getfilepath(root, name, path=None, cache=None):
 	'''
 	find a file in a directory tree via cache and return it's path.
 
 	NOTE: name should be given without an extension.
 	NOTE: this ignores extensions.
 	'''
-	n = cache.get(name, [])
+	n = cache.get(name, ())
 	if len(n) == 0:
 		raise KeyError, 'file %s not found.' % name
 	elif len(n) == 1:
-		return '.'.join(n[0].split('.')[:-1])
+		p, n = n[0]
+		return os.path.join(p, '.'.join(n.split('.')[:-1]))
 	elif len(n) > 1:
-		##!!! XXX select a name based on closeness in topology...
+		# select a name based on closeness in topology...
 		raise NotImplementedError, 'same file name in several locations is not yet supported.'
+		##!!!
 		return n
 
 
@@ -421,6 +471,12 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						action='store_true',
 						default=config['USE_LABELS'],
 						help='if set, use both labels and ratings.') 
+	advanced.add_option('-s', '--skip', 
+						action='append',
+						default=config['SKIP'],
+						help='list of directories to skip from searching for RAW '
+						'files (default: %default)',
+						metavar='SKIP') 
 	parser.add_option_group(advanced)
 
 	runtime = OptionGroup(parser, 'Runtime options')
@@ -463,6 +519,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'SEARCH_OUTPUT': options.search_output,
 			'VERBOSITY': options.verbosity,
 			'USE_LABELS': options.use_labels,
+			'SKIP': list(set(options.skip + [options.input])),
 			})
 	if not options.use_labels:
 		config['RATINGS'] = range(5, 0, -1)
@@ -509,6 +566,7 @@ def run():
 	search_input = config['SEARCH_INPUT']
 	search_output = config['SEARCH_OUTPUT']
 	verbosity = config['VERBOSITY']
+	skip = config['SKIP']
 
 	# runtime options...
 	dry_run = runtime_options.dry_run
@@ -529,7 +587,6 @@ def run():
 						# locate correct preview dirs...
 						else (reduce(list.__add__, l) 
 									for l 
-									##!!! BUG: when collect finds nothing this fails...
 									in izip_longest(
 											fillvalue=[], 
 											*(collect(d, traverse_dir, rate_top_level) 
@@ -543,10 +600,10 @@ def run():
 		output, 
 		# find a location for each output file...
 		##!!! we do not need to do this if collect returned no results...
-		getpath=(curry(getfilepath, cache=buildfilecache(output, raw_ext, (input,))) 
+		getpath=(curry(getfilepath, cache=buildfilecache(output, raw_ext, skip_dirs=skip)) 
 					if search_output 
 					# just write to ROOT...
-					else os.path.join),
+					else join),
 		# actions to perform per XMP file...
 		actions=(
 			curry(action_logger, verbosity=verbosity),

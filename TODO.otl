@@ -1,6 +1,8 @@
-[_] 75% ToDo
+[_] 77% ToDo
 	[_] ASAP/BUG: need to normalize the structure if we have more levels than we have ratings and labels...
-	[_] ASAP: make this handle sub-trees containing different sets of raw/preview files with identical names.
+	[_] 50% ASAP: make this handle sub-trees containing different sets of raw/preview files with identical names.
+		[X] add paths to the cache
+		[_] compare simelarly named files via directory closeness to the preview...
 	[_] ASAP: add ability to either update or skip existing .XMPs
 	[_] make input/output and root arguments take multiple values.
 	[_] enable stdin configs cunsumption '--' flag...

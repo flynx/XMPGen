@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110910223638'''
+__sub_version__ = '''20110911031628'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -18,6 +18,7 @@ from xmpgen import *
 #-----------------------------------------------------------------------
 
 TEST_DIR = os.path.join('test', 'preview (RAW)')
+EMPTY_DIR = os.path.join('test', 'empty')
 TEST_DESTINATION = 'test'
 
 
@@ -62,25 +63,19 @@ logstr('''
 
 
 	---
+	!list(index(collect(TEST_DIR)))
 
 	# corner cases...
 	list(collect('mooo'))
 		-> []
-	# here the result is [[]] because we indeed have one empty level...
-	list(collect(os.path.join('test', 'empty'))) 
-		-> [[]]
+	list(collect(EMPTY_DIR)) 
+		-> []
 
 	list(index([]))
 		-> []
-	# again, as before, a single level with no items...
-	list(index([[]]))
-		-> [{'items': set([]), 'total count': 0}]
-
 	list(rate([]))
 		-> []
 	list(rate(index([])))
-		-> []
-	list(rate(index([[]])))
 		-> []
 
 	generate([], 'fooo', actions=())
@@ -98,11 +93,17 @@ logstr('''
 	list(getdirpaths('fooo', 'mooo', buildfilecache('fooo', 'mooo')))
 		-> []
 
+##	[ (e['total count'], len(e['items'])) for e in list(index([ [(1, 2), (4, 5), ], [(1, 2), (4, 5), (5, 6)], [(1, 2), (2, 3), (4, 5), (5, 6)], ]))]
+
 
 	---
 
+	!list(index(collect(TEST_DIR)))
+
 	[ (e['total count'], len(e['items'])) for e in index(collect(TEST_DIR)) ]
 		-> [(101, 101), (107, 6), (184, 77), (487, 303)]
+
+##	raise SystemExit
 
 	[ (rating, len(data)) for rating, data in dict(rate(index(collect(TEST_DIR)))).items() ]
 		-> [('blue', 1), (4, 1), (5, 1), ('yellow', 1)]
