@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110911031628'''
+__sub_version__ = '''20110912164408'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -63,6 +63,29 @@ logstr('''
 
 
 	---
+
+	bestpathmatch('ABT', ('A', 'AB', 'ABT', 'AC', 'ABD'))
+		-> 'ABT'
+
+	bestpathmatch('ABT', ('A', 'AB', 'AC', 'ABD'))
+		-> 'AB'
+
+	bestpathmatch('ABT', ('A', 'AC', 'ABD'))
+		-> 'ABD'
+
+	bestpathmatch('AT', ('AB', 'ACD', 'AT'))
+		-> 'AT'
+
+	bestpathmatch('AT', ('AB', 'ACD'))
+		-> 'AB'
+
+##	##!!! this should fail because we have two paths with same score...
+##	bestpathmatch('AT', ('AB', 'AC'))
+
+
+
+	---
+
 	!list(index(collect(TEST_DIR)))
 
 	# corner cases...
@@ -169,11 +192,6 @@ logstr('''
 
 	---
 
-	# XXX the reason this failes is because we build a cache and find
-	#     duplicate file names and not because there is something
-	#     wrong.
-	#     this will be fixed as soon as I restructure the run(...)
-	#     function.
 	os.system('python xmpgen.py --input=fooo -m')
 		-> 0
 

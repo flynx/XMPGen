@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110911040444'''
+__sub_version__ = '''20110912163733'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -301,8 +301,76 @@ def buildfilecache(root, ext=DEFAULT_CFG['RAW_EXTENSION'],
 	return res
 
 
+#-------------------------------------------------------bestpathmatch---
+def bestpathmatch(source, paths, split=None):
+	'''
+	select closest path to source.
+
+	here we use two criteria to judge closeness:
+		- depth/size of sub-tree.
+		  a tree at a deeper location (smaller) beats the more general
+		  (larger) sub-tree.
+		  e.g. max length of identical path section starting from root 
+		  wins.
+
+					A
+				   / \			path AB is closer to AB(T) than A (obvious)
+				  /   B
+				 /   / \		path ABD is closer to AB(T) than AC
+			    C   D  (T)
+
+		- within a minomal sub-tree the shortest distance to sub-tree 
+		  root wins.
+
+		  		 	A
+				   /|\
+				  / | \
+				 B  C (T)		path AB is closer to T than ACD		
+				    |
+				    D
+
+	NOTE: we can not decide by our selves if two paths produce identical
+		  scores.
+		  e.g. paths AB and AC in the above diagram are at the same 
+		  distance from T.
+	'''
+	if split is not None:
+		source = split(source)
+	final_score = 0
+	res = [] 
+
+	for path in paths:
+		score = -1
+		if split is not None:
+			path = split(path)
+		# go through path components top down...
+		for i, (a, b) in enumerate(zip(path, source)):
+			if a != b:
+				# miss/stop..
+				break
+			if a == b:
+				# we beet the score...
+				if i > score:
+					score = i
+		# index results with max score...
+		if score > final_score:
+			final_score = score
+			res = [path]
+		# multiple possible matches (resolve on next stage)...
+		elif score == final_score:
+			res += [path]
+	if len(res) > 1:
+		# we have two+ paths and we need to decide which is a better
+		# match via length...
+		l = [ len(p) for p in res ]
+		if l.count(min(l)) > 1:
+			raise ValueError, 'we have more than one %s candidate directories with identical priorities relative to source %s.' % (res, source)
+		res = [res[l.index(min(l))]]
+	return res[0]
+
+
 #---------------------------------------------------------getfilepath---
-##!!! handle multiple matches...
+##!!! test for multiple matches...
 def getfilepath(root, name, path=None, cache=None):
 	'''
 	find a file in a directory tree via cache and return it's path.
@@ -310,17 +378,17 @@ def getfilepath(root, name, path=None, cache=None):
 	NOTE: name should be given without an extension.
 	NOTE: this ignores extensions.
 	'''
-	n = cache.get(name, ())
-	if len(n) == 0:
+	t_names = cache.get(name, ())
+	if len(t_names) == 0:
 		raise KeyError, 'file %s not found.' % name
-	elif len(n) == 1:
-		p, n = n[0]
+	elif len(t_names) == 1:
+		p, n = t_names[0]
 		return os.path.join(p, '.'.join(n.split('.')[:-1]))
-	elif len(n) > 1:
-		# select a name based on closeness in topology...
-		raise NotImplementedError, 'same file name in several locations is not yet supported.'
-		##!!!
-		return n
+	elif len(t_names) > 1:
+		# select best path match...
+		p, n = bestpathmatch(name[0], ( e[0] for e in t_names )), name[1]
+
+		return os.path.join(p, '.'.join(n.split('.')[:-1]))
 
 
 #-------------------------------------------------------builddircache---
