@@ -1,12 +1,21 @@
 [_] 76% ToDo
 	[_] ASAP/BUG: need to normalize the structure if we have more levels than we have ratings and labels...
+	[_] ASAP: add ability to either update or skip existing .XMPs
+	[_] FEATURE: use file RO flag to set a label
+	| reading FS flags/permissions in platform agnostic way seems to be a problem in python.
+	|
+	| two solutions:
+	| 	http://code.activestate.com/lists/python-list/69623/
+	| 	http://techarttiki.blogspot.com/2008/08/read-only-windows-files-with-python.html
+	|
+	| neither seems to be "general enough"...
+	|
+	| need more research...
+	[_] make input/output and root arguments take multiple values.
+	[_] enable stdin configs cunsumption '--' flag...
 	[X] 100% ASAP: make this handle sub-trees containing different sets of raw/preview files with identical names.
 		[X] add paths to the cache
 		[X] compare simelarly named files via directory closeness to the preview...
-	[_] ASAP: add ability to either update or skip existing .XMPs
-	[_] FEATURE: use file RO flag to set a label
-	[_] make input/output and root arguments take multiple values.
-	[_] enable stdin configs cunsumption '--' flag...
 	[X] ASAP: write corner condtion test for each of the main actions in test.py...
 	| including:
 	| 	- empty data

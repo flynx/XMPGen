@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110912164408'''
+__sub_version__ = '''20110912164910'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -81,7 +81,6 @@ logstr('''
 
 ##	##!!! this should fail because we have two paths with same score...
 ##	bestpathmatch('AT', ('AB', 'AC'))
-
 
 
 	---
