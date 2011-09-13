@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110912163733'''
+__sub_version__ = '''20110913124534'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -92,7 +92,223 @@ DEFAULT_CFG = {
 	'VERBOSITY': 1,
 	'USE_LABELS': False,
 	'SKIP': ['preview (RAW)',],
+
+	# for available options see: HANDLE_OVERFLOW_OPTIONS
+	'HANDLE_OVERFLOW': 'merge-bottom',
 }
+
+HANDLE_OVERFLOW_OPTIONS = {
+	'skip-top': None,
+	'skip-bottom': None,
+	'merge-bottom': None,
+	'merge-top': None,
+	'increase-threshold': None,
+	'growing-threshold': None,
+	'use-labels': None,
+}
+
+
+#-----------------------------------------------------------------------
+#----------------------------------------------------load_commandline---
+def load_commandline(config, default_cfg=DEFAULT_CFG):
+	'''
+	load configuration data from command-line arguments.
+	'''
+	from optparse import OptionParser, OptionGroup
+
+	parser = OptionParser(
+						usage='Usage: %prog [options]',
+						version='%prog ' + __version__,
+						epilog='NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). '
+						'xmpgen will get confused when processing a large archive '
+						'containing sets of different but identically named files (will be fixed soon). '
+						'xmpgen will search for both INPUT and OUTPUT so explicit declaration is needed '
+						'onlu in non-standard cases and for fine control.')
+	parser.add_option('--root',
+						default=config['ROOT_DIR'],
+						help='root of the directory tree we will be working at (default: "%default").', 
+						metavar='ROOT')
+	parser.add_option('--input',
+						default=config['INPUT_DIR'],
+						help='name of directory containing previews (default: "%default").\n'
+						'NOTE: this directory tree can not be used for OUTPUT.', 
+						metavar='INPUT')
+	parser.add_option('--output',
+						help='name of directory to store .XMP files. if --no-search '
+						'is not set this is where we search for relevant files (default: ROOT).', 
+						metavar='OUTPUT')
+	# verbosity level...
+	parser.add_option('-v', '--verbose',
+						dest='verbosity',
+						action='store_const',
+						const=2,
+						default=config['VERBOSITY'],
+						help='increase output verbosity.')
+	parser.add_option('-q', '--quiet',
+						dest='verbosity',
+						action='store_const',
+						const=0,
+						default=config['VERBOSITY'],
+						help='decrease output verbosity.')
+	parser.add_option('-m', '--mute',
+						dest='verbosity',
+						action='store_const',
+						const=-1,
+						default=config['VERBOSITY'],
+						help='mute output.')
+
+	advanced = OptionGroup(parser, 'Advanced options')
+	advanced.add_option('--rate-top-level', 
+						action='store_true',
+						default=config['RATE_TOP_LEVEL'],
+						help='if set, also rate top level previews.')
+	advanced.add_option('--no-search-input', 
+						dest='search_input',
+						action='store_false',
+						default=config['SEARCH_INPUT'],
+						help='if set, this will disable searching for input directories, '
+						'otherwise ROOT/INPUT will be used directly.\n'
+						'NOTE: this will find all matching INPUT directories, '
+						'including nested ones.') 
+	advanced.add_option('--no-search-output', 
+						dest='search_output',
+						action='store_false',
+						default=config['SEARCH_OUTPUT'],
+						help='if set, this will disable searching for RAW files, '
+						'and XMPs will be stored directly in the OUTPUT directory.') 
+	advanced.add_option('--group-threshold', 
+						default=config['THRESHOLD'],
+						help='percentage of elements unique to a level below which '
+						'the level will be merged with the next one (default: "%default").',
+						metavar='THRESHOLD') 
+	##!!! we need to be able to update or ignore existing xmp files, curently they will be overwritten...
+##	advanced.add_option('--xmp-no-update', 
+##						dest='xmp_update',
+##						action='store_false',
+##						default=True,
+##						help='Not Implemented') 
+	advanced.add_option('--traverse-dir-name',
+						default=config['TRAVERSE_DIR'],
+						help='directory used to traverse to next level (default: "%default").', 
+						metavar='TRAVERSE_DIR')
+	advanced.add_option('--raw-extension',
+						default=config['RAW_EXTENSION'],
+						help='use as the extension for RAW files (default: "%default").', 
+						metavar='RAW_EXTENSION')
+##	advanced.add_option('--labels',
+##						help='...', 
+##						metavar='LABELS')
+	advanced.add_option('--xmp-template',
+						help='use XMP_TEMPLATE instead of the internal template.', 
+						metavar='XMP_TEMPLATE')
+	advanced.add_option('--use-labels', 
+						action='store_true',
+						default=config['USE_LABELS'],
+						help='if set, use both labels and ratings.') 
+	advanced.add_option('-s', '--skip', 
+						action='append',
+						default=config['SKIP'],
+						help='list of directories to skip from searching for RAW '
+						'files (default: %default)',
+						metavar='SKIP') 
+	##!!! list available modes here...
+	advanced.add_option('--handle-overflow', 
+						default=config['HANDLE_OVERFLOW'],
+						help='the way to handle tree depth greater than the number '
+						'of given ratings (default: %default). '
+						'available options are: ' + str(tuple(HANDLE_OVERFLOW_OPTIONS.keys())),
+						metavar='HANDLE_OVERFLOW') 
+	parser.add_option_group(advanced)
+
+	runtime = OptionGroup(parser, 'Runtime options')
+	runtime.add_option('--dry-run',
+						action='store_true',
+						default=False,
+						help='run but do not create any files.')
+	parser.add_option_group(runtime)
+
+
+	configuration = OptionGroup(parser, 'Configuration options')
+	configuration.add_option('--config-print', 
+						action='store_true',
+						default=False,
+						help='print current configuration and exit.')
+	configuration.add_option('--config-defaults-print', 
+						action='store_true',
+						default=False,
+						help='print default configuration and exit.')
+	parser.add_option_group(configuration)
+
+	options, args = parser.parse_args()
+
+	# be polite and save the originla config data...
+	config = config.copy()
+
+	# prune and write the data...
+	config.update({
+			'ROOT_DIR': options.root,
+			'INPUT_DIR': options.input,
+			'OUTPUT_DIR': options.output if options.output else options.root,
+			'TRAVERSE_DIR': options.traverse_dir_name,
+			'RAW_EXTENSION': options.raw_extension,
+			'THRESHOLD': options.group_threshold,
+			'XMP_TEMPLATE': file(options.xmp_template, 'r').read() 
+								if options.xmp_template 
+								else config['XMP_TEMPLATE'],
+			'RATE_TOP_LEVEL': options.rate_top_level,
+			'SEARCH_INPUT': options.search_input,
+			'SEARCH_OUTPUT': options.search_output,
+			'VERBOSITY': options.verbosity,
+			'USE_LABELS': options.use_labels,
+			'SKIP': list(set(options.skip + [options.input])),
+			})
+	if not options.use_labels:
+		config['RATINGS'] = range(5, 0, -1)
+	
+	if options.handle_overflow not in HANDLE_OVERFLOW_OPTIONS:
+		raise ValueError, ('HANDLE_OVERFLOW value %s unsupported '
+								'(use --help flag for list of options).' % options.handle_overflow)
+	config['HANDLE_OVERFLOW'] = options.handle_overflow 
+
+
+	# configuration stuff...
+	# sanity check...
+	if True in (options.config_defaults_print, options.config_print):
+		print_prefix = False
+		if len([ s for  s in  (options.config_defaults_print, options.config_print) if s]) > 1:
+			print_prefix = True
+		if options.config_print:
+			if print_prefix:
+				print 'Current Configuration:'
+			print simplejson.dumps(config, sort_keys=True, indent=4)
+			print
+		if options.config_defaults_print:
+			if print_prefix:
+				print 'Default Configuration:'
+			print simplejson.dumps(default_cfg, sort_keys=True, indent=4)
+			print
+		raise SystemExit
+
+	return config, options
+
+
+#----------------------------------------------------load_config_file---
+def load_config_file(config, default_cfg=DEFAULT_CFG):
+	'''
+	load configuration data from config file
+	'''
+	# NOTE: this does not like empty configurations files...
+	user_config = simplejson.loads(locate(CONFIG_NAME, (HOME_CFG, SYSTEM_CFG), default='{}'))
+
+	config = default_cfg.copy()
+	config.update(user_config)
+
+	config['XMP_TEMPLATE'] = locate(
+			XMP_TEMPLATE_NAME, 
+			(HOME_CFG, SYSTEM_CFG), 
+			default=config['XMP_TEMPLATE'])
+	return config
+
 
 
 #-----------------------------------------------------------------------
@@ -179,11 +395,12 @@ def index(collection):
 
 
 #----------------------------------------------------------------rate---
-def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD']):
+##!!! do the overflow...
+def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD'], overflow_strategy=None):
 	'''
 	generator to rate the indexed elements.
 
-	this combines similar levels.
+	this also combines similar levels.
 
 	NOTE: if the count of non-intersecting elements relative to the total 
 	      number of elements is below the threshold, the level will be 
@@ -319,7 +536,7 @@ def bestpathmatch(source, paths, split=None):
 				 /   / \		path ABD is closer to AB(T) than AC
 			    C   D  (T)
 
-		- within a minomal sub-tree the shortest distance to sub-tree 
+		- within a minimal sub-tree the shortest distance to sub-tree 
 		  root wins.
 
 		  		 	A
@@ -421,196 +638,6 @@ def getdirpaths(root, name, cache=None):
 ##	for d in chain(cache[n] for n in (k for k in cache.keys() if k == name)):
 	for d in cache[name]:
 		yield d
-
-
-
-#-----------------------------------------------------------------------
-#----------------------------------------------------load_config_file---
-def load_config_file(config, default_cfg=DEFAULT_CFG):
-	'''
-	load configuration data from config file
-	'''
-	# NOTE: this does not like empty configurations files...
-	user_config = simplejson.loads(locate(CONFIG_NAME, (HOME_CFG, SYSTEM_CFG), default='{}'))
-
-	config = default_cfg.copy()
-	config.update(user_config)
-
-	config['XMP_TEMPLATE'] = locate(
-			XMP_TEMPLATE_NAME, 
-			(HOME_CFG, SYSTEM_CFG), 
-			default=config['XMP_TEMPLATE'])
-	return config
-
-
-#----------------------------------------------------load_commandline---
-def load_commandline(config, default_cfg=DEFAULT_CFG):
-	'''
-	load configuration data from command-line arguments.
-	'''
-	from optparse import OptionParser, OptionGroup
-
-	parser = OptionParser(
-						usage='Usage: %prog [options]',
-						version='%prog ' + __version__,
-						epilog='NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). '
-						'xmpgen will get confused when processing a large archive '
-						'containing sets of different but identically named files (will be fixed soon). '
-						'xmpgen will search for both INPUT and OUTPUT so explicit declaration is needed '
-						'onlu in non-standard cases and for fine control.')
-	parser.add_option('--root',
-						default=config['ROOT_DIR'],
-						help='root of the directory tree we will be working at (default: "%default").', 
-						metavar='ROOT')
-	parser.add_option('--input',
-						default=config['INPUT_DIR'],
-						help='name of directory containing previews (default: "%default").\n'
-						'NOTE: this directory tree can not be used for OUTPUT.', 
-						metavar='INPUT')
-	parser.add_option('--output',
-						help='name of directory to store .XMP files. if --no-search '
-						'is not set this is where we search for relevant files (default: ROOT).', 
-						metavar='OUTPUT')
-	# verbosity level...
-	parser.add_option('-v', '--verbose',
-						dest='verbosity',
-						action='store_const',
-						const=2,
-						default=config['VERBOSITY'],
-						help='increase output verbosity.')
-	parser.add_option('-q', '--quiet',
-						dest='verbosity',
-						action='store_const',
-						const=0,
-						default=config['VERBOSITY'],
-						help='decrease output verbosity.')
-	parser.add_option('-m', '--mute',
-						dest='verbosity',
-						action='store_const',
-						const=-1,
-						default=config['VERBOSITY'],
-						help='mute output.')
-
-	advanced = OptionGroup(parser, 'Advanced options')
-	advanced.add_option('--rate-top-level', 
-						action='store_true',
-						default=config['RATE_TOP_LEVEL'],
-						help='if set, also rate top level previews.')
-	advanced.add_option('--no-search-input', 
-						dest='search_input',
-						action='store_false',
-						default=config['SEARCH_INPUT'],
-						help='if set, this will disable searching for input directories, '
-						'otherwise ROOT/INPUT will be used directly.\n'
-						'NOTE: this will find all matching INPUT directories, '
-						'including nested ones.') 
-	advanced.add_option('--no-search-output', 
-						dest='search_output',
-						action='store_false',
-						default=config['SEARCH_OUTPUT'],
-						help='if set, this will disable searching for RAW files, '
-						'and XMPs will be stored directly in the OUTPUT directory.') 
-	advanced.add_option('--group-threshold', 
-						default=config['THRESHOLD'],
-						help='percentage of elements unique to a level below which '
-						'the level will be merged with the next one (default: "%default").',
-						metavar='THRESHOLD') 
-	##!!! we need to be able to update or ignore existing xmp files, curently they will be overwritten...
-##	advanced.add_option('--xmp-no-update', 
-##						dest='xmp_update',
-##						action='store_false',
-##						default=True,
-##						help='Not Implemented') 
-	advanced.add_option('--traverse-dir-name',
-						default=config['TRAVERSE_DIR'],
-						help='directory used to traverse to next level (default: "%default").', 
-						metavar='TRAVERSE_DIR')
-	advanced.add_option('--raw-extension',
-						default=config['RAW_EXTENSION'],
-						help='use as the extension for RAW files (default: "%default").', 
-						metavar='RAW_EXTENSION')
-##	advanced.add_option('--labels',
-##						help='...', 
-##						metavar='LABELS')
-	advanced.add_option('--xmp-template',
-						help='use XMP_TEMPLATE instead of the internal template.', 
-						metavar='XMP_TEMPLATE')
-	advanced.add_option('--use-labels', 
-						action='store_true',
-						default=config['USE_LABELS'],
-						help='if set, use both labels and ratings.') 
-	advanced.add_option('-s', '--skip', 
-						action='append',
-						default=config['SKIP'],
-						help='list of directories to skip from searching for RAW '
-						'files (default: %default)',
-						metavar='SKIP') 
-	parser.add_option_group(advanced)
-
-	runtime = OptionGroup(parser, 'Runtime options')
-	runtime.add_option('--dry-run',
-						action='store_true',
-						default=False,
-						help='run but do not create any files.')
-	parser.add_option_group(runtime)
-
-
-	configuration = OptionGroup(parser, 'Configuration options')
-	configuration.add_option('--config-print', 
-						action='store_true',
-						default=False,
-						help='print current configuration and exit.')
-	configuration.add_option('--config-defaults-print', 
-						action='store_true',
-						default=False,
-						help='print default configuration and exit.')
-	parser.add_option_group(configuration)
-
-	options, args = parser.parse_args()
-
-	# be polite and save the originla config data...
-	config = config.copy()
-
-	# prune and write the data...
-	config.update({
-			'ROOT_DIR': options.root,
-			'INPUT_DIR': options.input,
-			'OUTPUT_DIR': options.output if options.output else options.root,
-			'TRAVERSE_DIR': options.traverse_dir_name,
-			'RAW_EXTENSION': options.raw_extension,
-			'THRESHOLD': options.group_threshold,
-			'XMP_TEMPLATE': file(options.xmp_template, 'r').read() 
-								if options.xmp_template 
-								else config['XMP_TEMPLATE'],
-			'RATE_TOP_LEVEL': options.rate_top_level,
-			'SEARCH_INPUT': options.search_input,
-			'SEARCH_OUTPUT': options.search_output,
-			'VERBOSITY': options.verbosity,
-			'USE_LABELS': options.use_labels,
-			'SKIP': list(set(options.skip + [options.input])),
-			})
-	if not options.use_labels:
-		config['RATINGS'] = range(5, 0, -1)
-	
-	# configuration stuff...
-	# sanity check...
-	if True in (options.config_defaults_print, options.config_print):
-		print_prefix = False
-		if len([ s for  s in  (options.config_defaults_print, options.config_print) if s]) > 1:
-			print_prefix = True
-		if options.config_print:
-			if print_prefix:
-				print 'Current Configuration:'
-			print simplejson.dumps(config, sort_keys=True, indent=4)
-			print
-		if options.config_defaults_print:
-			if print_prefix:
-				print 'Default Configuration:'
-			print simplejson.dumps(default_cfg, sort_keys=True, indent=4)
-			print
-		raise SystemExit
-
-	return config, options
 
 
 
