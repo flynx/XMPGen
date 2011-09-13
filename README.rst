@@ -227,39 +227,42 @@ Current command-line reference::
           -q, --quiet           decrease output verbosity.
           -m, --mute            mute output.
 
-          Advanced options:
+          Ratings & Labels:
+            --use-labels        if set, use both labels and ratings.
+            --clear-labels      clear list of labels, shorthand to removing all the
+                                labels one by one.
+            --label=LABEL       add label to list of labels (default: ['Review',
+                                'Second']). NOTE: the order in which labels are added
+                                is significant - first is higher priority last lower.
+            --remove-label=LABEL
+                                remove label from list of labels (default: []).
             --rate-top-level    if set, also rate top level previews.
+            --group-threshold=THRESHOLD
+                                percentage of elements unique to a level below which
+                                the level will be merged with the next one (default:
+                                "5").
+            --overflow-strategy=OVERFLOW_STRATEGY
+                                the way to handle tree depth greater than the number
+                                of given ratings (default: merge-bottom). available
+                                options are: ('abort', 'skip-bottom', 'merge-bottom')
+
+          Advanced options:
             --no-search-input   if set, this will disable searching for input
                                 directories, otherwise ROOT/INPUT will be used
                                 directly. NOTE: this will find all matching INPUT
                                 directories, including nested ones.
             --no-search-output  if set, this will disable searching for RAW files, and
                                 XMPs will be stored directly in the OUTPUT directory.
-            --group-threshold=THRESHOLD
-                                percentage of elements unique to a level below which
-                                the level will be merged with the next one (default:
-                                "5").
+            -s SKIP, --skip=SKIP
+                                list of directories to skip from searching for RAW
+                                files (default: ['preview (RAW)'])
             --traverse-dir-name=TRAVERSE_DIR
                                 directory used to traverse to next level (default:
                                 "fav").
             --raw-extension=RAW_EXTENSION
                                 use as the extension for RAW files (default: ".NEF").
-            --use-labels        if set, use both labels and ratings.
-            --clear-labels      clear list of labels, shorthand to removing all the
-                                labels one by one.
-            --label=LABEL       add label to list of labels (default: ['Review',
-                               'Second']).
-            --remove-label=LABEL
-                                remove label from list of labels (default: []).
             --xmp-template=XMP_TEMPLATE
                                 use XMP_TEMPLATE instead of the internal template.
-            -s SKIP, --skip=SKIP
-                                list of directories to skip from searching for RAW
-                                files (default: ['preview (RAW)'])
-            --overflow-strategy=OVERFLOW_STRATEGY
-                                the way to handle tree depth greater than the number
-                                of given ratings (default: merge-bottom). available
-                                options are: ('abort', 'skip-bottom', 'merge-bottom')
 
           Runtime options:
             --dry-run           run but do not create any files.
