@@ -206,11 +206,13 @@ Here is the current command-line reference::
 
 
 
-.. NOTE:: this may get out of date, so use ``--help`` to get the actual info.
+.. NOTE:: 
+   this may get out of date, so use ``--help`` to get the actual info.
 
 ---------
 
-.. NOTE:: to generate a config file just do this::
+.. NOTE:: 
+   to generate a config file just do this::
 
           xmpgen --config-print > ~/.xmpgen
 
@@ -219,10 +221,6 @@ Here is the current command-line reference::
           xmpgen --raw-extension=.CRW --traverse-dir-name=select --input="RAW previews" --config-print > ~/.xmpgen
 
 
-.. NOTE:: order of flags does not matter.
-
-
-.. NOTE:: the ``--search-input`` option is not on by default because of a 
-   current bug (see TODO.otl), as soon as that gets resolved this 
-   option will be set by default.
+.. NOTE:: 
+   in general, order of flags does not matter. but order of labels given on command line is.
 
