@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110913125332'''
+__sub_version__ = '''20110913130727'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -102,9 +102,9 @@ HANDLE_OVERFLOW_OPTIONS = {
 	'skip-bottom': None,
 	'merge-bottom': None,
 	'merge-top': None,
-	'increase-threshold': None,
-	'growing-threshold': None,
-	'use-labels': None,
+##	'increase-threshold': None,
+##	'growing-threshold': None,
+##	'use-labels': None,
 }
 
 
@@ -416,6 +416,12 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD
 	'''
 	threshold = float(threshold)/100
 
+	if overflow_strategy.endswith('-top'):
+		raise NotImplementedError, '"*-top" strategies not yet implemented.'
+		##!!! this will break the threshold mechanics...
+		ratings = ratings[::-1]
+		index = list(index)[::-1]
+
 	i = 0
 	buf = ()
 	for level in index:
@@ -423,9 +429,14 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD
 		# skip empty levels or levels that do not pass the threshold...
 		if level['total count'] <= 0 or float(len(level['items']))/level['total count'] <= threshold:
 			continue
-		# merge levels when we run out of ratings...
+		# merge levels when we run out of ratings ('merge-bottom' or
+		# 'merge-top')...
 		if len(ratings) == i-1:
+			if overflow_strategy.startswith('skip-'):
+				yield ratings[i], buf
+				return
 			continue
+
 		yield ratings[i], buf
 		buf = ()
 		i += 1
