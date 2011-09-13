@@ -146,55 +146,58 @@ Complex Situations
 
 In some cases ``XMPGen`` needs to do some more work than is obvoius:
 
-* *There are multiple occurrences of RAW files with the same name in a 
-  directory tree.*
+1. *There are multiple occurrences of RAW files with the same name in a 
+   directory tree.*
 
-  Here, we will determine which is the target by closeness to the preview 
-  in the topology. e.g. if we are processing a large archive all at once,
-  preview directories usually are in the same sub-tree as their corresponding 
-  RAW files.
-
-  The criteria used to judge distance are as follows:
-
-  * depth/size of sub-tree.
-
-    a tree at a deeper location (smaller) beats the more general (larger)
-    sub-tree. e.g. max length of identical path section starting from 
-    root wins::
-
+   Here, we will determine which file is the target by closeness to the preview 
+   in the topology. 
+   The criteria used to judge distance are as follows:
+  
+   * Depth/size of sub-tree.  
+     A tree at a deeper location (smaller) beats the more general (larger)
+     sub-tree. e.g. max length of identical path section starting from 
+     root wins::
+  
+             A
+            / \          Path AB is closer to AB(T) than A (obvious)
+           /   B
+          /   / \        Path ABD is closer to AB(T) than AC
+         C   D  (T)
+  
+   * Within a minimal sub-tree the shortest distance to sub-tree root wins::
+  
             A
-           / \          path AB is closer to AB(T) than A (obvious)
-          /   B
-         /   / \        path ABD is closer to AB(T) than AC
-        C   D  (T)
+           /|\
+          / | \
+         B  C (T)        Path AB is closer to T than ACD         
+            |
+            D
+  
+   This situation can occur if we are processing a large archive all at once,
+   there, preview directories usually are in the same sub-tree as their 
+   corresponding RAW files.
+  
+   If there are two or more target files at the same topological distance 
+   from the preview we will fail.
 
-  * within a minimal sub-tree the shortest distance to sub-tree root wins::
+   .. NOTE::
+      There could be topologies that will make this fail or do the wrong 
+      thing, please submit an issue or mail me if this is your case.
+  
+1. *There are more preview levels than there are ratings and labels.*
 
-           A
-          /|\
-         / | \
-        B  C (T)        path AB is closer to T than ACD         
-           |
-           D
-
-
-  If there are two or more target files at the same topological distance 
-  from the preview we will fail.
-
-* *There are more preview levels than there are ratings and labels.*
-
-  By default the first *N-1* levels are rated and the rest merged into one, 
-  where *N* is the number of ratings and labels.
-  there are several strategies supported:
-
-  * *merge-bottom*, described above.
-
-  * *skip-bottom* - levels *N* through *M* are not rated, here *M* is the 
-    number of levels.
-
-  * *abort* - rate until we reach the end of the ratings, then fail.
-
-  This is customizable via the ``--overflow-strategy`` option.
+   By default the first *N-1* levels are rated and the rest merged into one, 
+   where *N* is the number of ratings and labels.
+   there are several strategies supported:
+  
+   * *merge-bottom*, described above.
+  
+   * *skip-bottom* - levels *N* through *M* are not rated, here *M* is the 
+     number of levels.
+  
+   * *abort* - rate until we reach the end of the ratings, then fail.
+  
+   This is customizable via the ``--overflow-strategy`` option.
 
 
 
