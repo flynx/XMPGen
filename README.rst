@@ -202,8 +202,8 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
 
 
 
-Control
-=======
+Control and Data
+================
 
 The data the script uses and its behavior is fully configurable.
 
@@ -324,7 +324,9 @@ The default options that can be contained in ``~/.xmpgen`` or printed by the ``-
 .. NOTE:: 
    These may get out of date, so use ``--help`` to get the actual info.
 
----------
+
+Miscellaneous Information and Notes
+==================================
 
 .. NOTE:: 
    To generate a config file just do this::
