@@ -1,7 +1,13 @@
+======
+XMPGen
+======
+
 This script uses the directory tree topology to rate images and 
 stores the resulting ratings in .XMP sidecar files.
 
 
+General Description
+===================
 
 Here is a simple example given for a Nikon camera, same will apply to 
 any other make:
@@ -131,13 +137,41 @@ the same effect as the above::
 
   $ xmpgen --root=DCIM --input="preview (RAW)" --output=232ND700 --raw-extension=.NEF --traverse-dir-name=fav --no-search-output --no-search-input
 
+Complex Situations
+------------------
+
+In some cases ``XMPGen`` needs to do some more work than is obvoius:
+
+* *There are multiple occurances of RAW files with the same name in a 
+  directory tree.*
+
+  Here we will determine which is the target by closeness to the preview 
+  in the topology. e.g. if we are processing a large archive all at once
+  preview directories usually are in the same sub-tree as their corresponding 
+  RAW files.
+
+* *There are more preview levels than there are ratings and labels.*
+
+  By default the first *N-1* levels are rated and the rest merged into one, 
+  where *N* is the number of ratings and labels.
+  thre are several strategies supported:
+
+  * *merge-bottom*, described above.
+
+  * *skip-bottom* - levels N through M are not rated, here M is the 
+    number of levels.
+
+  * *abort* - rate until we reach the end of the ratings, then fail.
 
 
----------
+
+Control
+=======
 
 The data the script uses and its behavior is fully configurable.
 
-Here is the current command-line reference::
+
+Current command-line reference::
 
         Usage: xmpgen.py [options]
 
