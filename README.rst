@@ -170,12 +170,12 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
 
   * within a minimal sub-tree the shortest distance to sub-tree root wins::
 
-                    A
-                   /|\
-                  / | \
-                 B  C (T)		path AB is closer to T than ACD		
-                    |
-                    D
+            A
+           /|\
+          / | \
+         B  C (T)	path AB is closer to T than ACD		
+            |
+            D
 
 
   If there are two or more target files at the same topological distance 
