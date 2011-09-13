@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110913140717'''
+__sub_version__ = '''20110913141209'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -278,9 +278,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'USE_LABELS': options.use_labels,
 			'SKIP': list(set(options.skip + [options.input])),
 			})
-	if not options.use_labels:
-		config['LABELS'] = []
-	
+
 	if options.overflow_strategy not in HANDLE_OVERFLOW_OPTIONS:
 		raise ValueError, ('OVERFLOW_STRATEGY value %s unsupported '
 								'(use --help flag for list of options).' % options.overflow_strategy)
@@ -699,10 +697,13 @@ def run():
 	search_output = config['SEARCH_OUTPUT']
 	verbosity = config['VERBOSITY']
 	skip = config['SKIP']
+	use_labels = config['USE_LABELS']
 	overflow_strategy = config['OVERFLOW_STRATEGY']
 
 	# runtime options...
 	dry_run = runtime_options.dry_run
+
+	ratings = (config['LABELS'] if use_labels else []) + config['RATINGS']
 
 	# prepare to count created files...
 	files_written = [0]
@@ -728,7 +729,7 @@ def run():
 												root, 
 												input, 
 												builddircache(root, input)))))), 
-			ratings=config['LABELS'] + config['RATINGS'],
+			ratings=ratings,
 			threshold=threshold,
 			overflow_strategy=overflow_strategy), 
 		output, 
