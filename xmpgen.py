@@ -1,8 +1,8 @@
 #!/bin/env python
 #=======================================================================
 
-__version__ = '''0.1.04'''
-__sub_version__ = '''20110913130727'''
+__version__ = '''0.1.05'''
+__sub_version__ = '''20110913135545'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -71,8 +71,11 @@ DEFAULT_CFG = {
 	'RATINGS': [
 		# basic ratings...
 		5, 4, 3, 2, 1,
-		# labels...
-		# XXX add default labels...
+	],
+	'LABELS': [
+		#  default labels...
+		'Review'
+		'Second',
 	],
 
 	'XMP_TEMPLATE': '''\
@@ -94,18 +97,19 @@ DEFAULT_CFG = {
 	'SKIP': ['preview (RAW)',],
 
 	# for available options see: HANDLE_OVERFLOW_OPTIONS
-	'HANDLE_OVERFLOW': 'merge-bottom',
+	'OVERFLOW_STRATEGY': 'merge-bottom',
 }
 
-HANDLE_OVERFLOW_OPTIONS = {
-	'skip-top': None,
-	'skip-bottom': None,
-	'merge-bottom': None,
-	'merge-top': None,
-##	'increase-threshold': None,
-##	'growing-threshold': None,
-##	'use-labels': None,
-}
+HANDLE_OVERFLOW_OPTIONS = [
+	'abort',
+##	'skip-top',
+	'skip-bottom',
+##	'merge-top',
+	'merge-bottom',
+##	'increase-threshold',
+##	'growing-threshold',
+##	'use-labels',
+]
 
 
 #-----------------------------------------------------------------------
@@ -195,29 +199,40 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						default=config['RAW_EXTENSION'],
 						help='use as the extension for RAW files (default: "%default").', 
 						metavar='RAW_EXTENSION')
-##	advanced.add_option('--labels',
-##						help='...', 
-##						metavar='LABELS')
-	advanced.add_option('--xmp-template',
-						help='use XMP_TEMPLATE instead of the internal template.', 
-						metavar='XMP_TEMPLATE')
 	advanced.add_option('--use-labels', 
 						action='store_true',
 						default=config['USE_LABELS'],
 						help='if set, use both labels and ratings.') 
+	advanced.add_option('--clear-labels',
+						action='store_true',
+						default=False,
+						help='clear list of labels, shorthand to removing all '
+						'the labels one by one.')
+	advanced.add_option('--label',
+						action='append',
+						default=config['LABELS'][:],
+						help='add label to list of labels (default: %default).', 
+						metavar='LABEL')
+	advanced.add_option('--remove-label',
+						action='append',
+						default=[],
+						help='remove label from list of labels (default: %default).', 
+						metavar='LABEL')
+	advanced.add_option('--xmp-template',
+						help='use XMP_TEMPLATE instead of the internal template.', 
+						metavar='XMP_TEMPLATE')
 	advanced.add_option('-s', '--skip', 
 						action='append',
-						default=config['SKIP'],
+						default=config['SKIP'][:],
 						help='list of directories to skip from searching for RAW '
 						'files (default: %default)',
 						metavar='SKIP') 
-	##!!! list available modes here...
-	advanced.add_option('--handle-overflow', 
-						default=config['HANDLE_OVERFLOW'],
+	advanced.add_option('--overflow-strategy', 
+						default=config['OVERFLOW_STRATEGY'],
 						help='the way to handle tree depth greater than the number '
 						'of given ratings (default: %default). '
-						'available options are: ' + str(tuple(HANDLE_OVERFLOW_OPTIONS.keys())),
-						metavar='HANDLE_OVERFLOW') 
+						'available options are: ' + str(tuple(HANDLE_OVERFLOW_OPTIONS)),
+						metavar='OVERFLOW_STRATEGY') 
 	parser.add_option_group(advanced)
 
 	runtime = OptionGroup(parser, 'Runtime options')
@@ -252,6 +267,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'TRAVERSE_DIR': options.traverse_dir_name,
 			'RAW_EXTENSION': options.raw_extension,
 			'THRESHOLD': options.group_threshold,
+			'LABELS': [ l for l in options.label if l not in options.remove_label ],
 			'XMP_TEMPLATE': file(options.xmp_template, 'r').read() 
 								if options.xmp_template 
 								else config['XMP_TEMPLATE'],
@@ -263,12 +279,12 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'SKIP': list(set(options.skip + [options.input])),
 			})
 	if not options.use_labels:
-		config['RATINGS'] = range(5, 0, -1)
+		config['LABELS'] = []
 	
-	if options.handle_overflow not in HANDLE_OVERFLOW_OPTIONS:
-		raise ValueError, ('HANDLE_OVERFLOW value %s unsupported '
-								'(use --help flag for list of options).' % options.handle_overflow)
-	config['HANDLE_OVERFLOW'] = options.handle_overflow 
+	if options.overflow_strategy not in HANDLE_OVERFLOW_OPTIONS:
+		raise ValueError, ('OVERFLOW_STRATEGY value %s unsupported '
+								'(use --help flag for list of options).' % options.overflow_strategy)
+	config['OVERFLOW_STRATEGY'] = options.overflow_strategy 
 
 
 	# configuration stuff...
@@ -396,7 +412,7 @@ def index(collection):
 
 #----------------------------------------------------------------rate---
 ##!!! do the overflow...
-def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD'], overflow_strategy=None):
+def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD'], overflow_strategy=DEFAULT_CFG['OVERFLOW_STRATEGY']):
 	'''
 	generator to rate the indexed elements.
 
@@ -431,18 +447,21 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD
 			continue
 		# merge levels when we run out of ratings ('merge-bottom' or
 		# 'merge-top')...
-		if len(ratings) == i-1:
+		if len(ratings) == i+1:
 			if overflow_strategy.startswith('skip-'):
 				yield ratings[i], buf
 				return
 			continue
-
 		yield ratings[i], buf
 		buf = ()
 		i += 1
-	# the buffer is not yet empty...
+	# the buffer is not yet empty, so we need to flush the results...
 	if buf != ():
 		yield ratings[-1], buf
+		# XXX might be good not to write anything in this situatio...
+		if overflow_strategy == 'abort':
+			raise ValueError, ('number of levels is greater than the number '
+								'of ratings, use more labels or a different strategy.')
 
 
 
@@ -680,6 +699,7 @@ def run():
 	search_output = config['SEARCH_OUTPUT']
 	verbosity = config['VERBOSITY']
 	skip = config['SKIP']
+	overflow_strategy = config['OVERFLOW_STRATEGY']
 
 	# runtime options...
 	dry_run = runtime_options.dry_run
@@ -708,8 +728,9 @@ def run():
 												root, 
 												input, 
 												builddircache(root, input)))))), 
-			ratings=config['RATINGS'],
-			threshold=threshold), 
+			ratings=config['LABELS'] + config['RATINGS'],
+			threshold=threshold,
+			overflow_strategy=overflow_strategy), 
 		output, 
 		# find a location for each output file...
 		##!!! we do not need to do this if collect returned no results...

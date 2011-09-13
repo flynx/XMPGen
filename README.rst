@@ -173,9 +173,22 @@ Here is the current command-line reference::
                                 "fav").
             --raw-extension=RAW_EXTENSION
                                 use as the extension for RAW files (default: ".NEF").
+            --use-labels        if set, use both labels and ratings.
+            --clear-labels      clear list of labels, shorthand to removing all the
+                                labels one by one.
+            --label=LABEL       add label to list of labels (default:
+                                ['ReviewSecond']).
+            --remove-label=LABEL
+                                remove label from list of labels (default: []).
             --xmp-template=XMP_TEMPLATE
                                 use XMP_TEMPLATE instead of the internal template.
-            --use-labels        if set, use both labels and ratings.
+            -s SKIP, --skip=SKIP
+                                list of directories to skip from searching for RAW
+                                files (default: ['preview (RAW)'])
+            --overflow-strategy=OVERFLOW_STRATEGY
+                                the way to handle tree depth greater than the number
+                                of given ratings (default: merge-bottom). available
+                                options are: ('abort', 'skip-bottom', 'merge-bottom')
 
           Runtime options:
             --dry-run           run but do not create any files.
