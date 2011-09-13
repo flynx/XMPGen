@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.04'''
-__sub_version__ = '''20110913124534'''
+__sub_version__ = '''20110913125332'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -420,11 +420,18 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD
 	buf = ()
 	for level in index:
 		buf += (level,)
+		# skip empty levels or levels that do not pass the threshold...
 		if level['total count'] <= 0 or float(len(level['items']))/level['total count'] <= threshold:
+			continue
+		# merge levels when we run out of ratings...
+		if len(ratings) == i-1:
 			continue
 		yield ratings[i], buf
 		buf = ()
 		i += 1
+	# the buffer is not yet empty...
+	if buf != ():
+		yield ratings[-1], buf
 
 
 
