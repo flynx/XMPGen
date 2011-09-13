@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110913142248'''
+__sub_version__ = '''20110913233459'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -158,11 +158,46 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						default=config['VERBOSITY'],
 						help='mute output.')
 
-	advanced = OptionGroup(parser, 'Advanced options')
-	advanced.add_option('--rate-top-level', 
+	ratings_n_labels = OptionGroup(parser, 'Ratings & Labels')
+	ratings_n_labels.add_option('--use-labels', 
+						action='store_true',
+						default=config['USE_LABELS'],
+						help='if set, use both labels and ratings.') 
+	ratings_n_labels.add_option('--clear-labels',
+						action='store_true',
+						default=False,
+						help='clear list of labels, shorthand to removing all '
+						'the labels one by one.')
+	ratings_n_labels.add_option('--label',
+						action='append',
+						default=config['LABELS'][:],
+						help='add label to list of labels (default: %default). '
+						'NOTE: the order in which labels are added is '
+						'significant - first is higher priority last lower.', 
+						metavar='LABEL')
+	ratings_n_labels.add_option('--remove-label',
+						action='append',
+						default=[],
+						help='remove label from list of labels (default: %default).', 
+						metavar='LABEL')
+	ratings_n_labels.add_option('--rate-top-level', 
 						action='store_true',
 						default=config['RATE_TOP_LEVEL'],
 						help='if set, also rate top level previews.')
+	ratings_n_labels.add_option('--group-threshold', 
+						default=config['THRESHOLD'],
+						help='percentage of elements unique to a level below which '
+						'the level will be merged with the next one (default: "%default").',
+						metavar='THRESHOLD') 
+	ratings_n_labels.add_option('--overflow-strategy', 
+						default=config['OVERFLOW_STRATEGY'],
+						help='the way to handle tree depth greater than the number '
+						'of given ratings (default: %default). '
+						'available options are: ' + str(tuple(HANDLE_OVERFLOW_OPTIONS)),
+						metavar='OVERFLOW_STRATEGY') 
+	parser.add_option_group(ratings_n_labels)
+
+	advanced = OptionGroup(parser, 'Advanced options')
 	advanced.add_option('--no-search-input', 
 						dest='search_input',
 						action='store_false',
@@ -177,11 +212,12 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						default=config['SEARCH_OUTPUT'],
 						help='if set, this will disable searching for RAW files, '
 						'and XMPs will be stored directly in the OUTPUT directory.') 
-	advanced.add_option('--group-threshold', 
-						default=config['THRESHOLD'],
-						help='percentage of elements unique to a level below which '
-						'the level will be merged with the next one (default: "%default").',
-						metavar='THRESHOLD') 
+	advanced.add_option('-s', '--skip', 
+						action='append',
+						default=config['SKIP'][:],
+						help='list of directories to skip from searching for RAW '
+						'files (default: %default)',
+						metavar='SKIP') 
 	##!!! we need to be able to update or ignore existing xmp files, curently they will be overwritten...
 ##	advanced.add_option('--xmp-no-update', 
 ##						dest='xmp_update',
@@ -196,40 +232,9 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						default=config['RAW_EXTENSION'],
 						help='use as the extension for RAW files (default: "%default").', 
 						metavar='RAW_EXTENSION')
-	advanced.add_option('--use-labels', 
-						action='store_true',
-						default=config['USE_LABELS'],
-						help='if set, use both labels and ratings.') 
-	advanced.add_option('--clear-labels',
-						action='store_true',
-						default=False,
-						help='clear list of labels, shorthand to removing all '
-						'the labels one by one.')
-	advanced.add_option('--label',
-						action='append',
-						default=config['LABELS'][:],
-						help='add label to list of labels (default: %default).', 
-						metavar='LABEL')
-	advanced.add_option('--remove-label',
-						action='append',
-						default=[],
-						help='remove label from list of labels (default: %default).', 
-						metavar='LABEL')
 	advanced.add_option('--xmp-template',
 						help='use XMP_TEMPLATE instead of the internal template.', 
 						metavar='XMP_TEMPLATE')
-	advanced.add_option('-s', '--skip', 
-						action='append',
-						default=config['SKIP'][:],
-						help='list of directories to skip from searching for RAW '
-						'files (default: %default)',
-						metavar='SKIP') 
-	advanced.add_option('--overflow-strategy', 
-						default=config['OVERFLOW_STRATEGY'],
-						help='the way to handle tree depth greater than the number '
-						'of given ratings (default: %default). '
-						'available options are: ' + str(tuple(HANDLE_OVERFLOW_OPTIONS)),
-						metavar='OVERFLOW_STRATEGY') 
 	parser.add_option_group(advanced)
 
 	runtime = OptionGroup(parser, 'Runtime options')
@@ -406,7 +411,6 @@ def index(collection):
 
 
 #----------------------------------------------------------------rate---
-##!!! do the overflow...
 def rate(index, ratings=DEFAULT_CFG['RATINGS'], 
 		threshold=DEFAULT_CFG['THRESHOLD'], 
 		overflow_strategy=DEFAULT_CFG['OVERFLOW_STRATEGY']):
