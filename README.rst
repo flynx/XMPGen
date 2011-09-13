@@ -109,7 +109,8 @@ previews are located -- and output -- where to write the .XMPs --
 directories. Both input and output locations can be spread into 
 multiple locations.
 
-.. NOTE:: it is not *yet* possible to make this do it's job over a large 
+.. NOTE:: 
+   It is not *yet* possible to make this do it's job over a large 
    archive containing files with duplicate names in different locations.
 
 The above will generate the needed data as follows::
@@ -273,22 +274,68 @@ Current command-line reference::
         in non-standard cases and for fine control.
 
 
+The default options that can be contained in ``~/.xmpgen`` or printed by the ``--config-print`` or ``--config-print-default`` are in JSON format::
+
+        {
+            "INPUT_DIR": "preview (RAW)",
+            "LABELS": [
+                "Review",
+                "Second"
+            ],
+            "OUTPUT_DIR": ".",
+            "OVERFLOW_STRATEGY": "merge-bottom",
+            "RATE_TOP_LEVEL": false,
+            "RATINGS": [
+                5,
+                4,
+                3,
+                2,
+                1
+            ],
+            "RAW_EXTENSION": ".NEF",
+            "ROOT_DIR": ".",
+            "SEARCH_INPUT": true,
+            "SEARCH_OUTPUT": true,
+            "SKIP": [
+                "preview (RAW)"
+            ],
+            "THRESHOLD": 5,
+            "TRAVERSE_DIR": "fav",
+            "USE_LABELS": false,
+            "VERBOSITY": 1,
+            "XMP_TEMPLATE": "<x:xmpmeta xmlns:x=\"adobe:ns:meta\/\">\n\t<rdf:RDF xmlns:r
+        df=\"http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#\">\n\t\t<rdf:Description r
+        df:about=\"\" xmlns:xap=\"http:\/\/ns.adobe.com\/xap\/1.0\/\">\n\t\t\t<xap:Creat
+        orTool>XMPGen<\/xap:CreatorTool>\n\t\t\t<xap:Rating>%(rating)s<\/xap:Rating>\n\t
+        \t\t<xap:Label>%(label)s<\/xap:Label>\n\t\t<\/rdf:Description>\n\t<\/rdf:RDF>\n<
+        \/x:xmpmeta>"
+        }
+
+
 
 .. NOTE:: 
-   this may get out of date, so use ``--help`` to get the actual info.
+   The minimal config *must* contain at least a pair of curly brackets.
+
+
+.. NOTE:: 
+   Within the config any subset of the supported options can be included, 
+   the rest will be replaced with defaults.
+
+.. NOTE:: 
+   These may get out of date, so use ``--help`` to get the actual info.
 
 ---------
 
 .. NOTE:: 
-   to generate a config file just do this::
+   To generate a config file just do this::
 
           xmpgen --config-print > ~/.xmpgen
 
-   this can also be combined with options, these will be saved to generated config file::
+   This can also be combined with options, these will be saved to generated config file::
 
           xmpgen --raw-extension=.CRW --traverse-dir-name=select --input="RAW previews" --config-print > ~/.xmpgen
 
 
 .. NOTE:: 
-   in general, order of flags does not matter. but order of labels given on command line is.
+   In general, order of flags does not matter. but order of labels given on command line is.
 
