@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110913135545'''
+__sub_version__ = '''20110913140717'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -74,7 +74,7 @@ DEFAULT_CFG = {
 	],
 	'LABELS': [
 		#  default labels...
-		'Review'
+		'Review',
 		'Second',
 	],
 

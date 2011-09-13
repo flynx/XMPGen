@@ -176,8 +176,8 @@ Here is the current command-line reference::
             --use-labels        if set, use both labels and ratings.
             --clear-labels      clear list of labels, shorthand to removing all the
                                 labels one by one.
-            --label=LABEL       add label to list of labels (default:
-                                ['ReviewSecond']).
+            --label=LABEL       add label to list of labels (default: ['Review',
+                               'Second']).
             --remove-label=LABEL
                                 remove label from list of labels (default: []).
             --xmp-template=XMP_TEMPLATE
