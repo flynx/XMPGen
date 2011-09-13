@@ -173,7 +173,7 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
             A
            /|\
           / | \
-         B  C (T)	path AB is closer to T than ACD		
+         B  C (T)       path AB is closer to T than ACD         
             |
             D
 
