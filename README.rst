@@ -140,12 +140,13 @@ the same effect as the above::
 
   $ xmpgen --root=DCIM --input="preview (RAW)" --output=232ND700 --raw-extension=.NEF --traverse-dir-name=fav --no-search-output --no-search-input
 
+
 Complex Situations
 ------------------
 
 In some cases ``XMPGen`` needs to do some more work than is obvoius:
 
-* *There are multiple occurances of RAW files with the same name in a 
+* *There are multiple occurrences of RAW files with the same name in a 
   directory tree.*
 
   Here, we will determine which is the target by closeness to the preview 
@@ -153,11 +154,38 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
   preview directories usually are in the same sub-tree as their corresponding 
   RAW files.
 
+  The criteria used to judge distance are as follows:
+
+  * depth/size of sub-tree.
+
+    a tree at a deeper location (smaller) beats the more general (larger)
+    sub-tree. e.g. max length of identical path section starting from 
+    root wins::
+
+            A
+           / \          path AB is closer to AB(T) than A (obvious)
+          /   B
+         /   / \        path ABD is closer to AB(T) than AC
+        C   D  (T)
+
+  * within a minimal sub-tree the shortest distance to sub-tree root wins::
+
+                    A
+                   /|\
+                  / | \
+                 B  C (T)		path AB is closer to T than ACD		
+                    |
+                    D
+
+
+  If there are two or more target files at the same topological distance 
+  from the preview we will fail.
+
 * *There are more preview levels than there are ratings and labels.*
 
   By default the first *N-1* levels are rated and the rest merged into one, 
   where *N* is the number of ratings and labels.
-  thre are several strategies supported:
+  there are several strategies supported:
 
   * *merge-bottom*, described above.
 
@@ -165,6 +193,8 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
     number of levels.
 
   * *abort* - rate until we reach the end of the ratings, then fail.
+
+  This is customizable via the ``--overflow-strategy`` option.
 
 
 
