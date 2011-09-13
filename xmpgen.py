@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110913141316'''
+__sub_version__ = '''20110913141558'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -12,14 +12,13 @@ import shutil, sys, os, os.path
 from itertools import chain, imap, islice
 import simplejson
 
-from pli.functional import curry, rcurry
-from pli.logictypes import ANY
+from pli.functional import curry
 
+# compatibility with Python 2.5
 if sys.version_info < (2, 6):
 	from xmpgen_legacy import izip_longest
 else:
 	from itertools import izip_longest
-
 
 
 #-----------------------------------------------------------------------
