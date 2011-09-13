@@ -6,6 +6,9 @@ This script uses the directory tree topology to rate images and
 stores the resulting ratings in .XMP sidecar files.
 
 
+.. contents::
+
+
 General Description
 ===================
 
@@ -145,8 +148,8 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
 * *There are multiple occurances of RAW files with the same name in a 
   directory tree.*
 
-  Here we will determine which is the target by closeness to the preview 
-  in the topology. e.g. if we are processing a large archive all at once
+  Here, we will determine which is the target by closeness to the preview 
+  in the topology. e.g. if we are processing a large archive all at once,
   preview directories usually are in the same sub-tree as their corresponding 
   RAW files.
 
@@ -158,7 +161,7 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
 
   * *merge-bottom*, described above.
 
-  * *skip-bottom* - levels N through M are not rated, here M is the 
+  * *skip-bottom* - levels *N* through *M* are not rated, here *M* is the 
     number of levels.
 
   * *abort* - rate until we reach the end of the ratings, then fail.
