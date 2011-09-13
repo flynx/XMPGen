@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110913141209'''
+__sub_version__ = '''20110913141316'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -410,7 +410,9 @@ def index(collection):
 
 #----------------------------------------------------------------rate---
 ##!!! do the overflow...
-def rate(index, ratings=DEFAULT_CFG['RATINGS'], threshold=DEFAULT_CFG['THRESHOLD'], overflow_strategy=DEFAULT_CFG['OVERFLOW_STRATEGY']):
+def rate(index, ratings=DEFAULT_CFG['RATINGS'], 
+		threshold=DEFAULT_CFG['THRESHOLD'], 
+		overflow_strategy=DEFAULT_CFG['OVERFLOW_STRATEGY']):
 	'''
 	generator to rate the indexed elements.
 
