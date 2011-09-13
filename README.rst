@@ -146,8 +146,8 @@ Complex Situations
 
 In some cases ``XMPGen`` needs to do some more work than is obvoius:
 
-1. *There are multiple occurrences of RAW files with the same name in a 
-   directory tree.*
+1. **There are multiple occurrences of RAW files with the same name in a 
+   directory tree.**
 
    Here, we will determine which file is the target by closeness to the preview 
    in the topology. 
@@ -184,7 +184,7 @@ In some cases ``XMPGen`` needs to do some more work than is obvoius:
       There could be topologies that will make this fail or do the wrong 
       thing, please submit an issue or mail me if this is your case.
   
-1. *There are more preview levels than there are ratings and labels.*
+1. **There are more preview levels than there are ratings and labels.**
 
    By default the first *N-1* levels are rated and the rest merged into one, 
    where *N* is the number of ratings and labels.
