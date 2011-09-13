@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110913141558'''
+__sub_version__ = '''20110913142248'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -123,10 +123,8 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						usage='Usage: %prog [options]',
 						version='%prog ' + __version__,
 						epilog='NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). '
-						'xmpgen will get confused when processing a large archive '
-						'containing sets of different but identically named files (will be fixed soon). '
 						'xmpgen will search for both INPUT and OUTPUT so explicit declaration is needed '
-						'onlu in non-standard cases and for fine control.')
+						'only in non-standard cases and for fine control.')
 	parser.add_option('--root',
 						default=config['ROOT_DIR'],
 						help='root of the directory tree we will be working at (default: "%default").', 

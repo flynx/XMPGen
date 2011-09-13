@@ -199,10 +199,8 @@ Here is the current command-line reference::
                                 print default configuration and exit.
 
         NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). xmpgen
-        will get confused when processing a large archive containing sets of different
-        but identically named files (will be fixed soon). xmpgen will search for both
-        INPUT and OUTPUT so explicit declaration is needed onlu in non-standard cases
-        and for fine control.
+        will search for both INPUT and OUTPUT so explicit declaration is needed only
+        in non-standard cases and for fine control.
 
 
 
