@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110913233459'''
+__sub_version__ = '''20110914203510'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -72,10 +72,13 @@ DEFAULT_CFG = {
 		5, 4, 3, 2, 1,
 	],
 	'LABELS': [
-		#  default labels...
-		'Review',
+		# default labels...
+		# yellow
 		'Second',
+		# blue
+		'Review',
 	],
+	'LABEL_CFG': '.label',
 
 	'XMP_TEMPLATE': '''\
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
@@ -329,8 +332,10 @@ def load_config_file(config, default_cfg=DEFAULT_CFG):
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------------rcollect---
+##!!! make this read/locate .label files at the bottom of the tree...
 def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
-		collect_base=True, ext=('.jpg', '.JPG')):
+		collect_base=True, ext=('.jpg', '.JPG'), 
+		label_cfg=DEFAULT_CFG['LABEL_CFG']):
 	'''
 	generator to collect all the files in the topology.
 
@@ -339,7 +344,7 @@ def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 		# going down.
 		(
 			[...],
-			root
+			labels
 		)
 	'''
 	for r, dirs, files in os.walk(root):
@@ -349,6 +354,7 @@ def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 			# skip empty levels...
 			if len(res) == 0:
 				continue
+##			yield res, file(label_cfg).read() if label_cfg in files else None
 			yield res
 		else:
 			collect_base = True
@@ -361,7 +367,8 @@ def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 
 #-------------------------------------------------------------collect---
 def collect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], 
-		collect_base=True, ext=('.jpg', '.JPG')):
+		collect_base=True, ext=('.jpg', '.JPG'),
+		label_cfg=DEFAULT_CFG['LABEL_CFG']):
 	'''
 	same as collect, but does its work bottom-down.
 
@@ -396,6 +403,7 @@ def index(collection):
 		}
 	'''
 	prev = None
+##	for level, label in collection:
 	for level in collection:
 		cur = set(level)
 		# skip empty levels...
@@ -407,6 +415,7 @@ def index(collection):
 		yield {
 			'total count': len(level),
 			'items': cur, 
+##			'label': label,
 		}
 
 
