@@ -1,58 +1,64 @@
-[_] 73% ToDo
-	[_] ASAP: add ability to either update or skip existing .XMPs
-	[_] FEATURE: use file RO flag to set a label
-	| reading FS flags/permissions in platform agnostic way seems to be a problem in python.
-	|
-	| two solutions:
-	| 	http://code.activestate.com/lists/python-list/69623/
-	| 	http://techarttiki.blogspot.com/2008/08/read-only-windows-files-with-python.html
-	|
-	| neither seems to be "general enough"...
-	|
-	| need more research...
-	[_] TEST: need to test overflow strategies...
-	[_] TEST: need to test xmp data explicitly...
-	[_] make input/output and root arguments take multiple values.
-	[_] enable stdin configs cunsumption '--' flag...
-	[X] ASAP/BUG: need to normalize the structure if we have more levels than we have ratings and labels...
-	[X] 100% ASAP: make this handle sub-trees containing different sets of raw/preview files with identical names.
-		[X] add paths to the cache
-		[X] compare simelarly named files via directory closeness to the preview...
-	[X] ASAP: write corner condtion test for each of the main actions in test.py...
-	| including:
-	| 	- empty data
-	| 	- overflow testing
-	[X] BUG: when we do not find an input dir with search enabled we fail in a bad way...
-	[X] BUG: when we do not find an input dir with search disabled we fail in a very odd way...
-	[X] JSON data import/export
-	[X] print configuration in JSON format...
-	[X] unify configurations and options...
-	[X] add config file to enable the user to change the defaults wothout touching the code.
-	[X] add sensible output, to be able to see what the script is doing
-	[X] add output control (-v/-q flags)
-	[X] add posibility of a dry run
-	[X] propper install script
-	[X] BUG: make this handle several input dirs correctly (need izip_longest(*iterables[, fillvalue]))
-	| Reference implementation:
-	|
-	|	def izip_longest(*args, **kwds):
-	|	   # izip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
-	|	   fillvalue = kwds.get('fillvalue')
-	|	   def sentinel(counter = ([fillvalue]*(len(args)-1)).pop):
-	|	       yield counter()         # yields the fillvalue, or raises IndexError
-	|	   fillers = repeat(fillvalue)
-	|	   iters = [chain(it, sentinel(), fillers) for it in args]
-	|	   try:
-	|	       for tup in izip(*iters):
-	|	           yield tup
-	|	   except IndexError:
-	|	       pass
-	| 	
-	[X] license
-	[X] a propper README and basic instruction text
-	[X] make this work (test if it does not already) for --raw-extension=.jpg
-	| need to skip INPUT directories...
-	|
-	| fixed by excluding INPUT from search for target files.
-	|
-	| NOTE: now OUTPUT can not be within the INPUT tree...
+[_] 45% ToDo
+	[X] 100% BUGS
+		[X] ASAP/BUG: need to normalize the structure if we have more levels than we have ratings and labels...
+		[X] BUG: when we do not find an input dir with search enabled we fail in a bad way...
+		[X] BUG: when we do not find an input dir with search disabled we fail in a very odd way...
+		[X] BUG: make this handle several input dirs correctly (need izip_longest(*iterables[, fillvalue]))
+		| Reference implementation:
+		|
+		|	def izip_longest(*args, **kwds):
+		|	   # izip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
+		|	   fillvalue = kwds.get('fillvalue')
+		|	   def sentinel(counter = ([fillvalue]*(len(args)-1)).pop):
+		|	       yield counter()         # yields the fillvalue, or raises IndexError
+		|	   fillers = repeat(fillvalue)
+		|	   iters = [chain(it, sentinel(), fillers) for it in args]
+		|	   try:
+		|	       for tup in izip(*iters):
+		|	           yield tup
+		|	   except IndexError:
+		|	       pass
+		| 	
+	[_] 62% Features
+		[_] ASAP: add ability to either update or skip existing .XMPs
+		[_] use file RO flag to set a label
+		| reading FS flags/permissions in platform agnostic way seems to be a problem in python.
+		|
+		| two solutions:
+		| 	http://code.activestate.com/lists/python-list/69623/
+		| 	http://techarttiki.blogspot.com/2008/08/read-only-windows-files-with-python.html
+		|
+		| neither seems to be "general enough"...
+		|
+		| need more research...
+		[_] write path to comment (XMP/IPCT/EXIF)
+		[X] 100% ASAP: make this handle sub-trees containing different sets of raw/preview files with identical names.
+			[X] add paths to the cache
+			[X] compare simelarly named files via directory closeness to the preview...
+		[X] JSON data import/export
+		[X] print configuration in JSON format...
+		[X] add config file to enable the user to change the defaults wothout touching the code.
+		[X] add posibility of a dry run
+	[_] 66% Enhancments & general todo
+		[_] TEST: need to test overflow strategies...
+		[_] TEST: need to test xmp data explicitly...
+		[_] make input/output and root arguments take multiple values.
+		[_] enable stdin configs cunsumption '--' flag...
+		[X] ASAP: write corner condtion test for each of the main actions in test.py...
+		| including:
+		| 	- empty data
+		| 	- overflow testing
+		[X] unify configurations and options...
+		[X] add sensible output, to be able to see what the script is doing
+		[X] add output control (-v/-q flags)
+		[X] propper install script
+		[X] make this work (test if it does not already) for --raw-extension=.jpg
+		| need to skip INPUT directories...
+		|
+		| fixed by excluding INPUT from search for target files.
+		|
+		| NOTE: now OUTPUT can not be within the INPUT tree...
+		[X] license
+		[X] a propper README and basic instruction text
+	[_] 0% Proposals & Ideas
+	[_] 0% Old
