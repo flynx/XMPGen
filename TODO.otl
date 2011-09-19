@@ -1,4 +1,4 @@
-[_] 45% ToDo
+[_] 43% ToDo
 	[X] 100% BUGS
 		[X] ASAP/BUG: need to normalize the structure if we have more levels than we have ratings and labels...
 		[X] BUG: when we do not find an input dir with search enabled we fail in a bad way...
@@ -19,8 +19,10 @@
 		|	   except IndexError:
 		|	       pass
 		| 	
-	[_] 62% Features
+	[_] 50% Features
 		[_] ASAP: add ability to either update or skip existing .XMPs
+		[_] make searching for targets accept several formats (prioritized)
+		| to resolve situations when we have both RAW and JPG files in the target location...
 		[_] use file RO flag to set a label
 		| reading FS flags/permissions in platform agnostic way seems to be a problem in python.
 		|
@@ -32,6 +34,10 @@
 		|
 		| need more research...
 		[_] write path to comment (XMP/IPCT/EXIF)
+		[_] handle bool options better -- need to reflect config changes in -h/--help
+		| essentially this means flipping --do-something to --no-do-something (alternatives should be configurabele)
+		|
+		| see if practical to push this upstream...
 		[X] 100% ASAP: make this handle sub-trees containing different sets of raw/preview files with identical names.
 			[X] add paths to the cache
 			[X] compare simelarly named files via directory closeness to the preview...

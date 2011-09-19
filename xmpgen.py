@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110914203510'''
+__sub_version__ = '''20110919170900'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -100,6 +100,7 @@ DEFAULT_CFG = {
 
 	# for available options see: HANDLE_OVERFLOW_OPTIONS
 	'OVERFLOW_STRATEGY': 'merge-bottom',
+	'SKIP_UNKNOWN_DESTINATIONS': False,
 }
 
 HANDLE_OVERFLOW_OPTIONS = [
@@ -238,6 +239,13 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 	advanced.add_option('--xmp-template',
 						help='use XMP_TEMPLATE instead of the internal template.', 
 						metavar='XMP_TEMPLATE')
+	##!!! need to resolve this situation - not every one is shooting RAW...
+	advanced.add_option('--skip-unknown-destinations', 
+						action='store_true',
+						default=config['SKIP_UNKNOWN_DESTINATIONS'],
+						help='if set, skip generating .XMP files for targets that '
+						'can not be located. this can happen for example when '
+						'rating a file that was shot in JPEG or was processed in cammera.')
 	parser.add_option_group(advanced)
 
 	runtime = OptionGroup(parser, 'Runtime options')
@@ -282,6 +290,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'VERBOSITY': options.verbosity,
 			'USE_LABELS': options.use_labels,
 			'SKIP': list(set(options.skip + [options.input])),
+			'SKIP_UNKNOWN_DESTINATIONS': options.skip_unknown_destinations,
 			})
 
 	if options.overflow_strategy not in HANDLE_OVERFLOW_OPTIONS:
@@ -517,7 +526,8 @@ def action_break(path, rating, label, data):
 
 #------------------------------------------------------------generate---
 def generate(ratings, root, getpath=join, 
-		actions=(action_filewriter,), template=DEFAULT_CFG['XMP_TEMPLATE']):
+		actions=(action_filewriter,), template=DEFAULT_CFG['XMP_TEMPLATE'],
+		skip_not_found=False):
 	'''
 	generate XMP files.
 	'''
@@ -530,7 +540,12 @@ def generate(ratings, root, getpath=join,
 			rating = rating
 		xmp_data = template % {'rating': rating, 'label': label}
 		for p, name in reduce(list.__add__, [ list(s['items']) for s in data ]):
-			path = getpath(root, '.'.join(name.split('.')[:-1]), path=p) + '.XMP'
+			try:
+				path = getpath(root, '.'.join(name.split('.')[:-1]), path=p) + '.XMP'
+			except KeyError:
+				if skip_not_found:
+					continue
+				raise
 			for action in actions:
 				if action is action_dummy:
 					continue
@@ -758,7 +773,8 @@ def run():
 			action_filewriter,
 			action_count,
 		),
-		template=config['XMP_TEMPLATE'])
+		template=config['XMP_TEMPLATE'],
+		skip_not_found=config['SKIP_UNKNOWN_DESTINATIONS'])
 
 	if verbosity >= 0:
 		if verbosity == 1:
