@@ -1,0 +1,280 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 4.2-c020 1.124078, Tue Sep 11 2007 23:21:40        ">
+ <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about=""
+    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">
+   <aux:ImageNumber>66003</aux:ImageNumber>
+   <aux:Lens>12.0-24.0 mm f/4.0</aux:Lens>
+   <aux:LensInfo>120/10 240/10 40/10 40/10</aux:LensInfo>
+   <aux:SerialNumber>4201629</aux:SerialNumber>
+  </rdf:Description>
+  <rdf:Description rdf:about=""
+    xmlns:crss="http://ns.adobe.com/camera-raw-saved-settings/1.0/"
+    xmlns:crs="http://ns.adobe.com/camera-raw-settings/1.0/">
+   <crss:SavedSettings>
+    <rdf:Bag>
+     <rdf:li rdf:parseType="Resource">
+      <crss:Name>Import/Nikon D2X, Auto WB, Noise 35-35</crss:Name>
+      <crss:Type>Snapshot</crss:Type>
+      <crss:Parameters rdf:parseType="Resource">
+       <crs:Version>5.7</crs:Version>
+       <crs:WhiteBalance>Auto</crs:WhiteBalance>
+       <crs:Exposure>0.00</crs:Exposure>
+       <crs:Shadows>5</crs:Shadows>
+       <crs:Brightness>+50</crs:Brightness>
+       <crs:Contrast>+25</crs:Contrast>
+       <crs:Saturation>0</crs:Saturation>
+       <crs:Sharpness>25</crs:Sharpness>
+       <crs:LuminanceSmoothing>35</crs:LuminanceSmoothing>
+       <crs:ColorNoiseReduction>35</crs:ColorNoiseReduction>
+       <crs:ChromaticAberrationR>0</crs:ChromaticAberrationR>
+       <crs:ChromaticAberrationB>0</crs:ChromaticAberrationB>
+       <crs:VignetteAmount>0</crs:VignetteAmount>
+       <crs:ShadowTint>0</crs:ShadowTint>
+       <crs:RedHue>0</crs:RedHue>
+       <crs:RedSaturation>0</crs:RedSaturation>
+       <crs:GreenHue>0</crs:GreenHue>
+       <crs:GreenSaturation>0</crs:GreenSaturation>
+       <crs:BlueHue>0</crs:BlueHue>
+       <crs:BlueSaturation>0</crs:BlueSaturation>
+       <crs:FillLight>0</crs:FillLight>
+       <crs:Vibrance>0</crs:Vibrance>
+       <crs:HighlightRecovery>0</crs:HighlightRecovery>
+       <crs:Clarity>0</crs:Clarity>
+       <crs:Defringe>0</crs:Defringe>
+       <crs:HueAdjustmentRed>0</crs:HueAdjustmentRed>
+       <crs:HueAdjustmentOrange>0</crs:HueAdjustmentOrange>
+       <crs:HueAdjustmentYellow>0</crs:HueAdjustmentYellow>
+       <crs:HueAdjustmentGreen>0</crs:HueAdjustmentGreen>
+       <crs:HueAdjustmentAqua>0</crs:HueAdjustmentAqua>
+       <crs:HueAdjustmentBlue>0</crs:HueAdjustmentBlue>
+       <crs:HueAdjustmentPurple>0</crs:HueAdjustmentPurple>
+       <crs:HueAdjustmentMagenta>0</crs:HueAdjustmentMagenta>
+       <crs:SaturationAdjustmentRed>0</crs:SaturationAdjustmentRed>
+       <crs:SaturationAdjustmentOrange>0</crs:SaturationAdjustmentOrange>
+       <crs:SaturationAdjustmentYellow>0</crs:SaturationAdjustmentYellow>
+       <crs:SaturationAdjustmentGreen>0</crs:SaturationAdjustmentGreen>
+       <crs:SaturationAdjustmentAqua>0</crs:SaturationAdjustmentAqua>
+       <crs:SaturationAdjustmentBlue>0</crs:SaturationAdjustmentBlue>
+       <crs:SaturationAdjustmentPurple>0</crs:SaturationAdjustmentPurple>
+       <crs:SaturationAdjustmentMagenta>0</crs:SaturationAdjustmentMagenta>
+       <crs:LuminanceAdjustmentRed>0</crs:LuminanceAdjustmentRed>
+       <crs:LuminanceAdjustmentOrange>0</crs:LuminanceAdjustmentOrange>
+       <crs:LuminanceAdjustmentYellow>0</crs:LuminanceAdjustmentYellow>
+       <crs:LuminanceAdjustmentGreen>0</crs:LuminanceAdjustmentGreen>
+       <crs:LuminanceAdjustmentAqua>0</crs:LuminanceAdjustmentAqua>
+       <crs:LuminanceAdjustmentBlue>0</crs:LuminanceAdjustmentBlue>
+       <crs:LuminanceAdjustmentPurple>0</crs:LuminanceAdjustmentPurple>
+       <crs:LuminanceAdjustmentMagenta>0</crs:LuminanceAdjustmentMagenta>
+       <crs:SplitToningShadowHue>0</crs:SplitToningShadowHue>
+       <crs:SplitToningShadowSaturation>0</crs:SplitToningShadowSaturation>
+       <crs:SplitToningHighlightHue>0</crs:SplitToningHighlightHue>
+       <crs:SplitToningHighlightSaturation>0</crs:SplitToningHighlightSaturation>
+       <crs:SplitToningBalance>0</crs:SplitToningBalance>
+       <crs:ParametricShadows>0</crs:ParametricShadows>
+       <crs:ParametricDarks>0</crs:ParametricDarks>
+       <crs:ParametricLights>0</crs:ParametricLights>
+       <crs:ParametricHighlights>0</crs:ParametricHighlights>
+       <crs:ParametricShadowSplit>25</crs:ParametricShadowSplit>
+       <crs:ParametricMidtoneSplit>50</crs:ParametricMidtoneSplit>
+       <crs:ParametricHighlightSplit>75</crs:ParametricHighlightSplit>
+       <crs:SharpenRadius>+1.0</crs:SharpenRadius>
+       <crs:SharpenDetail>25</crs:SharpenDetail>
+       <crs:SharpenEdgeMasking>0</crs:SharpenEdgeMasking>
+       <crs:PostCropVignetteAmount>0</crs:PostCropVignetteAmount>
+       <crs:ConvertToGrayscale>False</crs:ConvertToGrayscale>
+       <crs:ToneCurveName>Medium Contrast</crs:ToneCurveName>
+       <crs:ToneCurve>
+        <rdf:Seq>
+         <rdf:li>0, 0</rdf:li>
+         <rdf:li>32, 22</rdf:li>
+         <rdf:li>64, 56</rdf:li>
+         <rdf:li>128, 128</rdf:li>
+         <rdf:li>192, 196</rdf:li>
+         <rdf:li>255, 255</rdf:li>
+        </rdf:Seq>
+       </crs:ToneCurve>
+       <crs:CameraProfile>Camera D2X Mode 2</crs:CameraProfile>
+      </crss:Parameters>
+     </rdf:li>
+    </rdf:Bag>
+   </crss:SavedSettings>
+  </rdf:Description>
+  <rdf:Description rdf:about=""
+    xmlns:exif="http://ns.adobe.com/exif/1.0/">
+   <exif:ApertureValue>4526069/1000000</exif:ApertureValue>
+   <exif:Contrast>2</exif:Contrast>
+   <exif:CustomRendered>0</exif:CustomRendered>
+   <exif:DateTimeDigitized>2010-12-11T13:48:48.60+03:00</exif:DateTimeDigitized>
+   <exif:DateTimeOriginal>2010-12-11T13:48:48.60+03:00</exif:DateTimeOriginal>
+   <exif:DigitalZoomRatio>1/1</exif:DigitalZoomRatio>
+   <exif:ExifVersion>0221</exif:ExifVersion>
+   <exif:ExposureBiasValue>-3/6</exif:ExposureBiasValue>
+   <exif:ExposureMode>0</exif:ExposureMode>
+   <exif:ExposureProgram>3</exif:ExposureProgram>
+   <exif:ExposureTime>1/250</exif:ExposureTime>
+   <exif:FNumber>48/10</exif:FNumber>
+   <exif:FileSource>3</exif:FileSource>
+   <exif:FocalLength>120/10</exif:FocalLength>
+   <exif:FocalLengthIn35mmFilm>18</exif:FocalLengthIn35mmFilm>
+   <exif:GPSLatitude>56,18.608667N</exif:GPSLatitude>
+   <exif:GPSLongitude>38,7.804167E</exif:GPSLongitude>
+   <exif:GPSMapDatum>WGS-84</exif:GPSMapDatum>
+   <exif:GPSVersionID>2.2.0.0</exif:GPSVersionID>
+   <exif:GainControl>0</exif:GainControl>
+   <exif:LightSource>0</exif:LightSource>
+   <exif:MaxApertureValue>40/10</exif:MaxApertureValue>
+   <exif:MeteringMode>5</exif:MeteringMode>
+   <exif:PixelXDimension>3872</exif:PixelXDimension>
+   <exif:PixelYDimension>2592</exif:PixelYDimension>
+   <exif:Saturation>0</exif:Saturation>
+   <exif:SceneCaptureType>0</exif:SceneCaptureType>
+   <exif:SceneType>1</exif:SceneType>
+   <exif:SensingMethod>2</exif:SensingMethod>
+   <exif:Sharpness>0</exif:Sharpness>
+   <exif:ShutterSpeedValue>7965784/1000000</exif:ShutterSpeedValue>
+   <exif:SubjectDistanceRange>0</exif:SubjectDistanceRange>
+   <exif:WhiteBalance>0</exif:WhiteBalance>
+   <exif:ISOSpeedRatings>
+    <rdf:Seq>
+     <rdf:li>100</rdf:li>
+    </rdf:Seq>
+   </exif:ISOSpeedRatings>
+   <exif:Flash rdf:parseType="Resource">
+    <exif:Fired>False</exif:Fired>
+    <exif:Return>0</exif:Return>
+    <exif:Mode>0</exif:Mode>
+    <exif:Function>False</exif:Function>
+    <exif:RedEyeMode>False</exif:RedEyeMode>
+   </exif:Flash>
+   <exif:UserComment>
+    <rdf:Alt>
+     <rdf:li xml:lang="x-default">(C) XYZ Moscow, www.xyz.su</rdf:li>
+    </rdf:Alt>
+   </exif:UserComment>
+  </rdf:Description>
+  <rdf:Description rdf:about=""
+    xmlns:tiff="http://ns.adobe.com/tiff/1.0/">
+   <tiff:ImageLength>2592</tiff:ImageLength>
+   <tiff:ImageWidth>3872</tiff:ImageWidth>
+   <tiff:Make>NIKON CORPORATION</tiff:Make>
+   <tiff:Model>NIKON D80</tiff:Model>
+   <tiff:Orientation>1</tiff:Orientation>
+  </rdf:Description>
+  <rdf:Description rdf:about=""
+    xmlns:xap="http://ns.adobe.com/xap/1.0/">
+   <xap:CreateDate>2010-12-11T13:48:48.60+03:00</xap:CreateDate>
+   <xap:CreatorTool>Ver.1.11</xap:CreatorTool>
+   <xap:MetadataDate>2011-03-05T12:06:51.14-03:00</xap:MetadataDate>
+   <xap:ModifyDate>2010-12-11T13:48:48.60+03:00</xap:ModifyDate>
+  </rdf:Description>
+  <rdf:Description rdf:about=""
+    xmlns:lr="http://ns.adobe.com/lightroom/1.0/">
+   <lr:hierarchicalSubject>
+    <rdf:Bag>
+     <rdf:li>2010</rdf:li>
+     <rdf:li>Городское ориентирование</rdf:li>
+     <rdf:li>ПоБеГи</rdf:li>
+     <rdf:li>Сергиев Посад</rdf:li>
+     <rdf:li>Тесты</rdf:li>
+    </rdf:Bag>
+   </lr:hierarchicalSubject>
+  </rdf:Description>
+  <rdf:Description rdf:about=""
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+   <dc:subject>
+    <rdf:Bag>
+     <rdf:li>2010</rdf:li>
+     <rdf:li>Городское ориентирование</rdf:li>
+     <rdf:li>ПоБеГи</rdf:li>
+     <rdf:li>Сергиев Посад</rdf:li>
+     <rdf:li>Тесты</rdf:li>
+    </rdf:Bag>
+   </dc:subject>
+  </rdf:Description>
+  <rdf:Description rdf:about=""
+    xmlns:crs="http://ns.adobe.com/camera-raw-settings/1.0/">
+   <crs:Version>5.7</crs:Version>
+   <crs:WhiteBalance>Auto</crs:WhiteBalance>
+   <crs:Temperature>6900</crs:Temperature>
+   <crs:Tint>0</crs:Tint>
+   <crs:Exposure>+1.00</crs:Exposure>
+   <crs:Shadows>10</crs:Shadows>
+   <crs:Brightness>+50</crs:Brightness>
+   <crs:Contrast>+65</crs:Contrast>
+   <crs:Saturation>0</crs:Saturation>
+   <crs:Sharpness>25</crs:Sharpness>
+   <crs:LuminanceSmoothing>35</crs:LuminanceSmoothing>
+   <crs:ColorNoiseReduction>35</crs:ColorNoiseReduction>
+   <crs:ChromaticAberrationR>0</crs:ChromaticAberrationR>
+   <crs:ChromaticAberrationB>0</crs:ChromaticAberrationB>
+   <crs:VignetteAmount>0</crs:VignetteAmount>
+   <crs:ShadowTint>0</crs:ShadowTint>
+   <crs:RedHue>0</crs:RedHue>
+   <crs:RedSaturation>0</crs:RedSaturation>
+   <crs:GreenHue>0</crs:GreenHue>
+   <crs:GreenSaturation>0</crs:GreenSaturation>
+   <crs:BlueHue>0</crs:BlueHue>
+   <crs:BlueSaturation>0</crs:BlueSaturation>
+   <crs:FillLight>15</crs:FillLight>
+   <crs:Vibrance>0</crs:Vibrance>
+   <crs:HighlightRecovery>0</crs:HighlightRecovery>
+   <crs:Clarity>0</crs:Clarity>
+   <crs:Defringe>0</crs:Defringe>
+   <crs:HueAdjustmentRed>0</crs:HueAdjustmentRed>
+   <crs:HueAdjustmentOrange>0</crs:HueAdjustmentOrange>
+   <crs:HueAdjustmentYellow>0</crs:HueAdjustmentYellow>
+   <crs:HueAdjustmentGreen>0</crs:HueAdjustmentGreen>
+   <crs:HueAdjustmentAqua>0</crs:HueAdjustmentAqua>
+   <crs:HueAdjustmentBlue>0</crs:HueAdjustmentBlue>
+   <crs:HueAdjustmentPurple>0</crs:HueAdjustmentPurple>
+   <crs:HueAdjustmentMagenta>0</crs:HueAdjustmentMagenta>
+   <crs:SaturationAdjustmentRed>0</crs:SaturationAdjustmentRed>
+   <crs:SaturationAdjustmentOrange>0</crs:SaturationAdjustmentOrange>
+   <crs:SaturationAdjustmentYellow>0</crs:SaturationAdjustmentYellow>
+   <crs:SaturationAdjustmentGreen>0</crs:SaturationAdjustmentGreen>
+   <crs:SaturationAdjustmentAqua>0</crs:SaturationAdjustmentAqua>
+   <crs:SaturationAdjustmentBlue>0</crs:SaturationAdjustmentBlue>
+   <crs:SaturationAdjustmentPurple>0</crs:SaturationAdjustmentPurple>
+   <crs:SaturationAdjustmentMagenta>0</crs:SaturationAdjustmentMagenta>
+   <crs:LuminanceAdjustmentRed>0</crs:LuminanceAdjustmentRed>
+   <crs:LuminanceAdjustmentOrange>0</crs:LuminanceAdjustmentOrange>
+   <crs:LuminanceAdjustmentYellow>0</crs:LuminanceAdjustmentYellow>
+   <crs:LuminanceAdjustmentGreen>0</crs:LuminanceAdjustmentGreen>
+   <crs:LuminanceAdjustmentAqua>0</crs:LuminanceAdjustmentAqua>
+   <crs:LuminanceAdjustmentBlue>0</crs:LuminanceAdjustmentBlue>
+   <crs:LuminanceAdjustmentPurple>0</crs:LuminanceAdjustmentPurple>
+   <crs:LuminanceAdjustmentMagenta>0</crs:LuminanceAdjustmentMagenta>
+   <crs:SplitToningShadowHue>0</crs:SplitToningShadowHue>
+   <crs:SplitToningShadowSaturation>0</crs:SplitToningShadowSaturation>
+   <crs:SplitToningHighlightHue>0</crs:SplitToningHighlightHue>
+   <crs:SplitToningHighlightSaturation>0</crs:SplitToningHighlightSaturation>
+   <crs:SplitToningBalance>0</crs:SplitToningBalance>
+   <crs:ParametricShadows>0</crs:ParametricShadows>
+   <crs:ParametricDarks>0</crs:ParametricDarks>
+   <crs:ParametricLights>0</crs:ParametricLights>
+   <crs:ParametricHighlights>0</crs:ParametricHighlights>
+   <crs:ParametricShadowSplit>25</crs:ParametricShadowSplit>
+   <crs:ParametricMidtoneSplit>50</crs:ParametricMidtoneSplit>
+   <crs:ParametricHighlightSplit>75</crs:ParametricHighlightSplit>
+   <crs:SharpenRadius>+1.0</crs:SharpenRadius>
+   <crs:SharpenDetail>25</crs:SharpenDetail>
+   <crs:SharpenEdgeMasking>0</crs:SharpenEdgeMasking>
+   <crs:PostCropVignetteAmount>0</crs:PostCropVignetteAmount>
+   <crs:ConvertToGrayscale>False</crs:ConvertToGrayscale>
+   <crs:ToneCurveName>Medium Contrast</crs:ToneCurveName>
+   <crs:ToneCurve>
+    <rdf:Seq>
+     <rdf:li>0, 0</rdf:li>
+     <rdf:li>32, 22</rdf:li>
+     <rdf:li>64, 56</rdf:li>
+     <rdf:li>128, 128</rdf:li>
+     <rdf:li>192, 196</rdf:li>
+     <rdf:li>255, 255</rdf:li>
+    </rdf:Seq>
+   </crs:ToneCurve>
+   <crs:CameraProfile>Camera D2X Mode 2</crs:CameraProfile>
+   <crs:HasSettings>True</crs:HasSettings>
+   <crs:AlreadyApplied>False</crs:AlreadyApplied>
+  </rdf:Description>
+ </rdf:RDF>
+</x:xmpmeta>
