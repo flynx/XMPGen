@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110919170900'''
+__sub_version__ = '''20110922001105'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -100,6 +100,7 @@ DEFAULT_CFG = {
 
 	# for available options see: HANDLE_OVERFLOW_OPTIONS
 	'OVERFLOW_STRATEGY': 'merge-bottom',
+	'HANDLE_EXISTING_XMP': 'rewrite',
 	'SKIP_UNKNOWN_DESTINATIONS': False,
 }
 
@@ -112,6 +113,15 @@ HANDLE_OVERFLOW_OPTIONS = [
 ##	'increase-threshold',
 ##	'growing-threshold',
 ##	'use-labels',
+]
+
+HANDLE_EXISTING_XMP_OPTIONS = [
+	'abort',
+	'skip',
+	'rewrite',
+	'update',
+	'highest',
+	'lowest',
 ]
 
 
@@ -132,16 +142,16 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 	parser.add_option('--root',
 						default=config['ROOT_DIR'],
 						help='root of the directory tree we will be working at (default: "%default").', 
-						metavar='ROOT')
+						metavar='PATH')
 	parser.add_option('--input',
 						default=config['INPUT_DIR'],
 						help='name of directory containing previews (default: "%default").\n'
-						'NOTE: this directory tree can not be used for OUTPUT.', 
-						metavar='INPUT')
+						'NOTE: this directory tree can not be used for output.', 
+						metavar='DIR_NAME')
 	parser.add_option('--output',
 						help='name of directory to store .XMP files. if --no-search '
 						'is not set this is where we search for relevant files (default: ROOT).', 
-						metavar='OUTPUT')
+						metavar='DIR_NAME')
 	# verbosity level...
 	parser.add_option('-v', '--verbose',
 						dest='verbosity',
@@ -198,7 +208,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						help='the way to handle tree depth greater than the number '
 						'of given ratings (default: %default). '
 						'available options are: ' + str(tuple(HANDLE_OVERFLOW_OPTIONS)),
-						metavar='OVERFLOW_STRATEGY') 
+						metavar='STRATEGY') 
 	parser.add_option_group(ratings_n_labels)
 
 	advanced = OptionGroup(parser, 'Advanced options')
@@ -221,24 +231,24 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						default=config['SKIP'][:],
 						help='list of directories to skip from searching for RAW '
 						'files (default: %default)',
-						metavar='SKIP') 
-	##!!! we need to be able to update or ignore existing xmp files, curently they will be overwritten...
-##	advanced.add_option('--xmp-no-update', 
-##						dest='xmp_update',
-##						action='store_false',
-##						default=True,
-##						help='Not Implemented') 
+						metavar='DIR_NAME') 
 	advanced.add_option('--traverse-dir-name',
 						default=config['TRAVERSE_DIR'],
 						help='directory used to traverse to next level (default: "%default").', 
-						metavar='TRAVERSE_DIR')
+						metavar='DIR_NAME')
+	##!!! add '.' if not present...
 	advanced.add_option('--raw-extension',
 						default=config['RAW_EXTENSION'],
 						help='use as the extension for RAW files (default: "%default").', 
-						metavar='RAW_EXTENSION')
+						metavar='EXTENSION')
 	advanced.add_option('--xmp-template',
 						help='use XMP_TEMPLATE instead of the internal template.', 
-						metavar='XMP_TEMPLATE')
+						metavar='PATH')
+	advanced.add_option('--handle-existing-xmp', 
+						default=config['HANDLE_EXISTING_XMP'],
+						help='the way to handle existing xmp files (default: %default). '
+						'available options are: ' + str(tuple(HANDLE_EXISTING_XMP_OPTIONS)),
+						metavar='STRATEGY') 
 	##!!! need to resolve this situation - not every one is shooting RAW...
 	advanced.add_option('--skip-unknown-destinations', 
 						action='store_true',
@@ -565,6 +575,8 @@ def buildfilecache(root, ext=DEFAULT_CFG['RAW_EXTENSION'],
 
 	NOTE: if this finds more than one file with same name in the sub tree it will fail.
 	'''
+	if not ext.startswith('.'):
+		ext = '.' + ext
 	res = {}
 	for path, dirs, files in os.walk(root): 
 		if path in skip_dirs:
