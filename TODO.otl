@@ -20,7 +20,18 @@
 		|	       pass
 		| 	
 	[_] 50% Features
-		[_] ASAP: add ability to either update or skip existing .XMPs
+		[_] add ability to either update or skip existing .XMPs
+			[_] --handle-existing-xmp=STRATEGY
+				[_] skip
+				| keep existing xmp files...
+				[_] rewrite (w. backup)
+				| backup existing files to a new location or rename and generate new xmp files...
+				[_] update
+				| use the topology rating...
+				[_] update-highest
+				| use the higest rating...
+				[_] update-lowest
+				| use the lowest rating...
 		[_] make searching for targets accept several formats (prioritized)
 		| to resolve situations when we have both RAW and JPG files in the target location...
 		[_] use file RO flag to set a label
