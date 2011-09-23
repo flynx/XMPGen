@@ -1,8 +1,8 @@
 #!/bin/env python
 #=======================================================================
 
-__version__ = '''0.1.05'''
-__sub_version__ = '''20110923152940'''
+__version__ = '''0.1.07'''
+__sub_version__ = '''20110923202608'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -56,6 +56,9 @@ SYSTEM_CFG = '.'
 
 XMP_TEMPLATE_NAME = 'TEMPLATE.XMP'
 CONFIG_NAME = '.xmpgen'
+
+BACKUP_EXT_TPL = '.bak%03d'
+BACKUP_EXT = '.bak'
 
 DEFAULT_CFG = {
 	'ROOT_DIR': '.',
@@ -545,17 +548,35 @@ def action_break(path, rating, label, data, config):
 
 
 #-------------------------------------------------handle_existing_xmp---
+##!!! do we just create a file with a .bak extension or move to a backup dir...
 def handle_existing_xmp(path, rating, label, data, config):
 	'''
+	handle the situations when the .XMP file already exists...
 	'''
 	action = config['HANDLE_EXISTING_XMP']
 	if action == 'abort':
 		raise ValueError, 'file "%s" already exists.' % path
 	elif action == 'skip':
 		return False
+	##!!! backup needs testing...
 	elif action == 'rewrite':
 		# NOTE: this will fail for RO files...
+		# check if we need to backup...
+		if open(path).read() == data:
+			# we need to do nothing...
+			return False
+		# create a backup file name...
+		i = 0
+		ext_tpl = BACKUP_EXT_TPL 
+		ext = BACKUP_EXT
+		while os.path.isfile(path + ext):
+			i += 1
+			ext = ext_tpl % i
+		# move file to backup...
+		shutil.move(path, path + ext)
+		# now we can continue...
 		return True
+
 	##!!! these need updating the xmp...
 ##	'update',
 ##	'highest',
