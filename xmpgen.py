@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.05'''
-__sub_version__ = '''20110922001105'''
+__sub_version__ = '''20110923152940'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -118,10 +118,12 @@ HANDLE_OVERFLOW_OPTIONS = [
 HANDLE_EXISTING_XMP_OPTIONS = [
 	'abort',
 	'skip',
+	# NOTE: this will fail on RO files... ##!!! is this correct?
 	'rewrite',
-	'update',
-	'highest',
-	'lowest',
+##!!! not yet implemented...
+##	'update',
+##	'highest',
+##	'lowest',
 ]
 
 
@@ -308,6 +310,11 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 								'(use --help flag for list of options).' % options.overflow_strategy)
 	config['OVERFLOW_STRATEGY'] = options.overflow_strategy 
 
+	if options.handle_existing_xmp not in HANDLE_EXISTING_XMP_OPTIONS:
+		raise ValueError, ('HANDLE_EXISTING_XMP value %s unsupported '
+								'(use --help flag for list of options).' % options.handle_existing_xmp)
+	config['HANDLE_EXISTING_XMP'] = options.handle_existing_xmp
+
 
 	# configuration stuff...
 	# sanity check...
@@ -351,7 +358,7 @@ def load_config_file(config, default_cfg=DEFAULT_CFG):
 
 #-----------------------------------------------------------------------
 #------------------------------------------------------------rcollect---
-##!!! make this read/locate .label files at the bottom of the tree...
+# XXX make this read/locate .label files at the bottom of the tree...
 def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 		collect_base=True, ext=('.jpg', '.JPG'), 
 		label_cfg=DEFAULT_CFG['LABEL_CFG']):
@@ -496,7 +503,7 @@ def rate(index, ratings=DEFAULT_CFG['RATINGS'],
 
 #-----------------------------------------------------------------------
 #--------------------------------------------------------action_dummy---
-def action_dummy(path, rating, label, data):
+def action_dummy(path, rating, label, data, config):
 	'''
 	dummy action, does nothing.
 	'''
@@ -505,20 +512,23 @@ def action_dummy(path, rating, label, data):
 
 #----------------------------------------------------------filewriter---
 ##!!! check if file already exists...
-def action_filewriter(path, rating, label, data):
+def action_filewriter(path, rating, label, data, config):
 	'''
 	action to write a file.
 	'''
 	##!!! check if file already exists...
+	if os.path.isfile(path):
+		return handle_existing_xmp(path, rating, label, data, config)
 	file(path, 'w').write(data)
 	return True
 
 
 #-------------------------------------------------------action_logger---
-def action_logger(path, rating, label, data, verbosity=1):
+def action_logger(path, rating, label, data, config):
 	'''
 	action to log the current processed file.
 	'''
+	verbosity = config['VERBOSITY']
 	if verbosity == 1:
 		print '.',
 	elif verbosity == 2:
@@ -527,17 +537,36 @@ def action_logger(path, rating, label, data, verbosity=1):
 
 
 #--------------------------------------------------------action_break---
-def action_break(path, rating, label, data):
+def action_break(path, rating, label, data, config):
 	'''
 	action that prevents executions of subsequent actions.
 	'''
 	return False
 
 
+#-------------------------------------------------handle_existing_xmp---
+def handle_existing_xmp(path, rating, label, data, config):
+	'''
+	'''
+	action = config['HANDLE_EXISTING_XMP']
+	if action == 'abort':
+		raise ValueError, 'file "%s" already exists.' % path
+	elif action == 'skip':
+		return False
+	elif action == 'rewrite':
+		# NOTE: this will fail for RO files...
+		return True
+	##!!! these need updating the xmp...
+##	'update',
+##	'highest',
+##	'lowest',
+	raise TypeError, 'unknown handling strategy: "%s"' % action
+
+
 #------------------------------------------------------------generate---
 def generate(ratings, root, getpath=join, 
 		actions=(action_filewriter,), template=DEFAULT_CFG['XMP_TEMPLATE'],
-		skip_not_found=False):
+		skip_not_found=DEFAULT_CFG['SKIP_UNKNOWN_DESTINATIONS'], config=DEFAULT_CFG):
 	'''
 	generate XMP files.
 	'''
@@ -559,7 +588,7 @@ def generate(ratings, root, getpath=join,
 			for action in actions:
 				if action is action_dummy:
 					continue
-				if not action(path, rating, label, xmp_data):
+				if not action(path, rating, label, xmp_data, config):
 					break
 
 
@@ -780,13 +809,14 @@ def run():
 					else join),
 		# actions to perform per XMP file...
 		actions=(
-			curry(action_logger, verbosity=verbosity),
+			action_logger,
 			action_break if dry_run else action_dummy,
 			action_filewriter,
 			action_count,
 		),
 		template=config['XMP_TEMPLATE'],
-		skip_not_found=config['SKIP_UNKNOWN_DESTINATIONS'])
+		skip_not_found=config['SKIP_UNKNOWN_DESTINATIONS'],
+		config=config)
 
 	if verbosity >= 0:
 		if verbosity == 1:
