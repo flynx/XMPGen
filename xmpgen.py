@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.07'''
-__sub_version__ = '''20110923202608'''
+__sub_version__ = '''20110929160717'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -52,7 +52,7 @@ def locate(name, locations=(), default=None):
 #-----------------------------------------------------------------------
 # config data and defaults...
 HOME_CFG = '~'
-SYSTEM_CFG = '.'
+LOCAL_CFG = '.'
 
 XMP_TEMPLATE_NAME = 'TEMPLATE.XMP'
 CONFIG_NAME = '.xmpgen'
@@ -105,6 +105,7 @@ DEFAULT_CFG = {
 	'OVERFLOW_STRATEGY': 'merge-bottom',
 	'HANDLE_EXISTING_XMP': 'rewrite',
 	'SKIP_UNKNOWN_DESTINATIONS': False,
+	'CONFIG_SAVE_LOCAL': False,
 }
 
 HANDLE_OVERFLOW_OPTIONS = [
@@ -280,6 +281,12 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						action='store_true',
 						default=False,
 						help='print default configuration and exit.')
+	configuration.add_option('--config-save-local', 
+						action='store_true',
+						default=False,
+						help='save current configuration at the root location. '
+						'this is a shorthand for: '
+						'xmpgen ... --config-print > ROOT/.xmpgen')
 	parser.add_option_group(configuration)
 
 	options, args = parser.parse_args()
@@ -306,6 +313,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'USE_LABELS': options.use_labels,
 			'SKIP': list(set(options.skip + [options.input])),
 			'SKIP_UNKNOWN_DESTINATIONS': options.skip_unknown_destinations,
+			'CONFIG_SAVE_LOCAL': options.config_save_local,
 			})
 
 	if options.overflow_strategy not in HANDLE_OVERFLOW_OPTIONS:
@@ -320,7 +328,12 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 
 
 	# configuration stuff...
-	# sanity check...
+	# write a local configuration...
+	if options.config_save_local:
+		file(os.path.join(config['ROOT_DIR'], CONFIG_NAME), 'w').write(
+				simplejson.dumps(config, sort_keys=True, indent=4))
+
+	# print configuration data...
 	if True in (options.config_defaults_print, options.config_print):
 		print_prefix = False
 		if len([ s for  s in  (options.config_defaults_print, options.config_print) if s]) > 1:
@@ -341,19 +354,20 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 
 
 #----------------------------------------------------load_config_file---
+# TODO search for config within the root topology (???)
 def load_config_file(config, default_cfg=DEFAULT_CFG):
 	'''
 	load configuration data from config file
 	'''
 	# NOTE: this does not like empty configurations files...
-	user_config = simplejson.loads(locate(CONFIG_NAME, (HOME_CFG, SYSTEM_CFG), default='{}'))
+	user_config = simplejson.loads(locate(CONFIG_NAME, (config.get('ROOT_DIR', '.'), LOCAL_CFG, HOME_CFG), default='{}'))
 
 	config = default_cfg.copy()
 	config.update(user_config)
 
 	config['XMP_TEMPLATE'] = locate(
 			XMP_TEMPLATE_NAME, 
-			(HOME_CFG, SYSTEM_CFG), 
+			(config.get('ROOT_DIR', '.'), LOCAL_CFG, HOME_CFG), 
 			default=config['XMP_TEMPLATE'])
 	return config
 

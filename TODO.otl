@@ -1,4 +1,4 @@
-[_] 38% ToDo
+[_] 40% ToDo
 	[X] 100% BUGS
 		[X] ASAP/BUG: need to normalize the structure if we have more levels than we have ratings and labels...
 		[X] BUG: when we do not find an input dir with search enabled we fail in a bad way...
@@ -19,7 +19,7 @@
 		|	   except IndexError:
 		|	       pass
 		| 	
-	[_] 25% Features
+	[_] 35% Features
 		[_] 0% 1.0
 		[_] 0% Beta 2
 			[_] use file RO flag to set a label
@@ -33,9 +33,9 @@
 			|
 			| need more research...
 			[_] write path to comment (XMP/IPCT/EXIF)
-		[_] 50% Beta 1
+		[_] 75% Beta 1
 			[_] 50% add ability to either update or skip existing .XMPs
-				[_] --handle-existing-xmp=STRATEGY
+				[_] 50% --handle-existing-xmp=STRATEGY
 					[X] abort
 					| fail when we encounter an existing xmp...
 					[X] skip
@@ -48,7 +48,7 @@
 					| use the higest rating...
 					[_] update-lowest
 					| use the lowest rating...
-			[_] read/write local config to root of directory...
+			[X] read/write local config to root of directory...
 		[_] 0% misc
 			[_] build preview tree from xmp ratings... (this app??)
 			[_] collect previews into a global index... (this app??)
