@@ -1,7 +1,7 @@
 #=======================================================================
 
 __version__ = '''0.0.01'''
-__sub_version__ = '''20110912164910'''
+__sub_version__ = '''20110923155921'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -189,7 +189,16 @@ logstr('''
 	cleanup()
 		-> 'found and removed 517 XMP files in 3 directories.'
 
+##	---
+##
+##	# test different strategies handling existing xmp files...
+##
+##	os.system('python xmpgen.py -m')
+##		-> 0
+
 	---
+
+	# corner cases...
 
 	os.system('python xmpgen.py --input=fooo -m')
 		-> 0
