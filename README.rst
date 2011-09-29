@@ -215,12 +215,12 @@ Current command-line reference::
         Options:
           --version             show program's version number and exit
           -h, --help            show this help message and exit
-          --root=ROOT           root of the directory tree we will be working at
+          --root=PATH           root of the directory tree we will be working at
                                 (default: ".").
-          --input=INPUT         name of directory containing previews (default:
+          --input=DIR_NAME      name of directory containing previews (default:
                                 "preview (RAW)"). NOTE: this directory tree can not be
-                                used for OUTPUT.
-          --output=OUTPUT       name of directory to store .XMP files. if --no-search
+                                used for output.
+          --output=DIR_NAME     name of directory to store .XMP files. if --no-search
                                 is not set this is where we search for relevant files
                                 (default: ROOT).
           -v, --verbose         increase output verbosity.
@@ -231,8 +231,8 @@ Current command-line reference::
             --use-labels        if set, use both labels and ratings.
             --clear-labels      clear list of labels, shorthand to removing all the
                                 labels one by one.
-            --label=LABEL       add label to list of labels (default: ['Review',
-                                'Second']). NOTE: the order in which labels are added
+            --label=LABEL       add label to list of labels (default: ['Second',
+                                'Review']). NOTE: the order in which labels are added
                                 is significant - first is higher priority last lower.
             --remove-label=LABEL
                                 remove label from list of labels (default: []).
@@ -241,7 +241,7 @@ Current command-line reference::
                                 percentage of elements unique to a level below which
                                 the level will be merged with the next one (default:
                                 "5").
-            --overflow-strategy=OVERFLOW_STRATEGY
+            --overflow-strategy=STRATEGY
                                 the way to handle tree depth greater than the number
                                 of given ratings (default: merge-bottom). available
                                 options are: ('abort', 'skip-bottom', 'merge-bottom')
@@ -253,16 +253,25 @@ Current command-line reference::
                                 directories, including nested ones.
             --no-search-output  if set, this will disable searching for RAW files, and
                                 XMPs will be stored directly in the OUTPUT directory.
-            -s SKIP, --skip=SKIP
+            -s DIR_NAME, --skip=DIR_NAME
                                 list of directories to skip from searching for RAW
                                 files (default: ['preview (RAW)'])
-            --traverse-dir-name=TRAVERSE_DIR
+            --traverse-dir-name=DIR_NAME
                                 directory used to traverse to next level (default:
                                 "fav").
-            --raw-extension=RAW_EXTENSION
+            --raw-extension=EXTENSION
                                 use as the extension for RAW files (default: ".NEF").
-            --xmp-template=XMP_TEMPLATE
+            --xmp-template=PATH
                                 use XMP_TEMPLATE instead of the internal template.
+            --handle-existing-xmp=STRATEGY
+                                the way to handle existing xmp files (default:
+                                rewrite). available options are: ('abort', 'skip',
+                                'rewrite')
+            --skip-unknown-destinations
+                                if set, skip generating .XMP files for targets that
+                                can not be located. this can happen for example when
+                                rating a file that was shot in JPEG or was processed
+                                in cammera.
 
           Runtime options:
             --dry-run           run but do not create any files.
@@ -271,6 +280,10 @@ Current command-line reference::
             --config-print      print current configuration and exit.
             --config-defaults-print
                                 print default configuration and exit.
+            --config-save-local
+                                save current configuration at the root location. this
+                                is a shorthand for: xmpgen ... --config-print >
+                                ROOT/.xmpgen
 
         NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). xmpgen
         will search for both INPUT and OUTPUT so explicit declaration is needed only
@@ -280,11 +293,14 @@ Current command-line reference::
 The default options that can be contained in ``~/.xmpgen`` or printed by the ``--config-print`` or ``--config-print-default`` are in JSON format::
 
         {
+            "CONFIG_SAVE_LOCAL": false,
+            "HANDLE_EXISTING_XMP": "rewrite",
             "INPUT_DIR": "preview (RAW)",
             "LABELS": [
-                "Review",
-                "Second"
+                "Second",
+                "Review"
             ],
+            "LABEL_CFG": ".label",
             "OUTPUT_DIR": ".",
             "OVERFLOW_STRATEGY": "merge-bottom",
             "RATE_TOP_LEVEL": false,
@@ -302,6 +318,7 @@ The default options that can be contained in ``~/.xmpgen`` or printed by the ``-
             "SKIP": [
                 "preview (RAW)"
             ],
+            "SKIP_UNKNOWN_DESTINATIONS": false,
             "THRESHOLD": 5,
             "TRAVERSE_DIR": "fav",
             "USE_LABELS": false,
@@ -313,7 +330,6 @@ The default options that can be contained in ``~/.xmpgen`` or printed by the ``-
         \t\t<xap:Label>%(label)s<\/xap:Label>\n\t\t<\/rdf:Description>\n\t<\/rdf:RDF>\n<
         \/x:xmpmeta>"
         }
-
 
 
 .. NOTE:: 
