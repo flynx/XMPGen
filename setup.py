@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20110908101319'''
+__sub_version__ = '''20110929161924'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -26,6 +26,7 @@ Environment :: Console
 from setuptools import setup
 import os.path as os_path
 import sys
+import py2exe
 
 import xmpgen
 __pkg_version__ = xmpgen.__version__
@@ -60,7 +61,17 @@ setup(
 		'console_scripts': [
 			'xmpgen = xmpgen:run'
 		],
-	})
+	},
+	
+	# py2exe stuff...
+	options = {"py2exe": {
+					'compressed': 1,
+##					'optimize': 2,
+					'bundle_files': 2,
+##					'packages': 'encodings',
+					}},
+	console = ['xmpgen.py']
+	)
 
 
 
