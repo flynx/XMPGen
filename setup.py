@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20110929161924'''
+__sub_version__ = '''20110929162652'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -25,8 +25,12 @@ Environment :: Console
 #-----------------------------------------------------------------------
 from setuptools import setup
 import os.path as os_path
-import sys
-import py2exe
+import sys, warnings
+
+try:
+	import py2exe
+except:
+	warnings.warn('can\'t import py2exe, without it building standalone versions is not supported.')
 
 import xmpgen
 __pkg_version__ = xmpgen.__version__
