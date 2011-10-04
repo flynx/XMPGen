@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.07'''
-__sub_version__ = '''20111005020731'''
+__sub_version__ = '''20111005025525'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -11,7 +11,6 @@ __copyright__ = '''(c) Alex A. Naanou 2011'''
 import shutil, sys, os, os.path
 from itertools import chain, imap, islice
 import json
-import pyexiv2
 
 from pli.functional import curry
 
@@ -20,6 +19,14 @@ if sys.version_info < (2, 6):
 	from xmpgen_legacy import izip_longest
 else:
 	from itertools import izip_longest
+
+
+### workaround: I prefer "freedom as in freedom" to "freedom as in forced
+### to be free"...
+##try:
+##	import pyexiv2
+##except ImportError:
+##	pass
 
 
 #-----------------------------------------------------------------------
