@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.07'''
-__sub_version__ = '''20111005025525'''
+__sub_version__ = '''20111005030141'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -21,12 +21,12 @@ else:
 	from itertools import izip_longest
 
 
-### workaround: I prefer "freedom as in freedom" to "freedom as in forced
-### to be free"...
+### workaround: I prefer freedom as in free, to freedom as in forced
+### to be free...
 ##try:
-##	import pyexiv2
+##	import pyexiv2 as metadata
 ##except ImportError:
-##	pass
+##	metadata = None
 
 
 #-----------------------------------------------------------------------
