@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20111005021034'''
+__sub_version__ = '''20111005033146'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -51,7 +51,7 @@ setup(
 	platforms = ['any'],
 	classifiers = filter(None, __classifiers__.split("\n")),
 
-	install_requires = ['pli', 'pyexiv2'],
+	install_requires = ['pli'],
 	##!!! this needs to be done...
 ##	dependency_links = [],
 
