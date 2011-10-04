@@ -1,4 +1,4 @@
-[_] 40% ToDo
+[_] 39% ToDo
 	[X] 100% BUGS
 		[X] ASAP/BUG: need to normalize the structure if we have more levels than we have ratings and labels...
 		[X] BUG: when we do not find an input dir with search enabled we fail in a bad way...
@@ -19,7 +19,7 @@
 		|	   except IndexError:
 		|	       pass
 		| 	
-	[_] 35% Features
+	[_] 30% Features
 		[_] 0% 1.0
 		[_] 0% Beta 2
 			[_] use file RO flag to set a label
@@ -33,7 +33,8 @@
 			|
 			| need more research...
 			[_] write path to comment (XMP/IPCT/EXIF)
-		[_] 75% Beta 1
+		[_] 50% Beta 1
+			[_] replace .XMP writer with pyexiv2...
 			[_] 50% add ability to either update or skip existing .XMPs
 				[_] 50% --handle-existing-xmp=STRATEGY
 					[X] abort

@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20110929162652'''
+__sub_version__ = '''20111005021034'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -51,7 +51,7 @@ setup(
 	platforms = ['any'],
 	classifiers = filter(None, __classifiers__.split("\n")),
 
-	install_requires = ['pli'],
+	install_requires = ['pli', 'pyexiv2'],
 	##!!! this needs to be done...
 ##	dependency_links = [],
 
@@ -59,7 +59,8 @@ setup(
 
 	packages = [],
 	# NOTE: xmpgen_legacy is for python version < 2.6
-	py_modules = ['xmpgen', 'xmpgen_legacy'],
+##	py_modules = ['xmpgen', 'xmpgen_legacy'],
+	py_modules = ['xmpgen'],
 
 	entry_points = {
 		'console_scripts': [

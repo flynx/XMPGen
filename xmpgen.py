@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.07'''
-__sub_version__ = '''20110929160717'''
+__sub_version__ = '''20111005020731'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -10,7 +10,8 @@ __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 import shutil, sys, os, os.path
 from itertools import chain, imap, islice
-import simplejson
+import json
+import pyexiv2
 
 from pli.functional import curry
 
@@ -331,7 +332,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 	# write a local configuration...
 	if options.config_save_local:
 		file(os.path.join(config['ROOT_DIR'], CONFIG_NAME), 'w').write(
-				simplejson.dumps(config, sort_keys=True, indent=4))
+				json.dumps(config, sort_keys=True, indent=4))
 
 	# print configuration data...
 	if True in (options.config_defaults_print, options.config_print):
@@ -341,12 +342,12 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 		if options.config_print:
 			if print_prefix:
 				print 'Current Configuration:'
-			print simplejson.dumps(config, sort_keys=True, indent=4)
+			print json.dumps(config, sort_keys=True, indent=4)
 			print
 		if options.config_defaults_print:
 			if print_prefix:
 				print 'Default Configuration:'
-			print simplejson.dumps(default_cfg, sort_keys=True, indent=4)
+			print json.dumps(default_cfg, sort_keys=True, indent=4)
 			print
 		raise SystemExit
 
@@ -360,7 +361,7 @@ def load_config_file(config, default_cfg=DEFAULT_CFG):
 	load configuration data from config file
 	'''
 	# NOTE: this does not like empty configurations files...
-	user_config = simplejson.loads(locate(CONFIG_NAME, (config.get('ROOT_DIR', '.'), LOCAL_CFG, HOME_CFG), default='{}'))
+	user_config = json.loads(locate(CONFIG_NAME, (config.get('ROOT_DIR', '.'), LOCAL_CFG, HOME_CFG), default='{}'))
 
 	config = default_cfg.copy()
 	config.update(user_config)
