@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20111005134938'''
+__sub_version__ = '''20111005165112'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -36,6 +36,8 @@ import xmpgen
 __pkg_version__ = xmpgen.__version__
 
 license = 'BSD Licence.'
+
+INCLUDE_GPL_LIBS_IN_EXE = False
 
 
 #-----------------------------------------------------------------------
@@ -74,7 +76,7 @@ setup(
 ##					'optimize': 2,
 					'bundle_files': 2,
 ##					'packages': 'encodings',
-					'excludes': [
+					'excludes': [] if INCLUDE_GPL_LIBS_IN_EXE else [
 						# NOTE: we do not want to distribute any incompatible-licensed code...
 						'pyexiv2',
 					]
