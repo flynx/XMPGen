@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.07'''
-__sub_version__ = '''20111005051222'''
+__sub_version__ = '''20111005131411'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -116,6 +116,7 @@ DEFAULT_CFG = {
 
 	# for available options see: HANDLE_OVERFLOW_OPTIONS
 	'OVERFLOW_STRATEGY': 'merge-bottom',
+	# for available options see: HANDLE_EXISTING_XMP_OPTIONS
 	'HANDLE_EXISTING_XMP': 'rewrite',
 	'SKIP_UNKNOWN_DESTINATIONS': False,
 	'CONFIG_SAVE_LOCAL': False,
@@ -146,6 +147,7 @@ if metadata is not None:
 		'highest',
 		'lowest',
 	]
+	DEFAULT_CFG['HANDLE_EXISTING_XMP_OPTIONS'] = 'update'
 
 
 #-----------------------------------------------------------------------
@@ -578,6 +580,18 @@ def action_break(path, rating, label, data, config):
 	return False
 
 
+def get_backup_name(path):
+	'''
+	'''
+	# create a backup file name...
+	i = 0
+	ext_tpl = BACKUP_EXT_TPL 
+	ext = BACKUP_EXT
+	while os.path.isfile(path + ext):
+		i += 1
+		ext = ext_tpl % i
+	return path + ext
+
 #-------------------------------------------------handle_existing_xmp---
 ##!!! do we just create a file with a .bak extension or move to a backup dir...
 def handle_existing_xmp(path, rating, label, data, config):
@@ -596,22 +610,17 @@ def handle_existing_xmp(path, rating, label, data, config):
 		if open(path).read() == data:
 			# we need to do nothing...
 			return False
-		# create a backup file name...
-		i = 0
-		ext_tpl = BACKUP_EXT_TPL 
-		ext = BACKUP_EXT
-		while os.path.isfile(path + ext):
-			i += 1
-			ext = ext_tpl % i
-		# move file to backup...
-		shutil.move(path, path + ext)
+		# do a backup...
+		shutil.move(path, get_backup_name(path))
 		# now we can continue...
 		return True
 	# these will update the xmp...
 	if metadata is not None:
+		##!!! need testing...
 		if action in ('update', 'highest', 'lowest'):
-			##!!! do we need to check for RO flag here???
-			##!!! need testing...
+			# do a backup...
+			shutil.copy2(path, get_backup_name(path))
+			# load metadata...
 			im = metadata.ImageMetadata(path)
 			im.read()
 			if action == 'update':
@@ -619,12 +628,13 @@ def handle_existing_xmp(path, rating, label, data, config):
 				im['Xmp.xmp.Label'] = label
 			elif action == 'highest':
 				im['Xmp.xmp.Rating'] = max(im['Xmp.xmp.Rating'].value, rating)
-				##!!! can't compare labels...
+				##!!! can't order-compare labels...
 				im['Xmp.xmp.Label'] = label
 			elif action == 'lowest':
 				im['Xmp.xmp.Rating'] = min(im['Xmp.xmp.Rating'].value, rating)
-				##!!! can't compare labels...
+				##!!! can't order-compare labels...
 				im['Xmp.xmp.Label'] = label
+			##!!! do we need to check for RO flag here???
 			im.write()
 			return True
 	raise TypeError, 'unknown handling strategy: "%s"' % action
