@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.12'''
-__sub_version__ = '''20111005033146'''
+__sub_version__ = '''20111005134938'''
 __copyright__ = '''(c) Alex A. Naanou 2003'''
 
 
@@ -74,8 +74,12 @@ setup(
 ##					'optimize': 2,
 					'bundle_files': 2,
 ##					'packages': 'encodings',
+					'excludes': [
+						# NOTE: we do not want to distribute any incompatible-licensed code...
+						'pyexiv2',
+					]
 					}},
-	console = ['xmpgen.py']
+	console = ['xmpgen.py'],
 	)
 
 
