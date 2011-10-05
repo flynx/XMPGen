@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.07'''
-__sub_version__ = '''20111005030141'''
+__sub_version__ = '''20111005043716'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -21,12 +21,14 @@ else:
 	from itertools import izip_longest
 
 
-### workaround: I prefer freedom as in free, to freedom as in forced
-### to be free...
-##try:
-##	import pyexiv2 as metadata
-##except ImportError:
-##	metadata = None
+metadata = None
+# NOTE: I prefer freedom as in free, to freedom as in forced
+# 		to be free...
+try:
+	# this is optional...
+	import pyexiv2 as metadata
+except ImportError:
+	pass
 
 
 #-----------------------------------------------------------------------
@@ -132,11 +134,15 @@ HANDLE_EXISTING_XMP_OPTIONS = [
 	'skip',
 	# NOTE: this will fail on RO files... ##!!! is this correct?
 	'rewrite',
-##!!! not yet implemented...
-##	'update',
-##	'highest',
-##	'lowest',
 ]
+
+# NOTE: these depend on an optional .xmp editor...
+if metadata is not None:
+	HANDLE_EXISTING_XMP_OPTIONS += [
+		'update',
+		'highest',
+		'lowest',
+	]
 
 
 #-----------------------------------------------------------------------
@@ -580,7 +586,7 @@ def handle_existing_xmp(path, rating, label, data, config):
 		raise ValueError, 'file "%s" already exists.' % path
 	elif action == 'skip':
 		return False
-	##!!! backup needs testing...
+	# XXX backup needs more testing...
 	elif action == 'rewrite':
 		# NOTE: this will fail for RO files...
 		# check if we need to backup...
@@ -598,11 +604,26 @@ def handle_existing_xmp(path, rating, label, data, config):
 		shutil.move(path, path + ext)
 		# now we can continue...
 		return True
-
-	##!!! these need updating the xmp...
-##	'update',
-##	'highest',
-##	'lowest',
+	# these will update the xmp...
+	if metadata is not None:
+		if action in ('update', 'highest', 'lowest'):
+			##!!! do we need to check for RO flag here???
+			##!!! need testing...
+			im = metadata.ImageMetadata(path)
+			im.read()
+			if action == 'update':
+				im['Xmp.xmp.Rating'] = rating
+				im['Xmp.xmp.Label'] = label
+			elif action == 'highest':
+				im['Xmp.xmp.Rating'] = max(im['Xmp.xmp.Rating'].value, rating)
+				##!!! can't compare labels...
+				im['Xmp.xmp.Label'] = label
+			elif action == 'lowest':
+				im['Xmp.xmp.Rating'] = min(im['Xmp.xmp.Rating'].value, rating)
+				##!!! can't compare labels...
+				im['Xmp.xmp.Label'] = label
+			im.write()
+			return True
 	raise TypeError, 'unknown handling strategy: "%s"' % action
 
 
