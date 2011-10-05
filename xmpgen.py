@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.09'''
-__sub_version__ = '''20111005132411'''
+__sub_version__ = '''20111005151105'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -625,15 +625,18 @@ def handle_existing_xmp(path, rating, label, data, config):
 			im.read()
 			if action == 'update':
 				im['Xmp.xmp.Rating'] = rating
-				im['Xmp.xmp.Label'] = label
+				if label != '':
+					im['Xmp.xmp.Label'] = label
 			elif action == 'highest':
 				im['Xmp.xmp.Rating'] = max(im['Xmp.xmp.Rating'].value, rating)
 				##!!! can't order-compare labels...
-				im['Xmp.xmp.Label'] = label
+				if label != '':
+					im['Xmp.xmp.Label'] = label
 			elif action == 'lowest':
 				im['Xmp.xmp.Rating'] = min(im['Xmp.xmp.Rating'].value, rating)
 				##!!! can't order-compare labels...
-				im['Xmp.xmp.Label'] = label
+				if label != '':
+					im['Xmp.xmp.Label'] = label
 			##!!! do we need to check for RO flag here???
 			im.write()
 			return True
