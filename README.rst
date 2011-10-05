@@ -210,7 +210,7 @@ The data the script uses and its behavior is fully configurable.
 
 Current command-line reference::
 
-        Usage: xmpgen.py [options]
+        Usage: xmpgen.pyc [options]
 
         Options:
           --version             show program's version number and exit
@@ -266,7 +266,7 @@ Current command-line reference::
             --handle-existing-xmp=STRATEGY
                                 the way to handle existing xmp files (default:
                                 rewrite). available options are: ('abort', 'skip',
-                                'rewrite')
+                                'rewrite', 'update', 'highest', 'lowest')
             --skip-unknown-destinations
                                 if set, skip generating .XMP files for targets that
                                 can not be located. this can happen for example when
@@ -330,6 +330,12 @@ The default options that can be contained in ``~/.xmpgen`` or printed by the ``-
         \t\t<xap:Label>%(label)s<\/xap:Label>\n\t\t<\/rdf:Description>\n\t<\/rdf:RDF>\n<
         \/x:xmpmeta>"
         }
+
+
+.. NOTE:: 
+   Some options may or may not be available depending on installed third 
+   party software.
+   Such optional software includes: pyexiv2 http://tilloy.net/dev/pyexiv2/
 
 
 .. NOTE:: 
