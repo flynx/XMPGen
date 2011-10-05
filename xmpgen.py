@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.07'''
-__sub_version__ = '''20111005043716'''
+__sub_version__ = '''20111005051222'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -24,6 +24,9 @@ else:
 metadata = None
 # NOTE: I prefer freedom as in free, to freedom as in forced
 # 		to be free...
+# XXX add plugin metadata writers...
+# 		an example using command-line exiv2:
+# 			exiv2 -M "set Xmp.xmp.Rating 2" DSC_0055.XMP
 try:
 	# this is optional...
 	import pyexiv2 as metadata

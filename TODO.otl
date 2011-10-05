@@ -19,7 +19,7 @@
 		|	   except IndexError:
 		|	       pass
 		| 	
-	[_] 30% Features
+	[_] 32% Features
 		[_] 0% 1.0
 		[_] 0% Beta 2
 			[_] use file RO flag to set a label
@@ -33,21 +33,23 @@
 			|
 			| need more research...
 			[_] write path to comment (XMP/IPCT/EXIF)
-		[_] 50% Beta 1
-			[_] replace .XMP writer with pyexiv2...
-			[_] 50% add ability to either update or skip existing .XMPs
-				[_] 50% --handle-existing-xmp=STRATEGY
+		[_] 60% Beta 1
+			[_] add alternative metadata writers...
+			[_] test metadata writers...
+			[X] add optional support pyexiv2...
+			[X] 100% add ability to either update or skip existing .XMPs
+				[X] 100% --handle-existing-xmp=STRATEGY
 					[X] abort
 					| fail when we encounter an existing xmp...
 					[X] skip
 					| keep existing xmp files...
 					[X] rewrite (w. backup)
 					| backup existing files to a new location or rename and generate new xmp files...
-					[_] update
+					[X] update
 					| use the topology rating...
-					[_] update-highest
+					[X] update-highest
 					| use the higest rating...
-					[_] update-lowest
+					[X] update-lowest
 					| use the lowest rating...
 			[X] read/write local config to root of directory...
 		[_] 0% misc
