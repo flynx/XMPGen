@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.09'''
-__sub_version__ = '''20111005151105'''
+__sub_version__ = '''20111006191045'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -147,7 +147,7 @@ if metadata is not None:
 		'highest',
 		'lowest',
 	]
-	DEFAULT_CFG['HANDLE_EXISTING_XMP_OPTIONS'] = 'update'
+	DEFAULT_CFG['HANDLE_EXISTING_XMP'] = 'update'
 
 
 #-----------------------------------------------------------------------
