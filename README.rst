@@ -7,11 +7,11 @@ stores the resulting ratings in .XMP sidecar files.
 
 .. NOTE::
    Before we begin I have to be upfront and explicitly say several things 
-   about the design philosophy of XMPGen: 
+   about the design philosophy, XMPGen was designed to: 
 
    * be usable as-is, without any configuration (reasonable defaults).
 
-   * If the defaults do not suit, then change the defaults.
+   * if the defaults do not suit, then change the defaults.
 
    * if it's a special case then you have full control.
           
