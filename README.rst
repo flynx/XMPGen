@@ -100,8 +100,8 @@ files having the top rating::
   |  |  |  |  |  DSC_0002.jpg  - - - 5*
   |  |  |  |  \  DSC_0004.jpg  - - - 5*
   |  |  |  |  DSC_0001.jpg - - - - - 4*
-  |  |  |  |  DSC_0002.jpg - - - - - 4*
-  |  |  |  |  DSC_0003.jpg - - - - - 4*
+  |  |  |  |  DSC_0002.jpg
+  |  |  |  |  DSC_0003.jpg
   |  |  |  \  DSC_0004.jpg - - - - - 4*
   |  |  |  DSC_0001.jpg
   |  |  |  DSC_0002.jpg
@@ -110,6 +110,10 @@ files having the top rating::
   |  |  DSC_0002.NEF
   |  |  ...
 
+.. NOTE::
+   Notice that files with the same name can exist on several levels, i.e.
+   one does not have to move files to the next level, simple copy will 
+   also suffice. The higher rating takes priority.
 
 Now, we would like this information to be stored in a way that can be 
 used by other software in a non-destructive manner. the best way to do 
@@ -157,6 +161,14 @@ For more control one can specify all the data on the command line for
 the same effect as the above::
 
   $ xmpgen --root=DCIM --input="preview (RAW)" --output=232ND700 --raw-extension=.NEF --traverse-dir-name=fav --no-search-output --no-search-input
+
+
+.. NOTE::
+   The exact topology is not important, as long as the *INPUT*
+   (``preview (RAW)/`` in this case) and *OUTPUT* (``232ND700/``) are 
+   in the same directory tree ``XMPGen`` was invoked from they will be
+   *discovered* and linked correctly.
+
 
 
 Complex Situations
