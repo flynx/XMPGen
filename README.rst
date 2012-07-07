@@ -6,11 +6,19 @@ This script uses the directory tree topology to rate images and
 stores the resulting ratings in .XMP sidecar files.
 
 .. NOTE::
-   Before we begin I have to be upfront and explicitly say one thing about
-   the design: XMPGen is designd to be as simple to use as possible, one 
-   should not be scared by the number of options, the goal is to put all 
+   Before we begin I have to be upfront and explicitly say several things 
+   about the design philosophy of XMPGen: 
+
+   * be usable as-is, without any configuration (reasonable defaults).
+
+   * If the defaults do not suit, then change the defaults.
+
+   * if it's a special case then you have full control.
+          
+   This should make XMPGen as simple to use as possible, and one 
+   should not be put off by the number of options, the goal is to put all 
    user-specific configuration (if the defaults do not suffice) into 
-   a configfile (see the *Configuration options* section in ``--help``) 
+   a configuration file (see the *Configuration options* section in ``--help``) 
    and run the general case *without* any command-line options what-so-ever.
 
 
