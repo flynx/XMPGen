@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.09'''
-__sub_version__ = '''20111103005750'''
+__sub_version__ = '''20120707185007'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -306,7 +306,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						default=False,
 						help='save current configuration at the root location. '
 						'this is a shorthand for: '
-						'xmpgen ... --config-print > ROOT/.xmpgen')
+						'xmpgen ... --config-print > ROOT/.xmpgen; xmpgen ...')
 	parser.add_option_group(configuration)
 
 	options, args = parser.parse_args()

@@ -306,7 +306,7 @@ Current command-line reference::
             --config-save-local
                                 save current configuration at the root location. this
                                 is a shorthand for: xmpgen ... --config-print >
-                                ROOT/.xmpgen
+                                ROOT/.xmpgen; xmpgen ...
 
         NOTEs: xmpgen will overwrite existing .XMP files (will be fixed soon). xmpgen
         will search for both INPUT and OUTPUT so explicit declaration is needed only
