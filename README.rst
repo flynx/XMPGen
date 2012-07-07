@@ -391,9 +391,13 @@ Miscellaneous Information and Notes
 
           xmpgen ... --config-save-local
 
-   This is a shorthand for:
+   This is similar to:
 
           xmpgen ... --config-print > ./.xmpgen
+
+   The difference is that ``--config-save-local`` will also do the work 
+   specified by the options.
+   
 
 
 .. NOTE:: 
