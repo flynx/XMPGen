@@ -128,7 +128,8 @@ So here is the simplest way to do this::
 ``xmpgen`` will automatically find both input -- where the rated 
 previews are located -- and output -- where to write the .XMPs -- 
 directories. Both input and output locations can be spread into 
-multiple locations.
+multiple locations. But both should be below the point ``xmpgen`` was 
+called from.
 
 .. NOTE:: 
    It is not *yet* possible to make this do it's job over a large 
@@ -161,13 +162,6 @@ For more control one can specify all the data on the command line for
 the same effect as the above::
 
   $ xmpgen --root=DCIM --input="preview (RAW)" --output=232ND700 --raw-extension=.NEF --traverse-dir-name=fav --no-search-output --no-search-input
-
-
-.. NOTE::
-   The exact topology is not important, as long as the *INPUT*
-   (``preview (RAW)/`` in this case) and *OUTPUT* (``232ND700/``) are 
-   in the same directory tree ``XMPGen`` was invoked from they will be
-   *discovered* and linked correctly.
 
 
 
