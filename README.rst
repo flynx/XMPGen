@@ -112,8 +112,8 @@ files having the top rating::
 
 .. NOTE::
    Notice that files with the same name can exist on several levels, i.e.
-   one does not have to move files to the next level, simple copy will 
-   also suffice. The higher rating takes priority.
+   it does not matter if one moves or copies files to the next level.
+   
 
 Now, we would like this information to be stored in a way that can be 
 used by other software in a non-destructive manner. the best way to do 
