@@ -387,5 +387,15 @@ Miscellaneous Information and Notes
 
 
 .. NOTE:: 
+   To save a local config in the location ``xmpgen`` was called from use:
+
+          xmpgen ... --config-save-local
+
+   This is a shorthand for:
+
+          xmpgen ... --config-print > ./.xmpgen
+
+
+.. NOTE:: 
    In general, order of flags does not matter. but order of labels given on command line is.
 
