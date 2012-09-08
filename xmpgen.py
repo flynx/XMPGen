@@ -2,7 +2,7 @@
 #=======================================================================
 
 __version__ = '''0.1.09'''
-__sub_version__ = '''20120707185007'''
+__sub_version__ = '''20120908235504'''
 __copyright__ = '''(c) Alex A. Naanou 2011'''
 
 
@@ -121,6 +121,7 @@ DEFAULT_CFG = {
 	'HANDLE_EXISTING_XMP': 'rewrite',
 	'SKIP_UNKNOWN_DESTINATIONS': False,
 	'CONFIG_SAVE_LOCAL': False,
+	'INPUT_EXT': ['jpg', 'JPG']
 }
 
 HANDLE_OVERFLOW_OPTIONS = [
@@ -262,6 +263,12 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 						default=config['TRAVERSE_DIR'],
 						help='directory used to traverse to next level (default: "%default").', 
 						metavar='DIR_NAME')
+	##!!! do we need a clear/remove here??
+	advanced.add_option('--input-ext',
+						action='append',
+						default=config['INPUT_EXT'][:],
+						help='add extension to list of ext\'s to be searched (default: %default).',
+						metavar='INPUT_EXT')
 	##!!! add '.' if not present...
 	advanced.add_option('--raw-extension',
 						default=config['RAW_EXTENSION'],
@@ -334,6 +341,7 @@ def load_commandline(config, default_cfg=DEFAULT_CFG):
 			'SKIP': list(set(options.skip + [options.input])),
 			'SKIP_UNKNOWN_DESTINATIONS': options.skip_unknown_destinations,
 			'CONFIG_SAVE_LOCAL': options.config_save_local,
+			'INPUT_EXT': options.input_ext,
 			})
 
 	if options.overflow_strategy not in HANDLE_OVERFLOW_OPTIONS:
@@ -397,7 +405,7 @@ def load_config_file(config, default_cfg=DEFAULT_CFG):
 #------------------------------------------------------------rcollect---
 # XXX make this read/locate .label files at the bottom of the tree...
 def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
-		collect_base=True, ext=OR('jpg', 'JPG'), 
+		collect_base=True, ext=OR(*DEFAULT_CFG['INPUT_EXT']), 
 		label_cfg=DEFAULT_CFG['LABEL_CFG']):
 	'''
 	generator to collect all the files in the topology.
@@ -413,11 +421,11 @@ def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 	for r, dirs, files in os.walk(root):
 		if collect_base:
 			# filter files...
-			res = [ (root, f) for f in files if f.split('.')[-1] == ext ]
+##			res = [ (root, f) for f in files if f.split('.')[-1] == ext ]
+			res = [ (root, '.'.join(f.split('.')[:-1])) for f in files if f.split('.')[-1] == ext ]
 			# skip empty levels...
 			if len(res) == 0:
 				continue
-##			yield res, file(label_cfg).read() if label_cfg in files else None
 			yield res
 		else:
 			collect_base = True
@@ -430,7 +438,7 @@ def rcollect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 
 #-------------------------------------------------------------collect---
 def collect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'], 
-		collect_base=True, ext=OR('jpg', 'JPG'),
+		collect_base=True, ext=OR(*DEFAULT_CFG['INPUT_EXT']),
 		label_cfg=DEFAULT_CFG['LABEL_CFG']):
 	'''
 	same as collect, but does its work bottom-down.
@@ -445,6 +453,7 @@ def collect(root, next_dir=DEFAULT_CFG['TRAVERSE_DIR'],
 
 
 #---------------------------------------------------------------index---
+##!!! this does not split items that are the same but with different extensions...
 def index(collection):
 	'''
 	generator to index the collection.
@@ -661,7 +670,8 @@ def generate(ratings, root, getpath=join,
 		xmp_data = template % {'rating': rating, 'label': label}
 		for p, name in reduce(list.__add__, [ list(s['items']) for s in data ]):
 			try:
-				path = getpath(root, '.'.join(name.split('.')[:-1]), path=p) + '.XMP'
+##				path = getpath(root, '.'.join(name.split('.')[:-1]), path=p) + '.XMP'
+				path = getpath(root, name, path=p) + '.XMP'
 			except KeyError:
 				if skip_not_found:
 					continue
@@ -848,6 +858,7 @@ def run():
 	skip = config['SKIP']
 	use_labels = config['USE_LABELS']
 	overflow_strategy = config['OVERFLOW_STRATEGY']
+	in_ext = OR(*config['INPUT_EXT'])
 
 	# runtime options...
 	dry_run = runtime_options.dry_run
@@ -865,14 +876,14 @@ def run():
 		rate(
 			index(
 				# chose weather we need to skip the last element...
-					collect(os.path.join(root, input), traverse_dir, rate_top_level) 
+					collect(os.path.join(root, input), traverse_dir, rate_top_level, in_ext) 
 						if not search_input 
 						# locate correct preview dirs...
 						else (reduce(list.__add__, l) 
 									for l 
 									in izip_longest(
 											fillvalue=[], 
-											*(collect(d, traverse_dir, rate_top_level) 
+											*(collect(d, traverse_dir, rate_top_level, in_ext) 
 										for d 
 										in getdirpaths(
 												root, 
